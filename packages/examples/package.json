@@ -1,0 +1,24 @@
+{
+	"name": "@zmini/examples",
+	"version": "1.0.0",
+	"description": "",
+	"main": "main.js",
+	"author": "cluno1",
+	"license": "MIT",
+	"dependencies": {
+		"@dcloudio/uni-app": "^2.0.2-4040520250103001",
+		"@dcloudio/uni-ui": "^1.5.7",
+		"dayjs": "^1.11.13",
+		"dayjs-plugin-duration": "0.0.1-security",
+		"luch-request": "^3.1.1",
+		"pinia": "^3.0.2",
+		"sass": "1.63.2",
+		"sass-loader": "10.4.1",
+		"uview-plus": "^3.3.72",
+		"vue-jsonp": "^2.1.0"
+	},
+	"devDependencies": {
+		"@dcloudio/types": "^3.4.15",
+		"@types/vue": "^2.0.0"
+	}
+}
