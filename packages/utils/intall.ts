@@ -1,12 +1,8 @@
 /*
- * @Author: zld 17875477802@163.com
- * @Date: 2025-08-18 16:46:05
+ * @Date: 2025-08-18 19:49:31
  * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-18 17:15:51
+ * @LastEditTime: 2025-08-18 20:09:13
  * @FilePath: \zmini\packages\utils\intall.ts
- * @Description: 
- * 
- * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
  */
 import type { App, Component, Plugin } from "vue";
 

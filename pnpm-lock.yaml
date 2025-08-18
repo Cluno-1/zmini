@@ -36,6 +36,9 @@ importers:
       '@vue/runtime-core':
         specifier: ^3.2.0
         version: 3.5.18
+      '@vue/tsconfig':
+        specifier: ^0.7.0
+        version: 0.7.0(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
       '@zmini/hooks':
         specifier: workspace:*
         version: link:packages/hooks
@@ -65,6 +68,9 @@ importers:
       '@zmini/components':
         specifier: workspace:*
         version: link:../components
+      '@zmini/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   packages/docs:
     devDependencies:
@@ -80,6 +86,9 @@ importers:
       '@dcloudio/uni-ui':
         specifier: ^1.5.7
         version: 1.5.10
+      '@zmini/core':
+        specifier: workspace:*
+        version: link:../core
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -108,11 +117,54 @@ importers:
       '@dcloudio/types':
         specifier: ^3.4.15
         version: 3.4.19
+      '@types/node':
+        specifier: ^22.14.1
+        version: 22.17.2
       '@types/vue':
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.9.2)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.2
 
   packages/hooks: {}
+
+  packages/play:
+    dependencies:
+      '@zmini/core':
+        specifier: workspace:*
+        version: link:../core
+      vue:
+        specifier: ^3.5.18
+        version: 3.5.18(typescript@5.9.2)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@7.1.2(@types/node@22.17.2)(sass@1.90.0)(terser@5.43.1))(vue@3.5.18(typescript@5.9.2))
+      '@vue/compiler-sfc':
+        specifier: ^3.5.18
+        version: 3.5.18
+      '@vue/runtime-core':
+        specifier: ^3.2.0
+        version: 3.5.18
+      '@vue/tsconfig':
+        specifier: ^0.7.0
+        version: 0.7.0(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      sass:
+        specifier: ^1.90.0
+        version: 1.90.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.2
+      vite:
+        specifier: ^7.1.2
+        version: 7.1.2(@types/node@22.17.2)(sass@1.90.0)(terser@5.43.1)
+      vue-tsc:
+        specifier: ^3.0.5
+        version: 3.0.5(typescript@5.9.2)
 
   packages/theme: {}
 
@@ -901,6 +953,17 @@ packages:
 
   '@vue/shared@3.5.18':
     resolution: {integrity: sha512-cZy8Dq+uuIXbxCZpuLd2GJdeSO/lIzIspC2WtkqIpje5QyFbvLaI5wZtdUjLHjGZrlVX6GilejatWwVYYRc8tA==}
+
+  '@vue/tsconfig@0.7.0':
+    resolution: {integrity: sha512-ku2uNz5MaZ9IerPPUyOHzyjhXoX2kVJaVf7hL315DC17vS6IiZRmmCPfggNbU16QTvM80+uYYy3eYJB59WCtvg==}
+    peerDependencies:
+      typescript: 5.x
+      vue: ^3.4.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      vue:
+        optional: true
 
   '@vueuse/core@12.8.2':
     resolution: {integrity: sha512-HbvCmZdzAu3VGi/pWYm5Ut+Kd9mn1ZHnn4L5G8kOQTPs/IwIAmJoBrmYk2ckLArgMXZj0AW3n5CAejLUO+PhdQ==}
@@ -2416,6 +2479,11 @@ snapshots:
       vue: 3.5.18(typescript@5.9.2)
 
   '@vue/shared@3.5.18': {}
+
+  '@vue/tsconfig@0.7.0(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))':
+    optionalDependencies:
+      typescript: 5.9.2
+      vue: 3.5.18(typescript@5.9.2)
 
   '@vueuse/core@12.8.2(typescript@5.9.2)':
     dependencies:
