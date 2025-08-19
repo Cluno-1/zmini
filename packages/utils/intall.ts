@@ -1,7 +1,7 @@
 /*
  * @Date: 2025-08-18 19:49:31
  * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-18 20:09:13
+ * @LastEditTime: 2025-08-19 16:44:41
  * @FilePath: \zmini\packages\utils\intall.ts
  */
 import type { App, Component, Plugin } from "vue";
@@ -10,7 +10,7 @@ import type { App, Component, Plugin } from "vue";
 const INSTALLED_KEY = Symbol("INSTALLED_KEY");
 
 /** 单个组件“插件化” */
-export function withInstall<T extends Component>(comp: T) {
+export function withInstall<T extends Component>(comp: T):Plugin {
   (comp as any).install = (app: App) => {
     const name = comp.name || (comp as any).__name; /* 兼容 <script setup> */
     if (name) app.component(name, comp);

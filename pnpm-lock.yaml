@@ -61,13 +61,69 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5(typescript@5.9.2)
 
-  packages/components: {}
+  packages/components:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: ^2.0.2-4040520250103001
+        version: 2.0.2-4070520250711001(@dcloudio/types@3.4.19)(@vue/composition-api@1.7.2(vue@3.5.18(typescript@5.9.2)))
+      '@dcloudio/uni-ui':
+        specifier: ^1.5.7
+        version: 1.5.10
+      '@zmini/hooks':
+        specifier: workspace:*
+        version: link:../hooks
+      '@zmini/theme':
+        specifier: workspace:*
+        version: link:../theme
+      '@zmini/utils':
+        specifier: workspace:*
+        version: link:../utils
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
+      dayjs-plugin-duration:
+        specifier: 0.0.1-security
+        version: 0.0.1-security
+      luch-request:
+        specifier: ^3.1.1
+        version: 3.1.1
+      pinia:
+        specifier: ^3.0.2
+        version: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      sass:
+        specifier: 1.63.2
+        version: 1.63.2
+      sass-loader:
+        specifier: 10.4.1
+        version: 10.4.1(sass@1.63.2)(webpack@5.101.2)
+      uview-plus:
+        specifier: ^3.3.72
+        version: 3.4.99
+      vue-jsonp:
+        specifier: ^2.1.0
+        version: 2.1.0
+    devDependencies:
+      '@dcloudio/types':
+        specifier: ^3.4.15
+        version: 3.4.19
+      '@types/node':
+        specifier: ^22.14.1
+        version: 22.17.2
+      '@types/vue':
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.2)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.2
 
   packages/core:
     dependencies:
       '@zmini/components':
         specifier: workspace:*
         version: link:../components
+      '@zmini/hooks':
+        specifier: workspace:*
+        version: link:../hooks
       '@zmini/utils':
         specifier: workspace:*
         version: link:../utils
@@ -86,6 +142,9 @@ importers:
       '@dcloudio/uni-ui':
         specifier: ^1.5.7
         version: 1.5.10
+      '@zmini/components':
+        specifier: workspace:*
+        version: link:../components
       '@zmini/core':
         specifier: workspace:*
         version: link:../core

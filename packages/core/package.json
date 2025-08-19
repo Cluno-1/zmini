@@ -12,6 +12,7 @@
   "packageManager": "pnpm@10.8.0",
   "dependencies": {
     "@zmini/components":"workspace:*",
+    "@zmini/hooks": "workspace:*",
     "@zmini/utils":"workspace:*"
   }
 }

@@ -1,41 +1,25 @@
-<template>
-	<view class="content">
-		<ZButton name='组件' @onClick='handle'></ZButton>
-	</view>
-</template>
 
-<script setup lang="ts">
-	function handle(){
-		console.log('con on click!!')
-	}
-</script>
-
-<style>
-	.content {
+.content {
 		width: 100%;
 		background-color: red;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.logo {
+}
+.logo {
 		height: 200rpx;
 		width: 200rpx;
 		margin-top: 200rpx;
 		margin-left: auto;
 		margin-right: auto;
 		margin-bottom: 50rpx;
-	}
-
-	.text-area {
+}
+.text-area {
 		display: flex;
 		justify-content: center;
-	}
-
-	.title {
+}
+.title {
 		font-size: 36rpx;
 		color: #8f8f94;
-	}
-</style>
+}

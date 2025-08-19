@@ -1,7 +1,7 @@
 <!--
  * @Date: 2025-08-18 20:18:45
  * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-18 21:17:02
+ * @LastEditTime: 2025-08-19 14:29:44
  * @FilePath: \zmini\packages\play\src\components\HelloWorld.vue
 -->
 <script setup lang="ts">
@@ -14,9 +14,12 @@ const count = ref(0)
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+  <div>
+    <h1>{{ msg }}</h1>
 
-  <ZButton />
+    <ZButton />
+  </div>
+
 </template>
 
 <style scoped>

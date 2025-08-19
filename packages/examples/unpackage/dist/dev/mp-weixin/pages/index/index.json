@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "usingComponents": {
+    "z-button": "../../node-modules/@zmini/components/ZButton/ZButton"
+  }
+}
