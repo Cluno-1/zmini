@@ -1,41 +1,69 @@
 <template>
-	<view class="content">
-		<ZButton name='组件' @onClick='handle'></ZButton>
+	<view class="layout">
+		<u-collapse :accordion="false" :value="uColVal">
+			<drawer-item title="组件演示">
+				<view class="nav">
+					<view class="item" v-for="(item, index) in data" :key="index" @click="handle(item)">
+						<view class="picture item">
+							{{ item.name }}
+						</view>
+						<text class="text">
+							{{ item.title }}
+						</text>
+					</view>
+				</view>
+			</drawer-item>
+		</u-collapse>
 	</view>
 </template>
 
 <script setup lang="ts">
-	function handle(){
-		console.log('con on click!!')
+import { ref } from 'vue';
+
+const uColVal = ref('');
+
+function handle(item) {
+	uni.navigateTo({
+		url: item.router
+	});
+}
+
+const data = [
+	{
+		title: '按钮',
+		name: 'ZButton',
+		router: '/pages/button/index'
 	}
+];
 </script>
 
-<style>
-	.content {
-		width: 100%;
-		background-color: red;
+<style  lang="scss" scoped>
+
+.nav {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-column-gap: 10rpx;
+	grid-row-gap: 20rpx;
+	.item {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
 		justify-content: center;
+		align-items: center;
+		font-size: 20rpx;
 	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
+	.picture {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 20rpx;
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		background-color: blueviolet;
 	}
 
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+	.text {
+		font-size: 30rpx;
+		font-weight: bold;
 	}
+}
 </style>

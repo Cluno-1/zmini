@@ -26,9 +26,8 @@
 .button.data-v-e656bee6 {
   width: 100%;
   height: auto;
-  padding: 4rpx 0;
-  border-radius: 30px;
-  color: #fff;
-  font-size: 28rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 5px;
+  color: black;
   margin-bottom: 28rpx;
 }

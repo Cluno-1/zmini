@@ -1,0 +1,1 @@
+<view class="layout"><z-button wx:if="{{a}}" u-i="06955387-0" bind:__l="__l" u-p="{{a}}"></z-button></view>

@@ -1,1 +1,0 @@
-export type buttonColor = 'default' | 'warning' | 'info' | 'plain'

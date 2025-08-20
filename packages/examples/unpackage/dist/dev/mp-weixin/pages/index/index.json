@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "uni-app",
   "usingComponents": {
-    "z-button": "../../node-modules/@zmini/components/ZButton/ZButton"
+    "u-collapse": "../../node-modules/uview-plus/components/u-collapse/u-collapse"
   }
 }

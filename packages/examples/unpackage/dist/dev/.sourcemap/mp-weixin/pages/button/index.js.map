@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../../../../../hbuilder/HBuilderX.4.57.2025032507/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvYnV0dG9uL2luZGV4LnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'D:/code/组件库/zmini/packages/examples/pages/button/index.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;AACA,GAAG,WAAW,eAAe;"}

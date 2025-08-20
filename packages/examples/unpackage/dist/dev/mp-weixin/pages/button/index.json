@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "button",
+  "usingComponents": {
+    "z-button": "../../node-modules/@zmini/components/ZButton/ZButton"
+  }
+}
