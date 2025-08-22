@@ -6,14 +6,14 @@
   "setting": {
     "urlCheck": false,
     "es6": true,
-    "postcss": false,
+    "postcss": true,
     "minified": false,
     "newFeature": true,
     "bigPackageSizeSupport": true
   },
   "compileType": "miniprogram",
   "libVersion": "",
-  "appid": "touristappid",
+  "appid": "wx8f83d77f912d852c",
   "projectname": "examples",
   "condition": {
     "search": {

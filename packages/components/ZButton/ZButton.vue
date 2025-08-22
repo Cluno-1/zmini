@@ -1,81 +1,70 @@
-<!--
- * @Author: 张连登 17875477802@163.com
- * @Date: 2025-04-25 10:55:05
- * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-20 17:12:27
- * @FilePath: \zmini\packages\components\ZButton\ZButton.vue
- * @Description: 
- * 
- * Copyright 2025 xingye/'zld', All Rights Reserved. 
--->
 <template>
-	<view>
-		<button class="button" @click="emitClick(emit,$event)" :plain="plain" :size="size" :loading="loading" :style="{
+	<view :style="{ width }">
+		<button class=" zbutton" @click="emitClick(emit, $event)" :plain="plain" :size="size" :loading="loading" :style="{
 			width,
 			background,
 			color: textColor,
-			borderRadius: round ? '30px' : '5px'
+			borderRadius: round ? '30rpx' : '5rpx'
 		}">
-			<slot v-if="$slots.default"></slot>
-			<text v-else>{{ name }}</text>
+			<text style="margin-left: 20rpx;">
+				<slot v-if="$slots.default"></slot>
+				<text v-else>{{ name }}</text>
+			</text>
 		</button>
 	</view>
+
 </template>
 
 
 <script lang="ts" setup>
-import { ref, watch, onMounted } from "vue";
-import type { PropType } from 'vue'
-import { _ButtonTypeMap, type ButtonSize, type ButtonType } from "@zmini/theme";
+import { ref, watch, onMounted, type PropType } from "vue";
+import { _ButtonTypeMap, type ButtonSize, type ButtonType, textColor as tColor } from "@zmini/theme";
 import { baseEmits, emitClick, getContrastTextColor, getDarkerActiveColor } from "@zmini/utils";
-
 defineExpose({
 	name: "ZButton",
 });
 
+
 const props = defineProps({
 	name: {
-		type: String,
+		type: String,//按钮文本
 		default: ''
 	},
 	width: {
-		type: String,
+		type: String,//宽度
 		default: '100%'
 	},
-	type: {//预设的颜色
-		type: String as PropType<ButtonType>,
+	type: {
+		type: String as PropType<ButtonType>,//按钮预设的背景颜色 "default" | "warning" | "info" | "plain" | "purple" | "blue" | "green" | "orange" | "pink" | "red" | "light-green" | "white" | "black"
 		default: 'default'
 	},
-	bgColor: {//按钮背景颜色
-		type: String,
+	bgColor: {
+		type: String,//自定义背景颜色
 		default: ''
 	},
-	color: {//文本颜色
-		type: String,
+	color: {
+		type: String,//自定义文本颜色
 		default: ''
 	},
 	size: {
-		type: String as PropType<ButtonSize>,
+		type: String as PropType<ButtonSize>,//按钮大小(高度) "default" | "mini"
 		default: 'default'
 	},
-	round: {//是否圆角
-		type: Boolean,
+	round: {
+		type: Boolean,//是否圆角  默认是
 		default: true
 	},
-	loading: {// 是否加载
-		type: Boolean,
+	loading: {
+		type: Boolean,//是否加载中  默认否
 		default: false
 	}
-
-
-})
-
+});
 const emit = defineEmits(baseEmits)
 
 const background = ref('');
 const textColor = ref('black')
 const activeColor = ref('')
-const plain =ref(false)
+const plain = ref(false)
 
 
 onMounted(() => {
@@ -84,46 +73,43 @@ onMounted(() => {
 
 
 function setColor() {
-	const { type, color, bgColor } = props
+	const { type, color, bgColor, loading } = props
 	background.value = ''
 	textColor.value = ''
-	activeColor.value=''
-	plain.value=false
-	
-	if(bgColor){
+	activeColor.value = ''
+	plain.value = false
+
+	if (bgColor) {
 		background.value = bgColor
-		textColor.value = color|| getContrastTextColor(bgColor)
+		textColor.value = loading ? tColor[2] : color || getContrastTextColor(bgColor)
 		activeColor.value = getDarkerActiveColor(bgColor)
 		return
 	}
-	if(type==='plain'){
-		plain.value=true
+	if (type === 'plain') {
+		plain.value = true
 	}
-	let _t=type
-	if(type){
+	let _t = type
+	if (!type) {
 		_t = 'default'
 	}
 	let _item = _ButtonTypeMap.get(_t)
 	if (_item) {
 		background.value = _item.bgColor
-		textColor.value = color||_item.textColor
-		activeColor.value=_item.activeColor
+		textColor.value = loading ? tColor[2] : color || _item.textColor
+		activeColor.value = _item.activeColor
 	}
 }
 
 watch(() => props.bgColor, setColor)
 watch(() => props.color, setColor)
 watch(() => props.type, setColor)
+watch(() => props.loading, setColor)
 
 </script>
 
 <style scoped lang="scss">
-.button {
-	width: 100%;
-	height: auto;
-	padding: 4rpx 14rpx;
-	border-radius: 5px;
+.zbutton {
+	border-radius: 5rpx;
 	color: black;
-	margin-bottom: 28rpx;
 }
 </style>

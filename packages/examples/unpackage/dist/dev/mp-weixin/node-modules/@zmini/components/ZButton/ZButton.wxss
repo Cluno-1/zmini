@@ -23,11 +23,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.button.data-v-e656bee6 {
-  width: 100%;
-  height: auto;
-  padding: 4rpx 14rpx;
-  border-radius: 5px;
+.zbutton.data-v-e656bee6 {
+  border-radius: 5rpx;
   color: black;
-  margin-bottom: 28rpx;
 }

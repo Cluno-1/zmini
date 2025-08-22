@@ -16,7 +16,6 @@
 		"sass-loader": "10.4.1",
 		"uview-plus": "^3.3.72",
 		"vue-jsonp": "^2.1.0",
-		"@zmini/core":"workspace:*",
 		"@zmini/components":"workspace:*"
 	},
 	"devDependencies": {

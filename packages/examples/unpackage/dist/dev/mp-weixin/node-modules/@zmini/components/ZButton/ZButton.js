@@ -5,39 +5,42 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   props: {
     name: {
       type: String,
+      //按钮文本
       default: ""
     },
     width: {
       type: String,
+      //宽度
       default: "100%"
     },
     type: {
-      //预设的颜色
       type: String,
+      //按钮预设的背景颜色 "default" | "warning" | "info" | "plain" | "purple" | "blue" | "green" | "orange" | "pink" | "red" | "light-green" | "white" | "black"
       default: "default"
     },
     bgColor: {
-      //按钮背景颜色
       type: String,
+      //自定义背景颜色
       default: ""
     },
     color: {
-      //文本颜色
       type: String,
+      //自定义文本颜色
       default: ""
     },
     size: {
       type: String,
+      //按钮大小(高度) "default" | "mini"
       default: "default"
     },
     round: {
-      //是否圆角
       type: Boolean,
+      //是否圆角  默认是
       default: true
     },
     loading: {
-      // 是否加载
       type: Boolean,
+      //是否加载中  默认否
       default: false
     }
   },
@@ -56,14 +59,14 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       setColor();
     });
     function setColor() {
-      const { type, color, bgColor } = props;
+      const { type, color, bgColor, loading } = props;
       background.value = "";
       textColor.value = "";
       activeColor.value = "";
       plain.value = false;
       if (bgColor) {
         background.value = bgColor;
-        textColor.value = color || common_vendor.getContrastTextColor(bgColor);
+        textColor.value = loading ? common_vendor.textColor[2] : color || common_vendor.getContrastTextColor(bgColor);
         activeColor.value = common_vendor.getDarkerActiveColor(bgColor);
         return;
       }
@@ -71,19 +74,20 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         plain.value = true;
       }
       let _t2 = type;
-      if (type) {
+      if (!type) {
         _t2 = "default";
       }
       let _item = common_vendor._ButtonTypeMap.get(_t2);
       if (_item) {
         background.value = _item.bgColor;
-        textColor.value = color || _item.textColor;
+        textColor.value = loading ? common_vendor.textColor[2] : color || _item.textColor;
         activeColor.value = _item.activeColor;
       }
     }
     common_vendor.watch(() => props.bgColor, setColor);
     common_vendor.watch(() => props.color, setColor);
     common_vendor.watch(() => props.type, setColor);
+    common_vendor.watch(() => props.loading, setColor);
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: _ctx.$slots.default
@@ -97,7 +101,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         g: __props.width,
         h: background.value,
         i: textColor.value,
-        j: __props.round ? "30px" : "5px"
+        j: __props.round ? "30rpx" : "5rpx",
+        k: __props.width
       });
     };
   }

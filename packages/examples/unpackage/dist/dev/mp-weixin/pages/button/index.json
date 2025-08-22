@@ -1,6 +1,10 @@
 {
   "navigationBarTitleText": "button",
   "usingComponents": {
-    "z-button": "../../node-modules/@zmini/components/ZButton/ZButton"
+    "z-button": "../../node-modules/@zmini/components/ZButton/ZButton",
+    "z-input": "../../node-modules/@zmini/components/ZInput/ZInput",
+    "z-switch": "../../node-modules/@zmini/components/ZSwitch/ZSwitch",
+    "u-form-item": "../../node-modules/uview-plus/components/u-form-item/u-form-item",
+    "z-list-card": "../../node-modules/@zmini/components/ZListCard/ZListCard"
   }
 }

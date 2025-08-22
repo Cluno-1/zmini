@@ -2,7 +2,7 @@
  * @Author: zld 17875477802@163.com
  * @Date: 2025-08-20 14:45:59
  * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-20 14:59:26
+ * @LastEditTime: 2025-08-21 15:51:59
  * @FilePath: \zmini\packages\theme\index.ts
  * @Description: 
  * 
@@ -10,3 +10,6 @@
  */
 export * from './button/button'
 export * from './button/button.d'
+export * from './color'
+import './global.scss'
+

@@ -1,4 +1,4 @@
-__UNI__5ADE30{
+{
     "name" : "examples",
     "appid" : "__UNI__5ADE307",
     "description" : "",
@@ -50,9 +50,10 @@ __UNI__5ADE30{
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx8f83d77f912d852c",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "postcss" : true
         },
         "usingComponents" : true
     },

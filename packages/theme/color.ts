@@ -2,7 +2,7 @@
  * @Author: zld 17875477802@163.com
  * @Date: 2025-08-20 14:10:19
  * @LastEditors: zld 17875477802@163.com
- * @LastEditTime: 2025-08-20 14:52:21
+ * @LastEditTime: 2025-08-21 15:51:13
  * @FilePath: \zmini\packages\theme\color.ts
  * @Description: 
  * 
@@ -49,7 +49,7 @@ export const activeColor = [
 ];
 
 
-export const textColor = [" #ffffff", " #000000"];
+export const textColor = [" #ffffff", " #000000",'gray'];
 
 
 
