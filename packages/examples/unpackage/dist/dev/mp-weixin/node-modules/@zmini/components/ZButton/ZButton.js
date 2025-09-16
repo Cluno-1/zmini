@@ -5,7 +5,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   props: {
     name: {
       type: String,
-      //按钮文本
+      //按钮文本 说明: name字段 > 默认插槽
       default: ""
     },
     width: {
@@ -20,7 +20,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     },
     bgColor: {
       type: String,
-      //自定义背景颜色
+      //自定义背景颜色  说明: bgColor字段 > type字段
       default: ""
     },
     color: {
@@ -109,4 +109,3 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
 });
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-e656bee6"]]);
 wx.createComponent(Component);
-//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/node-modules/@zmini/components/ZButton/ZButton.js.map

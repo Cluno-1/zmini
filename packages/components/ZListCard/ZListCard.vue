@@ -1,6 +1,6 @@
 <template>
-	<scroll-view scroll-y class="card-border card-border2" @click.stop="$emit('onClick',$event)" :style="{backgroundColor:bgColor,width}">
-		<up-form labelPosition="left" labelAlign="left" :labelWidth="70" class="big-font form-main">
+	<scroll-view scroll-y class="z-card card-border2" @click.stop="$emit('onClick',$event)" :style="{backgroundColor:bgColor,width}">
+		<up-form labelPosition="left" labelAlign="left" :labelWidth="70"  class="z-card-main">
 			<view class="head" v-if="$slots.title || $slots.tag">
 				<view class="title">
 					<slot name="title"></slot>
@@ -13,7 +13,6 @@
 			<view class="foot">
 				<slot name="foot"></slot>
 			</view>
-
 		</up-form>
 	</scroll-view>
 </template>

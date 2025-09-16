@@ -27,7 +27,7 @@ defineExpose({
 
 const props = defineProps({
 	name: {
-		type: String,//按钮文本
+		type: String,//按钮文本 说明: name字段 > 默认插槽
 		default: ''
 	},
 	width: {
@@ -39,7 +39,7 @@ const props = defineProps({
 		default: 'default'
 	},
 	bgColor: {
-		type: String,//自定义背景颜色
+		type: String,//自定义背景颜色  说明: bgColor字段 > type字段
 		default: ''
 	},
 	color: {

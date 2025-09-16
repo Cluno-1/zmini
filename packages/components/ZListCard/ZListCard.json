@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "up-form": "uview-plus/components/u-form/u-form.vue"
+  },
+  "generic:up-form": "uview-plus/components/u-form/u-form.vue"
+}

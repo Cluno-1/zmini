@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "up-form-item": "uview-plus/components/u-form-item/u-form-item"
+  },
+  "generic:up-form-item": "uview-plus/components/u-form-item/u-form-item"
+}

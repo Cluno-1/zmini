@@ -1,13 +1,3 @@
-<!--
- * @Author: 张连登 17875477802@163.com
- * @Date: 2025-04-28 11:54:43
- * @LastEditors: 张连登 17875477802@163.com
- * @LastEditTime: 2025-04-28 12:49:23
- * @FilePath: \xingye-wechat\components\x-tag\x-tag.vue
- * @Description: 
- * 
- * Copyright 2025 xingye/'zld', All Rights Reserved. 
--->
 <template>
 	<view class="switch">
 
