@@ -2,13 +2,20 @@
   "name": "zmini",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "/packages/components/index.ts",
+  "files": [
+    "packages",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json"
+  ],
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:play":"pnpm --filter @zmini/play dev"
+    "dev:play": "pnpm --filter @zmini/play dev",
+    "pub": "pnpm publish --no-git-checks"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +23,8 @@
   "packageManager": "pnpm@10.8.0",
   "peerDependencies": {
     "uview-plus": "^3.3.72",
-    "vue": "^3.5.18"
+    "vue": "^3.5.18",
+    "@dcloudio/uni-app": "^2.0.2"
   },
   "dependencies": {
     "lodash-es": "4.17.21",
@@ -33,6 +41,7 @@
     "@zmini/hooks": "workspace:*",
     "@zmini/theme": "workspace:*",
     "@zmini/utils": "workspace:*",
+    "@zmini/core": "workspace:*",
     "vite": "^7.1.2",
     "vue-tsc": "^3.0.5",
     "@vue/tsconfig": "^0.7.0"

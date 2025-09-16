@@ -6,7 +6,7 @@
 		</view>
 		<ZListCard>
 
-			<template #title>配置</template> 
+			<template #title>配置</template>
 
 			<ZInput v-model="_.name" label='name 文本:' bottomLine />
 			<ZInput v-model="_.type" label='type 预设颜色:' bottomLine />
