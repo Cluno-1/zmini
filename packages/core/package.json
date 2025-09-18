@@ -1,6 +1,6 @@
 {
   "name": "@zmini/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
   "license": "ISC",
   "packageManager": "pnpm@10.8.0",
   "dependencies": {
-    "@zmini/components":"workspace:*",
-    "@zmini/hooks": "workspace:*",
-    "@zmini/utils":"workspace:*"
+    "@zmini/components": "workspace:*",
+    "@zmini/hooks": "file:../hooks",
+    "@zmini/utils": "file:../utils"
   }
 }

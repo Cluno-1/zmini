@@ -45,14 +45,17 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      '@zmini/core':
+        specifier: file:./packages/core
+        version: file:packages/core
       '@zmini/hooks':
-        specifier: workspace:*
+        specifier: file:./packages/hooks
         version: link:packages/hooks
       '@zmini/theme':
-        specifier: workspace:*
+        specifier: file:./packages/theme
         version: link:packages/theme
       '@zmini/utils':
-        specifier: workspace:*
+        specifier: file:./packages/utils
         version: link:packages/utils
       vite:
         specifier: ^7.1.2
@@ -122,13 +125,13 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
       '@zmini/hooks':
-        specifier: workspace:*
+        specifier: file:../hooks
         version: link:../hooks
       '@zmini/theme':
-        specifier: workspace:*
+        specifier: file:../theme
         version: link:../theme
       '@zmini/utils':
-        specifier: workspace:*
+        specifier: file:../utils
         version: link:../utils
       dayjs-plugin-duration:
         specifier: 0.0.1-security
@@ -149,10 +152,10 @@ importers:
         specifier: workspace:*
         version: link:../components
       '@zmini/hooks':
-        specifier: workspace:*
+        specifier: file:../hooks
         version: link:../hooks
       '@zmini/utils':
-        specifier: workspace:*
+        specifier: file:../utils
         version: link:../utils
 
   packages/docs:
@@ -170,11 +173,8 @@ importers:
         specifier: ^1.5.7
         version: 1.5.10
       '@zmini/components':
-        specifier: workspace:*
-        version: link:../components
-      '@zmini/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: file:../components
+        version: file:packages/components(@dcloudio/uni-app@2.0.2-4070520250711001(@dcloudio/types@3.4.19)(@vue/composition-api@1.7.2(vue@3.5.18(typescript@5.9.2))))(@dcloudio/uni-ui@1.5.10)(uview-plus@3.4.99)(vue@3.5.18(typescript@5.9.2))(webpack@5.101.2)
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -1151,6 +1151,23 @@ packages:
 
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
+
+  '@zmini/components@file:packages/components':
+    resolution: {directory: packages/components, type: directory}
+    peerDependencies:
+      '@dcloudio/uni-app': ^2.0.2-4040520250103001
+      '@dcloudio/uni-ui': ^1.5.7
+      uview-plus: ^3.3.72
+      vue: ^3.5.18
+
+  '@zmini/core@file:packages/core':
+    resolution: {directory: packages/core, type: directory}
+
+  '@zmini/hooks@file:packages/hooks':
+    resolution: {directory: packages/hooks, type: directory}
+
+  '@zmini/utils@file:packages/utils':
+    resolution: {directory: packages/utils, type: directory}
 
   acorn-import-phases@1.0.4:
     resolution: {integrity: sha512-wKmbr/DDiIXzEOiWrTTUcDm24kQ2vGfZQvM2fwg2vXqR5uW6aapr7ObPtj1th32b9u90/Pf4AItvdTh42fBmVQ==}
@@ -2677,6 +2694,34 @@ snapshots:
   '@xtuc/ieee754@1.2.0': {}
 
   '@xtuc/long@4.2.2': {}
+
+  '@zmini/components@file:packages/components(@dcloudio/uni-app@2.0.2-4070520250711001(@dcloudio/types@3.4.19)(@vue/composition-api@1.7.2(vue@3.5.18(typescript@5.9.2))))(@dcloudio/uni-ui@1.5.10)(uview-plus@3.4.99)(vue@3.5.18(typescript@5.9.2))(webpack@5.101.2)':
+    dependencies:
+      '@dcloudio/uni-app': 2.0.2-4070520250711001(@dcloudio/types@3.4.19)(@vue/composition-api@1.7.2(vue@3.5.18(typescript@5.9.2)))
+      '@dcloudio/uni-ui': 1.5.10
+      dayjs: 1.11.13
+      lodash-es: 4.17.21
+      pinia: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      sass: 1.90.0
+      sass-loader: 10.4.1(sass@1.90.0)(webpack@5.101.2)
+      typescript: 5.9.2
+      uview-plus: 3.4.99
+      vue: 3.5.18(typescript@5.9.2)
+      vue-jsonp: 2.1.0
+    transitivePeerDependencies:
+      - fibers
+      - node-sass
+      - webpack
+
+  '@zmini/core@file:packages/core':
+    dependencies:
+      '@zmini/components': link:packages/components
+      '@zmini/hooks': file:packages/hooks
+      '@zmini/utils': file:packages/utils
+
+  '@zmini/hooks@file:packages/hooks': {}
+
+  '@zmini/utils@file:packages/utils': {}
 
   acorn-import-phases@1.0.4(acorn@8.15.0):
     dependencies:

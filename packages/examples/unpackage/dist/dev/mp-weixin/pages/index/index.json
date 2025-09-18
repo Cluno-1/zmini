@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "uni-app",
+  "navigationBarTitleText": "zmini演示",
   "usingComponents": {
     "u-collapse": "../../node-modules/uview-plus/components/u-collapse/u-collapse"
   }

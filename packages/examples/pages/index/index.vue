@@ -33,6 +33,11 @@ const data = [
 		title: '按钮',
 		name: 'ZButton',
 		router: '/pages/button/index'
+	},
+	{
+		title: '输入框',
+		name: 'ZInput',
+		router: '/pages/input/index'
 	}
 ];
 </script>

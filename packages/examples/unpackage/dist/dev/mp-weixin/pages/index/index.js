@@ -23,6 +23,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         title: "按钮",
         name: "ZButton",
         router: "/pages/button/index"
+      },
+      {
+        title: "输入框",
+        name: "ZInput",
+        router: "/pages/input/index"
       }
     ];
     return (_ctx, _cache) => {

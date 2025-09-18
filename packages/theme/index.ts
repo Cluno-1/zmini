@@ -10,6 +10,6 @@
  */
 export * from './button/button'
 export * from './button/button.d'
+export * from './input/input.d'
 export * from './color'
-import './global.scss'
 
