@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/button/index",
-    "pages/input/index"
+    "pages/input/index",
+    "pages/list-card/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -7,8 +7,8 @@
 			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
 			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
 			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
-			
 			"^Z([^-].*)": "@zmini/components/Z$1/Z$1.vue"
+			// "^Z([^-].*)": "zmini/packages/components/Z$1/Z$1.vue"
 		}
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
@@ -21,14 +21,21 @@
 		{
 			"path": "pages/button/index",
 			"style": {
-				"navigationBarTitleText": "button"
+				"navigationBarTitleText": "ZButton演示"
 			}
 		},
 		{
 			"path" : "pages/input/index",
 			"style" : 
 			{
-				"navigationBarTitleText" : "input"
+				"navigationBarTitleText" : "ZInput演示"
+			}
+		},
+		{
+			"path" : "pages/list-card/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "ZListCard演示"
 			}
 		}
 	],

@@ -26,7 +26,7 @@
 .nav.data-v-1cf27b2a {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-column-gap: 10rpx;
+  grid-column-gap: 50rpx;
   grid-row-gap: 20rpx;
 }
 .nav .item.data-v-1cf27b2a {

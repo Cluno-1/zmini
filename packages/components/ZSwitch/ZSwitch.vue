@@ -8,7 +8,7 @@
 				<text>{{ inactiveText }}</text>
 			</view>
 			<view class="item" v-show="value === '' || value === null">
-				<text>置空</text>
+				<text>{{ nullText }}</text>
 			</view>
 
 		</view>
@@ -63,6 +63,10 @@ export default defineComponent({
 		activeText: {
 			type: String,
 			default: '',
+		},
+		nullText: {
+			type: String,
+			default: '置空',
 		},
 		inactiveText: {
 			type: String,

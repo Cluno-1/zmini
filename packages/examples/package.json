@@ -16,7 +16,8 @@
 		"sass": "1.63.2",
 		"sass-loader": "10.4.1",
 		"uview-plus": "^3.3.72",
-		"vue-jsonp": "^2.1.0"
+		"vue-jsonp": "^2.1.0",
+		"zmini": "^1.0.1"
 	},
 	"devDependencies": {
 		"@dcloudio/types": "^3.4.15",

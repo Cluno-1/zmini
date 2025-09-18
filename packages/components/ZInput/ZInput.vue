@@ -1,6 +1,7 @@
 <template>
-	<up-form :rules="rules" labelPosition="left" labelAlign="left" :labelWidth="70">
-		<up-form-item prop="_" :label="(required?'*':'')+label" :labelWidth="labelWidth" :required='required' @click="emitClick($emit, $event)">
+	<up-form :rules="rules" labelPosition="left" labelAlign="left" :labelWidth="70" model="input">
+		<up-form-item prop="_" :label="(required ? '*' : '') + label" :labelWidth="labelWidth" :required='required'
+			@click="emitClick($emit, $event)">
 			<up-input :type="type" v-if="!disabled && !textarea" :model-value="modelValue"
 				@update:modelValue="emitVModel($emit, $event)" @change="emitChange($emit, $event)"
 				@blur="emitBlur($emit, $event)" border="none" :placeholder="placeholder" clearable
@@ -15,7 +16,7 @@
 		</up-form-item>
 
 		<!-- 展示校验信息· -->
-		<text class="error-message">{{ errorMessage }}</text> 
+		<text class="error-message">{{ errorMessage }}</text>
 		<view class="bottom-line" v-if="bottomLine"></view>
 	</up-form>
 
@@ -23,7 +24,7 @@
 
 <script lang="ts">
 import { baseEmits, emitBlur, emitChange, emitClick, emitVModel } from "@zmini/utils";
-import { computed, defineComponent, type PropType } from "vue";
+import { computed, defineComponent, ref, type PropType } from "vue";
 import { type InputType } from "@zmini/theme";
 /**
  * ZInput 输入框组件
@@ -43,7 +44,7 @@ import { type InputType } from "@zmini/theme";
  * @property {String}            rule                    对应 up-form 的 rules[prop] 中的字段名，用于统一校验
  * @property {String}            errorMessage            手动传入的底部错误提示（优先级高于 rule 校验结果）
  * @property {Boolean}           textarea                是否以多行文本域形式渲染
- * @property {Boolean}           required                是否显示左侧红色星号 *（同时自动生成对应校验规则）
+ * @property {Boolean}           required                是否显示左侧星号 *（同时自动生成对应校验规则）
  * @property {String}            placeholder             占位文字；留空时组件会自动生成“请输入 xxx / 无 xxx”
  * @property {String}            type                    输入类型，与官方 up-input 保持一致  >>  text   – 文本输入键盘 / number – 数字输入键盘（App-vue 允许浮点；App-nvue 及各家小程序仅允许整数）/  idcard – 身份证键盘（微信、支付宝、百度、QQ）/ digit  – 带小数点数字键盘（App-nvue、微信、支付宝、百度、头条、QQ）/ password – 等同于 password=true
  * @event {Function} click/onClick     点击整行时触发，回调参数为当前 props 对象
@@ -58,9 +59,9 @@ export default defineComponent({
 			type: String,
 			default: ''
 		},
-		labelWidth:{
-			type:String,
-			default:'100px'
+		labelWidth: {
+			type: String,
+			default: '100px'
 		},
 		modelValue: {
 			type: [String, Number],
@@ -100,7 +101,7 @@ export default defineComponent({
 		}
 
 	},
-	setup(props:any) {
+	setup(props: any) {
 		const rules = computed(() => {
 			return {
 				_: [
@@ -108,6 +109,7 @@ export default defineComponent({
 				]
 			}
 		})
+		const input = ref('')
 		return {
 			placeholder: computed(() => {
 				if (props.placeholder) {
@@ -118,6 +120,7 @@ export default defineComponent({
 				}
 				return '请输入' + props.label
 			}),
+			input,
 			rules,
 			emitBlur, emitChange, emitVModel, emitClick
 

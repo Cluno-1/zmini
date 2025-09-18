@@ -1,5 +1,5 @@
 <template>
-	<view class="layout">
+	<view class="layout" :style="{'paddingTop':'40px'}">
 		<u-collapse :accordion="false" :value="uColVal">
 			<drawer-item title="组件演示">
 				<view class="nav">
@@ -38,7 +38,12 @@ const data = [
 		title: '输入框',
 		name: 'ZInput',
 		router: '/pages/input/index'
-	}
+	},
+	{
+		title: '表单',
+		name: 'ZListCard',
+		router: '/pages/list-card/index'
+	},
 ];
 </script>
 
@@ -47,7 +52,7 @@ const data = [
 .nav {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	grid-column-gap: 10rpx;
+	grid-column-gap: 50rpx;
 	grid-row-gap: 20rpx;
 	.item {
 		display: flex;

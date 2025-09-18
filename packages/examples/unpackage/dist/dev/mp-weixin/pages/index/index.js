@@ -28,6 +28,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         title: "输入框",
         name: "ZInput",
         router: "/pages/input/index"
+      },
+      {
+        title: "表单",
+        name: "ZListCard",
+        router: "/pages/list-card/index"
       }
     ];
     return (_ctx, _cache) => {

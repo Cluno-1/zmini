@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "button",
+  "navigationBarTitleText": "ZButton演示",
   "usingComponents": {
     "z-button": "../../node-modules/@zmini/components/ZButton/ZButton",
     "z-input": "../../node-modules/@zmini/components/ZInput/ZInput",

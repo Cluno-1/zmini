@@ -3,7 +3,7 @@
     <!-- 实时预览区 -->
     <view class="flex-col" style="background-color: gray;width: 97vw;height: 30vh;">
       <ZListCard>
-        <template #title>ZInput 实时预览</template> 
+        <template #title>ZInput 实时预览</template>
         <ZInput
           v-model="_.modelValue"
           :label="_.label" 
