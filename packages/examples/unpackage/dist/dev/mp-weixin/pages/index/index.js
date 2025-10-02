@@ -25,14 +25,19 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         router: "/pages/button/index"
       },
       {
-        title: "输入框",
+        title: "z表单输入框",
         name: "ZInput",
         router: "/pages/input/index"
       },
       {
-        title: "表单",
+        title: "z表单",
         name: "ZListCard",
         router: "/pages/list-card/index"
+      },
+      {
+        title: "三元开关",
+        name: "ZSwitch",
+        router: "/pages/switch/index"
       }
     ];
     return (_ctx, _cache) => {

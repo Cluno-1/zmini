@@ -4,7 +4,7 @@
 			width,
 			background,
 			color: textColor,
-			borderRadius: round ? '30rpx' : '5rpx'
+			borderRadius: round ? borderRadious : '0px'
 		}">
 			<text style="margin-left: 20rpx;">
 				<slot v-if="$slots.default"></slot>
@@ -53,6 +53,10 @@ const props = defineProps({
 	round: {
 		type: Boolean,//是否圆角  默认是
 		default: true
+	},
+	borderRadious: {
+		type: String,//自定义圆角半径 默认15rpx
+		default: '15px'
 	},
 	loading: {
 		type: Boolean,//是否加载中  默认否

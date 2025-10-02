@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/button/index",
     "pages/input/index",
-    "pages/list-card/index"
+    "pages/list-card/index",
+    "pages/switch/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

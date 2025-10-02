@@ -32,22 +32,22 @@ const remove = (arr, el) => {
 };
 const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-const isArray$1 = Array.isArray;
+const isArray$2 = Array.isArray;
 const isMap = (val) => toTypeString(val) === "[object Map]";
 const isSet = (val) => toTypeString(val) === "[object Set]";
 const isFunction = (val) => typeof val === "function";
 const isString = (val) => typeof val === "string";
 const isSymbol = (val) => typeof val === "symbol";
-const isObject$1 = (val) => val !== null && typeof val === "object";
+const isObject$2 = (val) => val !== null && typeof val === "object";
 const isPromise = (val) => {
-  return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+  return (isObject$2(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
 };
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
 const toRawType = (value) => {
   return toTypeString(value).slice(8, -1);
 };
-const isPlainObject$1 = (val) => toTypeString(val) === "[object Object]";
+const isPlainObject$2 = (val) => toTypeString(val) === "[object Object]";
 const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
 const isReservedProp = /* @__PURE__ */ makeMap(
   // the leading comma is intentional so empty string "" is also included
@@ -95,8 +95,12 @@ const looseToNumber = (val) => {
   const n2 = parseFloat(val);
   return isNaN(n2) ? val : n2;
 };
+const toNumber = (val) => {
+  const n2 = isString(val) ? Number(val) : NaN;
+  return isNaN(n2) ? val : n2;
+};
 function normalizeStyle(value) {
-  if (isArray$1(value)) {
+  if (isArray$2(value)) {
     const res = {};
     for (let i = 0; i < value.length; i++) {
       const item = value[i];
@@ -108,7 +112,7 @@ function normalizeStyle(value) {
       }
     }
     return res;
-  } else if (isString(value) || isObject$1(value)) {
+  } else if (isString(value) || isObject$2(value)) {
     return value;
   }
 }
@@ -129,14 +133,14 @@ function normalizeClass(value) {
   let res = "";
   if (isString(value)) {
     res = value;
-  } else if (isArray$1(value)) {
+  } else if (isArray$2(value)) {
     for (let i = 0; i < value.length; i++) {
       const normalized = normalizeClass(value[i]);
       if (normalized) {
         res += normalized + " ";
       }
     }
-  } else if (isObject$1(value)) {
+  } else if (isObject$2(value)) {
     for (const name in value) {
       if (value[name]) {
         res += name + " ";
@@ -146,7 +150,7 @@ function normalizeClass(value) {
   return res.trim();
 }
 const toDisplayString = (val) => {
-  return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject$1(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString(val) ? val : val == null ? "" : isArray$2(val) || isObject$2(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 const replacer = (_key, val) => {
   if (val && val.__v_isRef) {
@@ -167,7 +171,7 @@ const replacer = (_key, val) => {
     };
   } else if (isSymbol(val)) {
     return stringifySymbol(val);
-  } else if (isObject$1(val) && !isArray$1(val) && !isPlainObject$1(val)) {
+  } else if (isObject$2(val) && !isArray$2(val) && !isPlainObject$2(val)) {
     return String(val);
   }
   return val;
@@ -249,7 +253,7 @@ function getValueByDataPath(obj, path) {
 }
 function sortObject(obj) {
   let sortObj = {};
-  if (isPlainObject$1(obj)) {
+  if (isPlainObject$2(obj)) {
     Object.keys(obj).sort().forEach((key) => {
       const _key = key;
       sortObj[_key] = obj[_key];
@@ -261,13 +265,13 @@ const customizeRE = /:/g;
 function customizeEvent(str) {
   return camelize(str.replace(customizeRE, "-"));
 }
-const encode$1 = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode$1) {
+const encode$2 = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode$2) {
   const res = obj ? Object.keys(obj).map((key) => {
     let val = obj[key];
     if (typeof val === void 0 || val === null) {
       val = "";
-    } else if (isPlainObject$1(val)) {
+    } else if (isPlainObject$2(val)) {
       val = JSON.stringify(val);
     }
     return encodeStr(key) + "=" + encodeStr(val);
@@ -484,7 +488,7 @@ function validateProtocols(name, args, protocol, onFail) {
   if (!protocol) {
     return;
   }
-  if (!isArray$1(protocol)) {
+  if (!isArray$2(protocol)) {
     return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
   }
   const len = protocol.length;
@@ -499,7 +503,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp$1(name, value, prop, isAbsent) {
-  if (!isPlainObject$1(prop)) {
+  if (!isPlainObject$2(prop)) {
     prop = { type: prop };
   }
   const { type: type2, required: required2, validator } = prop;
@@ -511,7 +515,7 @@ function validateProp$1(name, value, prop, isAbsent) {
   }
   if (type2 != null) {
     let isValid = false;
-    const types2 = isArray$1(type2) ? type2 : [type2];
+    const types2 = isArray$2(type2) ? type2 : [type2];
     const expectedTypes = [];
     for (let i = 0; i < types2.length && !isValid; i++) {
       const { valid, expectedType } = assertType$1(value, types2[i]);
@@ -537,9 +541,9 @@ function assertType$1(value, type2) {
       valid = value instanceof type2;
     }
   } else if (expectedType === "Object") {
-    valid = isObject$1(value);
+    valid = isObject$2(value);
   } else if (expectedType === "Array") {
-    valid = isArray$1(value);
+    valid = isArray$2(value);
   } else {
     {
       valid = value instanceof type2;
@@ -637,7 +641,7 @@ function normalizeErrMsg(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject$1(args)) {
+  if (!isPlainObject$2(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -701,7 +705,7 @@ function queue$1(hooks, data, params2) {
 function wrapperOptions(interceptors2, options = {}) {
   [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
     const hooks = interceptors2[name];
-    if (!isArray$1(hooks)) {
+    if (!isArray$2(hooks)) {
       return;
     }
     const oldCallback = options[name];
@@ -715,11 +719,11 @@ function wrapperOptions(interceptors2, options = {}) {
 }
 function wrapperReturnValue(method3, returnValue) {
   const returnValueHooks = [];
-  if (isArray$1(globalInterceptors.returnValue)) {
+  if (isArray$2(globalInterceptors.returnValue)) {
     returnValueHooks.push(...globalInterceptors.returnValue);
   }
   const interceptor = scopedInterceptors[method3];
-  if (interceptor && isArray$1(interceptor.returnValue)) {
+  if (interceptor && isArray$2(interceptor.returnValue)) {
     returnValueHooks.push(...interceptor.returnValue);
   }
   returnValueHooks.forEach((hook) => {
@@ -747,7 +751,7 @@ function getApiInterceptorHooks(method3) {
 function invokeApi(method3, api, options, params2) {
   const interceptor = getApiInterceptorHooks(method3);
   if (interceptor && Object.keys(interceptor).length) {
-    if (isArray$1(interceptor.invoke)) {
+    if (isArray$2(interceptor.invoke)) {
       const res = queue$1(interceptor.invoke, options);
       return res.then((options2) => {
         return api(wrapperOptions(getApiInterceptorHooks(method3), options2), ...params2);
@@ -759,7 +763,7 @@ function invokeApi(method3, api, options, params2) {
   return api(options, ...params2);
 }
 function hasCallback(args) {
-  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject$2(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
     return true;
   }
   return false;
@@ -884,16 +888,16 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio;
   isIOS = platform2 === "ios";
 }
-const upx2px = defineSyncApi(API_UPX2PX, (number3, newDeviceWidth) => {
+const upx2px = defineSyncApi(API_UPX2PX, (number4, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
-  number3 = Number(number3);
-  if (number3 === 0) {
+  number4 = Number(number4);
+  if (number4 === 0) {
     return 0;
   }
   let width = newDeviceWidth || deviceWidth;
-  let result = number3 / BASE_DEVICE_WIDTH * width;
+  let result = number4 / BASE_DEVICE_WIDTH * width;
   if (result < 0) {
     result = -result;
   }
@@ -905,7 +909,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number3, newDeviceWidth) => {
       result = 0.5;
     }
   }
-  return number3 < 0 ? -result : result;
+  return number4 < 0 ? -result : result;
 }, Upx2pxProtocol);
 function __f__(type2, filename, ...args) {
   if (filename) {
@@ -937,13 +941,13 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     const hooks = interceptors2[name];
     const hook = interceptor[name];
-    if (isArray$1(hooks) && isFunction(hook)) {
+    if (isArray$2(hooks) && isFunction(hook)) {
       remove(hooks, hook);
     }
   });
 }
 function mergeHook(parentVal, childVal) {
-  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray$1(childVal) ? childVal : [childVal] : parentVal;
+  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray$2(childVal) ? childVal : [childVal] : parentVal;
   return res ? dedupeHooks(res) : res;
 }
 function dedupeHooks(hooks) {
@@ -956,20 +960,20 @@ function dedupeHooks(hooks) {
   return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method3, interceptor) => {
-  if (isString(method3) && isPlainObject$1(interceptor)) {
+  if (isString(method3) && isPlainObject$2(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method3] || (scopedInterceptors[method3] = {}), interceptor);
-  } else if (isPlainObject$1(method3)) {
+  } else if (isPlainObject$2(method3)) {
     mergeInterceptorHook(globalInterceptors, method3);
   }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method3, interceptor) => {
   if (isString(method3)) {
-    if (isPlainObject$1(interceptor)) {
+    if (isPlainObject$2(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method3], interceptor);
     } else {
       delete scopedInterceptors[method3];
     }
-  } else if (isPlainObject$1(method3)) {
+  } else if (isPlainObject$2(method3)) {
     removeInterceptorHook(globalInterceptors, method3);
   }
 }, RemoveInterceptorProtocol);
@@ -1039,7 +1043,7 @@ const $once = defineSyncApi(API_ONCE, (name, callback) => {
   return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-  if (!isArray$1(name))
+  if (!isArray$2(name))
     name = name ? [name] : [];
   name.forEach((n2) => {
     eventBus.off(n2, callback);
@@ -1188,7 +1192,7 @@ function initWrapper(protocols2) {
     };
   }
   function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
-    if (isPlainObject$1(fromArgs)) {
+    if (isPlainObject$2(fromArgs)) {
       const toArgs = keepFromArgs === true ? fromArgs : {};
       if (isFunction(argsOption)) {
         argsOption = argsOption(fromArgs, toArgs) || {};
@@ -1203,7 +1207,7 @@ function initWrapper(protocols2) {
             console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
           } else if (isString(keyOption)) {
             toArgs[keyOption] = fromArgs[key];
-          } else if (isPlainObject$1(keyOption)) {
+          } else if (isPlainObject$2(keyOption)) {
             toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
           }
         } else if (CALLBACKS.indexOf(key) !== -1) {
@@ -1465,7 +1469,7 @@ const previewImage = {
       return;
     }
     const urls = fromArgs.urls;
-    if (!isArray$1(urls)) {
+    if (!isArray$2(urls)) {
       return;
     }
     const len = urls.length;
@@ -2050,7 +2054,7 @@ function trigger(target, type2, key, newValue, oldValue, oldTarget) {
   let deps = [];
   if (type2 === "clear") {
     deps = [...depsMap.values()];
-  } else if (key === "length" && isArray$1(target)) {
+  } else if (key === "length" && isArray$2(target)) {
     const newLength = Number(newValue);
     depsMap.forEach((dep, key2) => {
       if (key2 === "length" || !isSymbol(key2) && key2 >= newLength) {
@@ -2063,7 +2067,7 @@ function trigger(target, type2, key, newValue, oldValue, oldTarget) {
     }
     switch (type2) {
       case "add":
-        if (!isArray$1(target)) {
+        if (!isArray$2(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -2073,7 +2077,7 @@ function trigger(target, type2, key, newValue, oldValue, oldTarget) {
         }
         break;
       case "delete":
-        if (!isArray$1(target)) {
+        if (!isArray$2(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -2165,7 +2169,7 @@ class BaseReactiveHandler {
       }
       return;
     }
-    const targetIsArray = isArray$1(target);
+    const targetIsArray = isArray$2(target);
     if (!isReadonly2) {
       if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
         return Reflect.get(arrayInstrumentations, key, receiver);
@@ -2187,7 +2191,7 @@ class BaseReactiveHandler {
     if (isRef(res)) {
       return targetIsArray && isIntegerKey(key) ? res : res.value;
     }
-    if (isObject$1(res)) {
+    if (isObject$2(res)) {
       return isReadonly2 ? readonly(res) : reactive(res);
     }
     return res;
@@ -2205,7 +2209,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         oldValue = toRaw(oldValue);
         value = toRaw(value);
       }
-      if (!isArray$1(target) && isRef(oldValue) && !isRef(value)) {
+      if (!isArray$2(target) && isRef(oldValue) && !isRef(value)) {
         if (isOldValueReadonly) {
           return false;
         } else {
@@ -2214,7 +2218,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
       }
     }
-    const hadKey = isArray$1(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
+    const hadKey = isArray$2(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
     const result = Reflect.set(target, key, value, receiver);
     if (target === toRaw(receiver)) {
       if (!hadKey) {
@@ -2245,7 +2249,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
     track(
       target,
       "iterate",
-      isArray$1(target) ? "length" : ITERATE_KEY
+      isArray$2(target) ? "length" : ITERATE_KEY
     );
     return Reflect.ownKeys(target);
   }
@@ -2377,7 +2381,7 @@ function clear() {
   return result;
 }
 function createForEach(isReadonly2, isShallow2) {
-  return function forEach3(callback, thisArg) {
+  return function forEach4(callback, thisArg) {
     const observed = this;
     const target = observed["__v_raw"];
     const rawTarget = toRaw(target);
@@ -2619,7 +2623,7 @@ function shallowReadonly(target) {
   );
 }
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
-  if (!isObject$1(target)) {
+  if (!isObject$2(target)) {
     {
       warn$2(`value cannot be made reactive: ${String(target)}`);
     }
@@ -2668,8 +2672,8 @@ function markRaw(value) {
   }
   return value;
 }
-const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
+const toReactive = (value) => isObject$2(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject$2(value) ? readonly(value) : value;
 const COMPUTED_SIDE_EFFECT_WARN = `Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free`;
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly2, isSSR) {
@@ -3089,7 +3093,7 @@ function invalidateJob(job) {
   }
 }
 function queuePostFlushCb(cb) {
-  if (!isArray$1(cb)) {
+  if (!isArray$2(cb)) {
     if (!activePostFlushCbs || !activePostFlushCbs.includes(
       cb,
       cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex
@@ -3244,7 +3248,7 @@ function setDevtoolsHook(hook, target) {
 function devtoolsInitApp(app, version2) {
   emit$1("app:init", app, version2, {
     Fragment,
-    Text: Text$1,
+    Text: Text$2,
     Comment,
     Static
   });
@@ -3338,11 +3342,11 @@ function emit(instance, event, ...rawArgs) {
   const modelArg = isModelListener2 && event.slice(7);
   if (modelArg && modelArg in props2) {
     const modifiersKey = `${modelArg === "modelValue" ? "model" : modelArg}Modifiers`;
-    const { number: number3, trim: trim2 } = props2[modifiersKey] || EMPTY_OBJ;
+    const { number: number4, trim: trim2 } = props2[modifiersKey] || EMPTY_OBJ;
     if (trim2) {
       args = rawArgs.map((a) => isString(a) ? a.trim() : a);
     }
-    if (number3) {
+    if (number4) {
       args = rawArgs.map(looseToNumber);
     }
   }
@@ -3420,17 +3424,17 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     }
   }
   if (!raw && !hasExtends) {
-    if (isObject$1(comp)) {
+    if (isObject$2(comp)) {
       cache.set(comp, null);
     }
     return null;
   }
-  if (isArray$1(raw)) {
+  if (isArray$2(raw)) {
     raw.forEach((key) => normalized[key] = null);
   } else {
     extend(normalized, raw);
   }
-  if (isObject$1(comp)) {
+  if (isObject$2(comp)) {
     cache.set(comp, normalized);
   }
   return normalized;
@@ -3557,7 +3561,7 @@ function doWatch(source, cb, {
   } else if (isReactive(source)) {
     getter = () => reactiveGetter(source);
     forceTrigger = true;
-  } else if (isArray$1(source)) {
+  } else if (isArray$2(source)) {
     isMultiSource = true;
     forceTrigger = source.some((s2) => isReactive(s2) || isShallow(s2));
     getter = () => source.map((s2) => {
@@ -3691,7 +3695,7 @@ function createPathGetter(ctx, path) {
   };
 }
 function traverse(value, depth, currentDepth = 0, seen) {
-  if (!isObject$1(value) || value["__v_skip"]) {
+  if (!isObject$2(value) || value["__v_skip"]) {
     return value;
   }
   if (depth && depth > 0) {
@@ -3707,7 +3711,7 @@ function traverse(value, depth, currentDepth = 0, seen) {
   seen.add(value);
   if (isRef(value)) {
     traverse(value.value, depth, currentDepth, seen);
-  } else if (isArray$1(value)) {
+  } else if (isArray$2(value)) {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], depth, currentDepth, seen);
     }
@@ -3715,7 +3719,7 @@ function traverse(value, depth, currentDepth = 0, seen) {
     value.forEach((v) => {
       traverse(v, depth, currentDepth, seen);
     });
-  } else if (isPlainObject$1(value)) {
+  } else if (isPlainObject$2(value)) {
     for (const key in value) {
       traverse(value[key], depth, currentDepth, seen);
     }
@@ -3754,7 +3758,7 @@ function createAppAPI(render, hydrate) {
     if (!isFunction(rootComponent)) {
       rootComponent = extend({}, rootComponent);
     }
-    if (rootProps != null && !isObject$1(rootProps)) {
+    if (rootProps != null && !isObject$2(rootProps)) {
       warn$1(`root props passed to app.mount() must be an object.`);
       rootProps = null;
     }
@@ -3767,7 +3771,7 @@ function createAppAPI(render, hydrate) {
       _container: null,
       _context: context,
       _instance: null,
-      version: version$1,
+      version: version$2,
       get config() {
         return context.config;
       },
@@ -4226,7 +4230,7 @@ function exposeSetupStateOnRenderContext(instance) {
   });
 }
 function normalizePropsOrEmits(props2) {
-  return isArray$1(props2) ? props2.reduce(
+  return isArray$2(props2) ? props2.reduce(
     (normalized, p2) => (normalized[p2] = null, normalized),
     {}
   ) : props2;
@@ -4334,7 +4338,7 @@ function applyOptions$1(instance) {
         `data() returned a Promise - note data() cannot be async; If you intend to perform data fetching before component renders, use async setup() + <Suspense>.`
       );
     }
-    if (!isObject$1(data)) {
+    if (!isObject$2(data)) {
       warn$1(`data() should return an object.`);
     } else {
       instance.data = reactive(data);
@@ -4402,11 +4406,11 @@ function applyOptions$1(instance) {
       callHook$1(created, instance, "c");
     }
   }
-  function registerLifecycleHook(register2, hook) {
-    if (isArray$1(hook)) {
-      hook.forEach((_hook) => register2(_hook.bind(publicThis)));
+  function registerLifecycleHook(register3, hook) {
+    if (isArray$2(hook)) {
+      hook.forEach((_hook) => register3(_hook.bind(publicThis)));
     } else if (hook) {
-      register2(hook.bind(publicThis));
+      register3(hook.bind(publicThis));
     }
   }
   registerLifecycleHook(onBeforeMount, beforeMount);
@@ -4421,7 +4425,7 @@ function applyOptions$1(instance) {
   registerLifecycleHook(onBeforeUnmount, beforeUnmount);
   registerLifecycleHook(onUnmounted, unmounted);
   registerLifecycleHook(onServerPrefetch, serverPrefetch);
-  if (isArray$1(expose)) {
+  if (isArray$2(expose)) {
     if (expose.length) {
       const exposed = instance.exposed || (instance.exposed = {});
       expose.forEach((key) => {
@@ -4449,13 +4453,13 @@ function applyOptions$1(instance) {
   }
 }
 function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) {
-  if (isArray$1(injectOptions)) {
+  if (isArray$2(injectOptions)) {
     injectOptions = normalizeInject(injectOptions);
   }
   for (const key in injectOptions) {
     const opt = injectOptions[key];
     let injected;
-    if (isObject$1(opt)) {
+    if (isObject$2(opt)) {
       if ("default" in opt) {
         injected = inject(
           opt.from || key,
@@ -4485,7 +4489,7 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) 
 }
 function callHook$1(hook, instance, type2) {
   callWithAsyncErrorHandling(
-    isArray$1(hook) ? hook.map((h2) => h2.bind(instance.proxy)) : hook.bind(instance.proxy),
+    isArray$2(hook) ? hook.map((h2) => h2.bind(instance.proxy)) : hook.bind(instance.proxy),
     instance,
     type2
   );
@@ -4501,8 +4505,8 @@ function createWatcher(raw, ctx, publicThis, key) {
     }
   } else if (isFunction(raw)) {
     watch(getter, raw.bind(publicThis));
-  } else if (isObject$1(raw)) {
-    if (isArray$1(raw)) {
+  } else if (isObject$2(raw)) {
+    if (isArray$2(raw)) {
       raw.forEach((r2) => createWatcher(r2, ctx, publicThis, key));
     } else {
       const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
@@ -4541,7 +4545,7 @@ function resolveMergedOptions(instance) {
     }
     mergeOptions(resolved, base, optionMergeStrategies);
   }
-  if (isObject$1(base)) {
+  if (isObject$2(base)) {
     cache.set(base, resolved);
   }
   return resolved;
@@ -4617,7 +4621,7 @@ function mergeInject(to, from) {
   return mergeObjectOptions(normalizeInject(to), normalizeInject(from));
 }
 function normalizeInject(raw) {
-  if (isArray$1(raw)) {
+  if (isArray$2(raw)) {
     const res = {};
     for (let i = 0; i < raw.length; i++) {
       res[raw[i]] = raw[i];
@@ -4634,7 +4638,7 @@ function mergeObjectOptions(to, from) {
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
-    if (isArray$1(to) && isArray$1(from)) {
+    if (isArray$2(to) && isArray$2(from)) {
       return [.../* @__PURE__ */ new Set([...to, ...from])];
     }
     return extend(
@@ -4884,12 +4888,12 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     }
   }
   if (!raw && !hasExtends) {
-    if (isObject$1(comp)) {
+    if (isObject$2(comp)) {
       cache.set(comp, EMPTY_ARR);
     }
     return EMPTY_ARR;
   }
-  if (isArray$1(raw)) {
+  if (isArray$2(raw)) {
     for (let i = 0; i < raw.length; i++) {
       if (!isString(raw[i])) {
         warn$1(`props must be strings when using array syntax.`, raw[i]);
@@ -4900,14 +4904,14 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       }
     }
   } else if (raw) {
-    if (!isObject$1(raw)) {
+    if (!isObject$2(raw)) {
       warn$1(`invalid props options`, raw);
     }
     for (const key in raw) {
       const normalizedKey = camelize(key);
       if (validatePropName(normalizedKey)) {
         const opt = raw[key];
-        const prop = normalized[normalizedKey] = isArray$1(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
+        const prop = normalized[normalizedKey] = isArray$2(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type);
           const stringIndex = getTypeIndex(String, prop.type);
@@ -4927,7 +4931,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     }
   }
   const res = [normalized, needCastKeys];
-  if (isObject$1(comp)) {
+  if (isObject$2(comp)) {
     cache.set(comp, res);
   }
   return res;
@@ -4956,7 +4960,7 @@ function isSameType(a, b) {
   return getType(a) === getType(b);
 }
 function getTypeIndex(type2, expectedTypes) {
-  if (isArray$1(expectedTypes)) {
+  if (isArray$2(expectedTypes)) {
     return expectedTypes.findIndex((t2) => isSameType(t2, type2));
   } else if (isFunction(expectedTypes)) {
     return isSameType(expectedTypes, type2) ? 0 : -1;
@@ -4990,7 +4994,7 @@ function validateProp(name, value, prop, props2, isAbsent) {
   }
   if (type2 != null && type2 !== true && !skipCheck) {
     let isValid = false;
-    const types2 = isArray$1(type2) ? type2 : [type2];
+    const types2 = isArray$2(type2) ? type2 : [type2];
     const expectedTypes = [];
     for (let i = 0; i < types2.length && !isValid; i++) {
       const { valid, expectedType } = assertType(value, types2[i]);
@@ -5019,9 +5023,9 @@ function assertType(value, type2) {
       valid = value instanceof type2;
     }
   } else if (expectedType === "Object") {
-    valid = isObject$1(value);
+    valid = isObject$2(value);
   } else if (expectedType === "Array") {
-    valid = isArray$1(value);
+    valid = isArray$2(value);
   } else if (expectedType === "null") {
     valid = value === null;
   } else {
@@ -5107,7 +5111,7 @@ function isSupported() {
 }
 const queuePostRenderEffect$1 = queuePostFlushCb;
 const Fragment = Symbol.for("v-fgt");
-const Text$1 = Symbol.for("v-txt");
+const Text$2 = Symbol.for("v-txt");
 const Comment = Symbol.for("v-cmt");
 const Static = Symbol.for("v-stc");
 function isVNode(value) {
@@ -5329,7 +5333,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
     {
       instance.render = setupResult;
     }
-  } else if (isObject$1(setupResult)) {
+  } else if (isObject$2(setupResult)) {
     if (isVNode(setupResult)) {
       warn$1(
         `setup() should not return VNodes directly - return a render function instead.`
@@ -5412,7 +5416,7 @@ function createSetupContext(instance) {
       if (exposed != null) {
         let exposedType = typeof exposed;
         if (exposedType === "object") {
-          if (isArray$1(exposed)) {
+          if (isArray$2(exposed)) {
             exposedType = "array";
           } else if (isRef(exposed)) {
             exposedType = "ref";
@@ -5494,7 +5498,7 @@ const computed = (getterOrOptions, debugOptions) => {
   }
   return c2;
 };
-const version$1 = "3.4.21";
+const version$2 = "3.4.21";
 const warn = warn$1;
 function unwrapper(target) {
   return unref(target);
@@ -5655,7 +5659,7 @@ function nextTick(instance, fn) {
     _resolve = resolve2;
   });
 }
-function clone$1(src, seen) {
+function clone$2(src, seen) {
   src = unwrapper(src);
   const type2 = typeof src;
   if (type2 === "object" && src !== null) {
@@ -5663,19 +5667,19 @@ function clone$1(src, seen) {
     if (typeof copy !== "undefined") {
       return copy;
     }
-    if (isArray$1(src)) {
+    if (isArray$2(src)) {
       const len = src.length;
       copy = new Array(len);
       seen.set(src, copy);
       for (let i = 0; i < len; i++) {
-        copy[i] = clone$1(src[i], seen);
+        copy[i] = clone$2(src[i], seen);
       }
     } else {
       copy = {};
       seen.set(src, copy);
       for (const name in src) {
         if (hasOwn(src, name)) {
-          copy[name] = clone$1(src[name], seen);
+          copy[name] = clone$2(src[name], seen);
         }
       }
     }
@@ -5686,7 +5690,7 @@ function clone$1(src, seen) {
   }
 }
 function deepCopy(src) {
-  return clone$1(src, typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : /* @__PURE__ */ new Map());
+  return clone$2(src, typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : /* @__PURE__ */ new Map());
 }
 function getMPInstanceData(instance, keys) {
   const data = instance.data;
@@ -5802,7 +5806,7 @@ function setRef$1(instance, isUnmount = false) {
   if ($templateUniElementRefs && $templateUniElementRefs.length) {
     nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
-        if (isArray$1(templateRef.v)) {
+        if (isArray$2(templateRef.v)) {
           templateRef.v.forEach((v) => {
             setTemplateRef(templateRef, v, setupState);
           });
@@ -5819,7 +5823,7 @@ function setRef$1(instance, isUnmount = false) {
   }
 }
 function toSkip(value) {
-  if (isObject$1(value)) {
+  if (isObject$2(value)) {
     markRaw(value);
   }
   return value;
@@ -5848,7 +5852,7 @@ function setTemplateRef({ r: r2, f: f2 }, refValue, setupState) {
         if (!_isRef) {
           return;
         }
-        if (!isArray$1(r2.value)) {
+        if (!isArray$2(r2.value)) {
           r2.value = [];
         }
         const existing = r2.value;
@@ -6200,7 +6204,7 @@ function createVueApp(rootComponent, rootProps = null) {
     );
     app._instance = instance.$;
     {
-      devtoolsInitApp(app, version$1);
+      devtoolsInitApp(app, version$2);
     }
     instance.$app = app;
     instance.$createComponent = createComponent2;
@@ -6227,7 +6231,7 @@ function initHooks$1(options, instance, publicThis) {
   Object.keys(options).forEach((name) => {
     if (isUniLifecycleHook(name, options[name], false)) {
       const hooks = options[name];
-      if (isArray$1(hooks)) {
+      if (isArray$2(hooks)) {
         hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
       } else {
         injectLifecycleHook(name, hooks, publicThis, instance);
@@ -6458,7 +6462,7 @@ function createInvoker(initialValue, instance) {
       setTimeout(invoke);
     } else {
       const res = invoke();
-      if (e2.type === "input" && (isArray$1(res) || isPromise(res))) {
+      if (e2.type === "input" && (isArray$2(res) || isPromise(res))) {
         return;
       }
       return res;
@@ -6494,16 +6498,16 @@ function patchMPEvent(event, instance) {
       event.detail = typeof event.detail === "object" ? event.detail : {};
       event.detail.markerId = event.markerId;
     }
-    if (isPlainObject$1(event.detail) && hasOwn(event.detail, "checked") && !hasOwn(event.detail, "value")) {
+    if (isPlainObject$2(event.detail) && hasOwn(event.detail, "checked") && !hasOwn(event.detail, "value")) {
       event.detail.value = event.detail.checked;
     }
-    if (isPlainObject$1(event.detail)) {
+    if (isPlainObject$2(event.detail)) {
       event.target = extend({}, event.target, event.detail);
     }
   }
 }
 function patchStopImmediatePropagation(e2, value) {
-  if (isArray$1(value)) {
+  if (isArray$2(value)) {
     const originalStop = e2.stopImmediatePropagation;
     e2.stopImmediatePropagation = () => {
       originalStop && originalStop.call(e2);
@@ -6516,7 +6520,7 @@ function patchStopImmediatePropagation(e2, value) {
 }
 function vFor(source, renderItem) {
   let ret;
-  if (isArray$1(source) || isString(source)) {
+  if (isArray$2(source) || isString(source)) {
     ret = new Array(source.length);
     for (let i = 0, l = source.length; i < l; i++) {
       ret[i] = renderItem(source[i], i, i);
@@ -6530,7 +6534,7 @@ function vFor(source, renderItem) {
     for (let i = 0; i < source; i++) {
       ret[i] = renderItem(i + 1, i, i);
     }
-  } else if (isObject$1(source)) {
+  } else if (isObject$2(source)) {
     if (source[Symbol.iterator]) {
       ret = Array.from(source, (item, i) => renderItem(item, i, i));
     } else {
@@ -6546,6 +6550,27 @@ function vFor(source, renderItem) {
   }
   return ret;
 }
+function withModelModifiers(fn, { number: number4, trim: trim2 }, isComponent = false) {
+  if (isComponent) {
+    return (...args) => {
+      if (trim2) {
+        args = args.map((a) => a.trim());
+      } else if (number4) {
+        args = args.map(toNumber);
+      }
+      return fn(...args);
+    };
+  }
+  return (event) => {
+    const value = event.detail.value;
+    if (trim2) {
+      event.detail.value = value.trim();
+    } else if (number4) {
+      event.detail.value = toNumber(value);
+    }
+    return fn(event);
+  };
+}
 const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
 const s = (value) => stringifyStyle(value);
@@ -6553,6 +6578,7 @@ const e = (target, ...sources) => extend(target, ...sources);
 const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
 const p = (props2) => renderProps(props2);
+const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
 function createApp$1(rootComponent, rootProps = null) {
   rootComponent && (rootComponent.mpType = "app");
   return createVueApp(rootComponent, rootProps).use(plugin);
@@ -6593,7 +6619,7 @@ function initWorkletMethods(mpMethods, vueMethods) {
   }
 }
 function initWxsCallMethods(methods, wxsCallMethods) {
-  if (!isArray$1(wxsCallMethods)) {
+  if (!isArray$2(wxsCallMethods)) {
     return;
   }
   wxsCallMethods.forEach((callMethod) => {
@@ -6695,7 +6721,7 @@ function initBaseInstance(instance, options) {
     ctx._self = {};
   }
   instance.slots = {};
-  if (isArray$1(options.slots) && options.slots.length) {
+  if (isArray$2(options.slots) && options.slots.length) {
     options.slots.forEach((name) => {
       instance.slots[name] = true;
     });
@@ -6812,7 +6838,7 @@ const findMixinRuntimeHooks = /* @__PURE__ */ once(() => {
   const app = isFunction(getApp) && getApp({ allowDefault: true });
   if (app && app.$vm && app.$vm.$) {
     const mixins = app.$vm.$.appContext.mixins;
-    if (isArray$1(mixins)) {
+    if (isArray$2(mixins)) {
       const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
       mixins.forEach((mixin2) => {
         hooks.forEach((hook) => {
@@ -7024,7 +7050,7 @@ function initProps(mpComponentOptions) {
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type2, defaultValue) {
-  if (isArray$1(type2) && type2.length === 1) {
+  if (isArray$2(type2) && type2.length === 1) {
     return type2[0];
   }
   return type2;
@@ -7034,17 +7060,17 @@ function normalizePropType(type2, defaultValue) {
   return PROP_TYPES.indexOf(res) !== -1 ? res : null;
 }
 function initPageProps({ properties }, rawProps) {
-  if (isArray$1(rawProps)) {
+  if (isArray$2(rawProps)) {
     rawProps.forEach((key) => {
       properties[key] = {
         type: String,
         value: ""
       };
     });
-  } else if (isPlainObject$1(rawProps)) {
+  } else if (isPlainObject$2(rawProps)) {
     Object.keys(rawProps).forEach((key) => {
       const opts = rawProps[key];
-      if (isPlainObject$1(opts)) {
+      if (isPlainObject$2(opts)) {
         let value = opts.default;
         if (isFunction(value)) {
           value = value();
@@ -7068,7 +7094,7 @@ function findPropsData(properties, isPage2) {
 }
 function findPagePropsData(properties) {
   const propsData = {};
-  if (isPlainObject$1(properties)) {
+  if (isPlainObject$2(properties)) {
     Object.keys(properties).forEach((name) => {
       if (builtInProps.indexOf(name) === -1) {
         propsData[name] = resolvePropValue(properties[name]);
@@ -7079,7 +7105,7 @@ function findPagePropsData(properties) {
 }
 function initFormField(vm) {
   const vueOptions = vm.$options;
-  if (isArray$1(vueOptions.behaviors) && vueOptions.behaviors.includes("uni://form-field")) {
+  if (isArray$2(vueOptions.behaviors) && vueOptions.behaviors.includes("uni://form-field")) {
     vm.$watch("modelValue", () => {
       vm.$scope && vm.$scope.setData({
         name: vm.name,
@@ -7155,11 +7181,11 @@ function initBehaviors(vueOptions) {
     vueOptions.props = vueProps = [];
   }
   const behaviors = [];
-  if (isArray$1(vueBehaviors)) {
+  if (isArray$2(vueBehaviors)) {
     vueBehaviors.forEach((behavior) => {
       behaviors.push(behavior.replace("uni://", "wx://"));
       if (behavior === "uni://form-field") {
-        if (isArray$1(vueProps)) {
+        if (isArray$2(vueProps)) {
           vueProps.push("name");
           vueProps.push("modelValue");
         } else {
@@ -7189,9 +7215,9 @@ function parseComponent(vueOptions, { parse, mocks: mocks2, isPage: isPage2, isP
     addGlobalClass: true,
     pureDataPattern: /^uP$/
   };
-  if (isArray$1(vueOptions.mixins)) {
+  if (isArray$2(vueOptions.mixins)) {
     vueOptions.mixins.forEach((item) => {
-      if (isObject$1(item.options)) {
+      if (isObject$2(item.options)) {
         extend(options, item.options);
       }
     });
@@ -7518,19 +7544,19 @@ function createPinia() {
   }
   return pinia;
 }
-const defineMixin = (options) => {
+const defineMixin$1 = (options) => {
   return options;
 };
-function email(value) {
+function email$1(value) {
   return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
 }
-function mobile(value) {
+function mobile$1(value) {
   return /^1[23456789]\d{9}$/.test(value);
 }
-function url(value) {
+function url$1(value) {
   return /^((https|http|ftp|rtsp|mms):\/\/)(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z].[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+\/?)$/.test(value);
 }
-function date(value) {
+function date$1(value) {
   if (!value)
     return false;
   if (typeof value === "number") {
@@ -7558,24 +7584,24 @@ function date(value) {
   }
   return false;
 }
-function dateISO(value) {
+function dateISO$1(value) {
   return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
 }
-function number(value) {
+function number$1(value) {
   return /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/.test(value);
 }
-function string$1(value) {
+function string$3(value) {
   return typeof value === "string";
 }
-function digits(value) {
+function digits$1(value) {
   return /^\d+$/.test(value);
 }
-function idCard(value) {
+function idCard$1(value) {
   return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
     value
   );
 }
-function carNo(value) {
+function carNo$1(value) {
   const xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
   const creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
   if (value.length === 7) {
@@ -7586,34 +7612,34 @@ function carNo(value) {
   }
   return false;
 }
-function amount(value) {
+function amount$1(value) {
   return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
 }
-function chinese(value) {
+function chinese$1(value) {
   const reg = /^[\u4e00-\u9fa5]+$/gi;
   return reg.test(value);
 }
-function letter(value) {
+function letter$1(value) {
   return /^[a-zA-Z]*$/.test(value);
 }
-function enOrNum(value) {
+function enOrNum$1(value) {
   const reg = /^[0-9a-zA-Z]*$/g;
   return reg.test(value);
 }
-function contains(value, param) {
+function contains$1(value, param) {
   return value.indexOf(param) >= 0;
 }
-function range$2(value, param) {
+function range$4(value, param) {
   return value >= param[0] && value <= param[1];
 }
-function rangeLength(value, param) {
+function rangeLength$1(value, param) {
   return value.length >= param[0] && value.length <= param[1];
 }
-function landline(value) {
+function landline$1(value) {
   const reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
   return reg.test(value);
 }
-function empty(value) {
+function empty$1(value) {
   switch (typeof value) {
     case "undefined":
       return true;
@@ -7639,7 +7665,7 @@ function empty(value) {
   }
   return false;
 }
-function jsonString(value) {
+function jsonString$1(value) {
   if (typeof value === "string") {
     try {
       const obj = JSON.parse(value);
@@ -7653,69 +7679,69 @@ function jsonString(value) {
   }
   return false;
 }
-function array(value) {
+function array$1(value) {
   if (typeof Array.isArray === "function") {
     return Array.isArray(value);
   }
   return Object.prototype.toString.call(value) === "[object Array]";
 }
-function object(value) {
+function object$1(value) {
   return Object.prototype.toString.call(value) === "[object Object]";
 }
-function objectPromise(value) {
+function objectPromise$1(value) {
   return Object.prototype.toString.call(value) === "[object Promise]";
 }
-function code(value, len = 6) {
+function code$1(value, len = 6) {
   return new RegExp(`^\\d{${len}}$`).test(value);
 }
-function func(value) {
+function func$1(value) {
   return typeof value === "function";
 }
-function promise(value) {
-  return objectPromise(value) && func(value.then) && func(value.catch);
+function promise$1(value) {
+  return objectPromise$1(value) && func$1(value.then) && func$1(value.catch);
 }
-function image(value) {
+function image$1(value) {
   const newValue = value.split("?")[0];
   const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
   return IMAGE_REGEXP.test(newValue);
 }
-function video(value) {
+function video$1(value) {
   const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv|m3u8)/i;
   return VIDEO_REGEXP.test(value);
 }
-function regExp(o2) {
+function regExp$1(o2) {
   return o2 && Object.prototype.toString.call(o2) === "[object RegExp]";
 }
-const test = {
-  email,
-  mobile,
-  url,
-  date,
-  dateISO,
-  number,
-  digits,
-  idCard,
-  carNo,
-  amount,
-  chinese,
-  letter,
-  enOrNum,
-  contains,
-  range: range$2,
-  rangeLength,
-  empty,
-  isEmpty: empty,
-  jsonString,
-  landline,
-  object,
-  array,
-  code,
-  func,
-  promise,
-  video,
-  image,
-  regExp,
-  string: string$1
+const test$1 = {
+  email: email$1,
+  mobile: mobile$1,
+  url: url$1,
+  date: date$1,
+  dateISO: dateISO$1,
+  number: number$1,
+  digits: digits$1,
+  idCard: idCard$1,
+  carNo: carNo$1,
+  amount: amount$1,
+  chinese: chinese$1,
+  letter: letter$1,
+  enOrNum: enOrNum$1,
+  contains: contains$1,
+  range: range$4,
+  rangeLength: rangeLength$1,
+  empty: empty$1,
+  isEmpty: empty$1,
+  jsonString: jsonString$1,
+  landline: landline$1,
+  object: object$1,
+  array: array$1,
+  code: code$1,
+  func: func$1,
+  promise: promise$1,
+  video: video$1,
+  image: image$1,
+  regExp: regExp$1,
+  string: string$3
 };
 function strip(num, precision = 15) {
   return +parseFloat(Number(num).toPrecision(precision));
@@ -7778,6 +7804,4765 @@ function round(num, ratio) {
   }
   return result;
 }
+const version$1 = "3";
+{
+  console.log(`
+ %c uview-plus V${version$1} %c https://ijry.github.io/uview-plus/ 
+
+`, "color: #ffffff; background: #3c9cff; padding:5px 0;", "color: #3c9cff;background: #ffffff; padding:5px 0;");
+}
+const config$1 = {
+  v: version$1,
+  version: version$1,
+  // 主题名称
+  type: [
+    "primary",
+    "success",
+    "info",
+    "error",
+    "warning"
+  ],
+  // 颜色部分，本来可以通过scss的:export导出供js使用，但是奈何nvue不支持
+  color: {
+    "u-primary": "#2979ff",
+    "u-warning": "#ff9900",
+    "u-success": "#19be6b",
+    "u-error": "#fa3534",
+    "u-info": "#909399",
+    "u-main-color": "#303133",
+    "u-content-color": "#606266",
+    "u-tips-color": "#909399",
+    "u-light-color": "#c0c4cc",
+    "up-primary": "#2979ff",
+    "up-warning": "#ff9900",
+    "up-success": "#19be6b",
+    "up-error": "#fa3534",
+    "up-info": "#909399",
+    "up-main-color": "#303133",
+    "up-content-color": "#606266",
+    "up-tips-color": "#909399",
+    "up-light-color": "#c0c4cc"
+  },
+  // 字体图标地址
+  iconUrl: "https://at.alicdn.com/t/font_2225171_8kdcwk4po24.ttf",
+  // 自定义图标
+  customIcon: {
+    family: "",
+    url: ""
+  },
+  customIcons: {},
+  // 自定义图标与unicode对应关系
+  // 默认单位，可以通过配置为rpx，那么在用于传入组件大小参数为数值时，就默认为rpx
+  unit: "px",
+  // 拦截器
+  interceptor: {
+    navbarLeftClick: null
+  },
+  // 只加载一次字体
+  loadFontOnce: false
+};
+function range$3(min = 0, max = 0, value = 0) {
+  return Math.max(min, Math.min(max, Number(value)));
+}
+function getPx(value, unit = false) {
+  if (number$1(value)) {
+    return unit ? `${value}px` : Number(value);
+  }
+  if (/(rpx|upx)$/.test(value)) {
+    return unit ? `${index$1.upx2px(parseInt(value))}px` : Number(index$1.upx2px(parseInt(value)));
+  }
+  return unit ? `${parseInt(value)}px` : parseInt(value);
+}
+function sleep$1(value = 30) {
+  return new Promise((resolve2) => {
+    setTimeout(() => {
+      resolve2();
+    }, value);
+  });
+}
+function os() {
+  return index$1.getDeviceInfo().platform.toLowerCase();
+}
+function sys() {
+  return index$1.getSystemInfoSync();
+}
+function getWindowInfo() {
+  let ret = {};
+  ret = sys();
+  return ret;
+}
+function random(min, max) {
+  if (min >= 0 && max > 0 && max >= min) {
+    const gab = max - min + 1;
+    return Math.floor(Math.random() * gab + min);
+  }
+  return 0;
+}
+function guid(len = 32, firstU = true, radix = null) {
+  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+  const uuid = [];
+  radix = radix || chars.length;
+  if (len) {
+    for (let i = 0; i < len; i++)
+      uuid[i] = chars[0 | Math.random() * radix];
+  } else {
+    let r;
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
+    uuid[14] = "4";
+    for (let i = 0; i < 36; i++) {
+      if (!uuid[i]) {
+        r = 0 | Math.random() * 16;
+        uuid[i] = chars[i == 19 ? r & 3 | 8 : r];
+      }
+    }
+  }
+  if (firstU) {
+    uuid.shift();
+    return `u${uuid.join("")}`;
+  }
+  return uuid.join("");
+}
+function $parent$1(name = void 0) {
+  let parent = this.$parent;
+  while (parent) {
+    name = name.replace(/up-([a-zA-Z0-9-_]+)/g, "u-$1");
+    if (parent.$options && parent.$options.name !== name) {
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+function addStyle$1(customStyle, target = "object") {
+  if (empty$1(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
+    return customStyle;
+  }
+  if (target === "object") {
+    customStyle = trim$1(customStyle);
+    const styleArray = customStyle.split(";");
+    const style = {};
+    for (let i = 0; i < styleArray.length; i++) {
+      if (styleArray[i]) {
+        const item = styleArray[i].split(":");
+        style[trim$1(item[0])] = trim$1(item[1]);
+      }
+    }
+    return style;
+  }
+  let string2 = "";
+  if (typeof customStyle === "object") {
+    customStyle.forEach((val, i) => {
+      const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
+      string2 += `${key}:${val};`;
+    });
+  }
+  return trim$1(string2);
+}
+function addUnit$1(value = "auto", unit = "") {
+  if (!unit) {
+    unit = config$1.unit || "px";
+  }
+  if (unit == "rpx" && number$1(String(value))) {
+    value = value * 2;
+  }
+  value = String(value);
+  return number$1(value) ? `${value}${unit}` : value;
+}
+function deepClone$1(obj) {
+  if ([null, void 0, NaN, false].includes(obj))
+    return obj;
+  if (typeof obj !== "object" && typeof obj !== "function") {
+    return obj;
+  }
+  const o2 = array$1(obj) ? [] : {};
+  for (const i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o2[i] = typeof obj[i] === "object" ? deepClone$1(obj[i]) : obj[i];
+    }
+  }
+  return o2;
+}
+function deepMerge$5(targetOrigin = {}, source = {}) {
+  let target = deepClone$1(targetOrigin);
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = deepMerge$5(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function shallowMerge$1(target, source = {}) {
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = shallowMerge$1(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function error$1(err) {
+  {
+    console.error(`uView提示：${err}`);
+  }
+}
+function randomArray(array4 = []) {
+  return array4.sort(() => Math.random() - 0.5);
+}
+if (!String.prototype.padStart) {
+  String.prototype.padStart = function(maxLength, fillString = " ") {
+    if (Object.prototype.toString.call(fillString) !== "[object String]") {
+      throw new TypeError(
+        "fillString must be String"
+      );
+    }
+    const str = this;
+    if (str.length >= maxLength)
+      return String(str);
+    const fillLength = maxLength - str.length;
+    let times2 = Math.ceil(fillLength / fillString.length);
+    while (times2 >>= 1) {
+      fillString += fillString;
+      if (times2 === 1) {
+        fillString += fillString;
+      }
+    }
+    return fillString.slice(0, fillLength) + str;
+  };
+}
+function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
+  let date4;
+  if (!dateTime) {
+    date4 = /* @__PURE__ */ new Date();
+  } else if (/^\d{10}$/.test(dateTime.toString().trim())) {
+    date4 = new Date(dateTime * 1e3);
+  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
+    date4 = new Date(Number(dateTime));
+  } else if (typeof dateTime === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(dateTime)) {
+    date4 = new Date(dateTime);
+  } else {
+    date4 = new Date(
+      typeof dateTime === "string" ? dateTime.replace(/-/g, "/") : dateTime
+    );
+  }
+  const timeSource = {
+    "y": date4.getFullYear().toString(),
+    // 年
+    "m": (date4.getMonth() + 1).toString().padStart(2, "0"),
+    // 月
+    "d": date4.getDate().toString().padStart(2, "0"),
+    // 日
+    "h": date4.getHours().toString().padStart(2, "0"),
+    // 时
+    "M": date4.getMinutes().toString().padStart(2, "0"),
+    // 分
+    "s": date4.getSeconds().toString().padStart(2, "0")
+    // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (const key in timeSource) {
+    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
+    if (ret) {
+      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
+      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
+    }
+  }
+  return formatStr;
+}
+function timeFrom(timestamp = null, format2 = "yyyy-mm-dd") {
+  if (timestamp == null)
+    timestamp = Number(/* @__PURE__ */ new Date());
+  timestamp = parseInt(timestamp);
+  if (timestamp.toString().length == 10)
+    timestamp *= 1e3;
+  let timer = (/* @__PURE__ */ new Date()).getTime() - timestamp;
+  timer = parseInt(timer / 1e3);
+  let tips = "";
+  switch (true) {
+    case timer < 300:
+      tips = "刚刚";
+      break;
+    case (timer >= 300 && timer < 3600):
+      tips = `${parseInt(timer / 60)}分钟前`;
+      break;
+    case (timer >= 3600 && timer < 86400):
+      tips = `${parseInt(timer / 3600)}小时前`;
+      break;
+    case (timer >= 86400 && timer < 2592e3):
+      tips = `${parseInt(timer / 86400)}天前`;
+      break;
+    default:
+      if (format2 === false) {
+        if (timer >= 2592e3 && timer < 365 * 86400) {
+          tips = `${parseInt(timer / (86400 * 30))}个月前`;
+        } else {
+          tips = `${parseInt(timer / (86400 * 365))}年前`;
+        }
+      } else {
+        tips = timeFormat(timestamp, format2);
+      }
+  }
+  return tips;
+}
+function trim$1(str, pos = "both") {
+  str = String(str);
+  if (pos == "both") {
+    return str.replace(/^\s+|\s+$/g, "");
+  }
+  if (pos == "left") {
+    return str.replace(/^\s*/, "");
+  }
+  if (pos == "right") {
+    return str.replace(/(\s*$)/g, "");
+  }
+  if (pos == "all") {
+    return str.replace(/\s+/g, "");
+  }
+  return str;
+}
+function queryParams$1(data = {}, isPrefix = true, arrayFormat = "brackets") {
+  const prefix = isPrefix ? "?" : "";
+  const _result = [];
+  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
+    arrayFormat = "brackets";
+  for (const key in data) {
+    const value = data[key];
+    if (["", void 0, null].indexOf(value) >= 0) {
+      continue;
+    }
+    if (value.constructor === Array) {
+      switch (arrayFormat) {
+        case "indices":
+          for (let i = 0; i < value.length; i++) {
+            _result.push(`${key}[${i}]=${value[i]}`);
+          }
+          break;
+        case "brackets":
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+          break;
+        case "repeat":
+          value.forEach((_value) => {
+            _result.push(`${key}=${_value}`);
+          });
+          break;
+        case "comma":
+          let commaStr = "";
+          value.forEach((_value) => {
+            commaStr += (commaStr ? "," : "") + _value;
+          });
+          _result.push(`${key}=${commaStr}`);
+          break;
+        default:
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+      }
+    } else {
+      _result.push(`${key}=${value}`);
+    }
+  }
+  return _result.length ? prefix + _result.join("&") : "";
+}
+function toast$1(title, duration = 2e3) {
+  index$1.showToast({
+    title: String(title),
+    icon: "none",
+    duration
+  });
+}
+function type2icon(type2 = "success", fill = false) {
+  if (["primary", "info", "error", "warning", "success"].indexOf(type2) == -1)
+    type2 = "success";
+  let iconName = "";
+  switch (type2) {
+    case "primary":
+      iconName = "info-circle";
+      break;
+    case "info":
+      iconName = "info-circle";
+      break;
+    case "error":
+      iconName = "close-circle";
+      break;
+    case "warning":
+      iconName = "error-circle";
+      break;
+    case "success":
+      iconName = "checkmark-circle";
+      break;
+    default:
+      iconName = "checkmark-circle";
+  }
+  if (fill)
+    iconName += "-fill";
+  return iconName;
+}
+function priceFormat(number4, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
+  number4 = `${number4}`.replace(/[^0-9+-Ee.]/g, "");
+  const n2 = !isFinite(+number4) ? 0 : +number4;
+  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
+  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
+  let s2 = "";
+  s2 = (prec ? round(n2, prec) + "" : `${Math.round(n2)}`).split(".");
+  const re = /(-?\d+)(\d{3})/;
+  while (re.test(s2[0])) {
+    s2[0] = s2[0].replace(re, `$1${sep}$2`);
+  }
+  if ((s2[1] || "").length < prec) {
+    s2[1] = s2[1] || "";
+    s2[1] += new Array(prec - s2[1].length + 1).join("0");
+  }
+  return s2.join(dec);
+}
+function getDuration(value, unit = true) {
+  const valueNum = parseInt(value);
+  if (unit) {
+    if (/s$/.test(value))
+      return value;
+    return value > 30 ? `${value}ms` : `${value}s`;
+  }
+  if (/ms$/.test(value))
+    return valueNum;
+  if (/s$/.test(value))
+    return valueNum > 30 ? valueNum : valueNum * 1e3;
+  return valueNum;
+}
+function padZero(value) {
+  return `00${value}`.slice(-2);
+}
+function formValidate$1(instance, event) {
+  const formItem = $parent$1.call(instance, "u-form-item");
+  const form = $parent$1.call(instance, "u-form");
+  if (formItem && form) {
+    form.validateField(formItem.prop, () => {
+    }, event);
+  }
+}
+function getProperty$1(obj, key) {
+  if (typeof obj !== "object" || null == obj) {
+    return "";
+  }
+  if (typeof key !== "string" || key === "") {
+    return "";
+  }
+  if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    let firstObj = obj[keys[0]] || {};
+    for (let i = 1; i < keys.length; i++) {
+      if (firstObj) {
+        firstObj = firstObj[keys[i]];
+      }
+    }
+    return firstObj;
+  }
+  return obj[key];
+}
+function setProperty$1(obj, key, value) {
+  if (typeof obj !== "object" || null == obj) {
+    return;
+  }
+  const inFn = function(_obj, keys, v) {
+    if (keys.length === 1) {
+      _obj[keys[0]] = v;
+      return;
+    }
+    while (keys.length > 1) {
+      const k = keys[0];
+      if (!_obj[k] || typeof _obj[k] !== "object") {
+        _obj[k] = {};
+      }
+      keys.shift();
+      inFn(_obj[k], keys, v);
+    }
+  };
+  if (typeof key !== "string" || key === "")
+    ;
+  else if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    inFn(obj, keys, value);
+  } else {
+    obj[key] = value;
+  }
+}
+function page$1() {
+  const pages2 = getCurrentPages();
+  return `/${pages2[pages2.length - 1].route || ""}`;
+}
+function pages() {
+  const pages2 = getCurrentPages();
+  return pages2;
+}
+function getValueByPath(obj, path) {
+  const pathArr = path.split(".");
+  return pathArr.reduce((acc, curr) => {
+    return acc && acc[curr] !== void 0 ? acc[curr] : void 0;
+  }, obj);
+}
+function genLightColor(textColor2, lightness = 95) {
+  const rgb = parseColorWithoutDOM(textColor2);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const bgHsl = {
+    h: hsl.h,
+    s: hsl.s,
+    l: Math.min(lightness, 95)
+  };
+  return hslToHex(bgHsl.h, bgHsl.s, bgHsl.l);
+}
+function parseColorWithoutDOM(colorStr) {
+  const str = colorStr.toLowerCase().trim();
+  if (str.startsWith("#")) {
+    const hex3 = str.replace("#", "");
+    const fullHex = hex3.length === 3 ? hex3.split("").map((c) => c + c).join("") : hex3;
+    return {
+      r: parseInt(fullHex.substring(0, 2), 16),
+      g: parseInt(fullHex.substring(2, 4), 16),
+      b: parseInt(fullHex.substring(4, 6), 16)
+    };
+  }
+  const rgbMatch = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (rgbMatch) {
+    return {
+      r: +rgbMatch[1],
+      g: +rgbMatch[2],
+      b: +rgbMatch[3]
+    };
+  }
+  throw new Error("Invalid color format");
+}
+function rgbToHsl(r, g, b) {
+  r /= 255, g /= 255, b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s2, l = (max + min) / 2;
+  if (max === min) {
+    h = s2 = 0;
+  } else {
+    const d = max - min;
+    s2 = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h = (h * 60).toFixed(1);
+  }
+  return { h: +h, s: +(s2 * 100).toFixed(1), l: +(l * 100).toFixed(1) };
+}
+function hslToHex(h, s2, l) {
+  l /= 100;
+  const a = s2 * Math.min(l, 1 - l) / 100;
+  const f2 = (n2) => {
+    const k = (n2 + h / 30) % 12;
+    const color2 = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color2).toString(16).padStart(2, "0");
+  };
+  return `#${f2(0)}${f2(8)}${f2(4)}`;
+}
+const index = {
+  range: range$3,
+  getPx,
+  sleep: sleep$1,
+  os,
+  sys,
+  getWindowInfo,
+  random,
+  guid,
+  $parent: $parent$1,
+  addStyle: addStyle$1,
+  addUnit: addUnit$1,
+  deepClone: deepClone$1,
+  deepMerge: deepMerge$5,
+  shallowMerge: shallowMerge$1,
+  error: error$1,
+  randomArray,
+  timeFormat,
+  timeFrom,
+  trim: trim$1,
+  queryParams: queryParams$1,
+  toast: toast$1,
+  type2icon,
+  priceFormat,
+  getDuration,
+  padZero,
+  formValidate: formValidate$1,
+  getProperty: getProperty$1,
+  setProperty: setProperty$1,
+  page: page$1,
+  pages,
+  getValueByPath,
+  genLightColor
+};
+let Router$1 = class Router {
+  constructor() {
+    this.config = {
+      type: "navigateTo",
+      url: "",
+      delta: 1,
+      // navigateBack页面后退时,回退的层数
+      params: {},
+      // 传递的参数
+      animationType: "pop-in",
+      // 窗口动画,只在APP有效
+      animationDuration: 300,
+      // 窗口动画持续时间,单位毫秒,只在APP有效
+      intercept: false
+      // 是否需要拦截
+    };
+    this.route = this.route.bind(this);
+  }
+  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
+  addRootPath(url4) {
+    return url4[0] === "/" ? url4 : `/${url4}`;
+  }
+  // 整合路由参数
+  mixinParam(url4, params2) {
+    url4 = url4 && this.addRootPath(url4);
+    let query = "";
+    if (/.*\/.*\?.*=.*/.test(url4)) {
+      query = queryParams$1(params2, false);
+      return url4 += `&${query}`;
+    }
+    query = queryParams$1(params2);
+    return url4 += query;
+  }
+  // 对外的方法名称
+  async route(options = {}, params2 = {}) {
+    let mergeConfig2 = {};
+    if (typeof options === "string") {
+      mergeConfig2.url = this.mixinParam(options, params2);
+      mergeConfig2.type = "navigateTo";
+    } else {
+      mergeConfig2 = deepMerge$5(this.config, options);
+      mergeConfig2.url = this.mixinParam(options.url, options.params);
+    }
+    if (mergeConfig2.url === page$1())
+      return;
+    if (params2.intercept) {
+      this.config.intercept = params2.intercept;
+    }
+    mergeConfig2.params = params2;
+    mergeConfig2 = deepMerge$5(this.config, mergeConfig2);
+    if (typeof index$1.$u.routeIntercept === "function") {
+      const isNext = await new Promise((resolve2, reject) => {
+        index$1.$u.routeIntercept(mergeConfig2, resolve2);
+      });
+      isNext && this.openPage(mergeConfig2);
+    } else {
+      this.openPage(mergeConfig2);
+    }
+  }
+  // 执行路由跳转
+  openPage(config2) {
+    const {
+      url: url4,
+      type: type2,
+      delta,
+      animationType,
+      animationDuration
+    } = config2;
+    if (config2.type == "navigateTo" || config2.type == "to") {
+      index$1.navigateTo({
+        url: url4,
+        animationType,
+        animationDuration
+      });
+    }
+    if (config2.type == "redirectTo" || config2.type == "redirect") {
+      index$1.redirectTo({
+        url: url4
+      });
+    }
+    if (config2.type == "switchTab" || config2.type == "tab") {
+      index$1.switchTab({
+        url: url4
+      });
+    }
+    if (config2.type == "reLaunch" || config2.type == "launch") {
+      index$1.reLaunch({
+        url: url4
+      });
+    }
+    if (config2.type == "navigateBack" || config2.type == "back") {
+      index$1.navigateBack({
+        delta
+      });
+    }
+  }
+};
+const route$1 = new Router$1().route;
+const mixin$1 = defineMixin$1({
+  // 定义每个组件都可能需要用到的外部样式以及类名
+  props: {
+    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
+    customStyle: {
+      type: [Object, String],
+      default: () => ({})
+    },
+    customClass: {
+      type: String,
+      default: ""
+    },
+    // 跳转的页面路径
+    url: {
+      type: String,
+      default: ""
+    },
+    // 页面跳转的类型
+    linkType: {
+      type: String,
+      default: "navigateTo"
+    }
+  },
+  data() {
+    return {};
+  },
+  onLoad() {
+    this.$u.getRect = this.$uGetRect;
+  },
+  created() {
+    this.$u.getRect = this.$uGetRect;
+  },
+  computed: {
+    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
+    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
+    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
+    $u() {
+      return deepMerge$5(index$1.$u, {
+        props: void 0,
+        http: void 0,
+        mixin: void 0
+      });
+    },
+    /**
+     * 生成bem规则类名
+     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
+     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
+     * @param {String} name 组件名称
+     * @param {Array} fixed 一直会存在的类名
+     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
+     * @returns {Array|string}
+     */
+    bem() {
+      return function(name, fixed, change) {
+        const prefix = `u-${name}--`;
+        const classes = {};
+        if (fixed) {
+          fixed.map((item) => {
+            classes[prefix + this[item]] = true;
+          });
+        }
+        if (change) {
+          change.map((item) => {
+            this[item] ? classes[prefix + item] = this[item] : delete classes[prefix + item];
+          });
+        }
+        return Object.keys(classes);
+      };
+    }
+  },
+  methods: {
+    // 跳转某一个页面
+    openPage(urlKey = "url") {
+      const url4 = this[urlKey];
+      if (url4) {
+        route$1({ type: this.linkType, url: url4 });
+      }
+    },
+    navTo(url4 = "", linkType = "navigateTo") {
+      route$1({ type: this.linkType, url: url4 });
+    },
+    // 查询节点信息
+    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
+    // 解决办法为在组件根部再套一个没有任何作用的view元素
+    $uGetRect(selector, all) {
+      return new Promise((resolve2) => {
+        index$1.createSelectorQuery().in(this)[all ? "selectAll" : "select"](selector).boundingClientRect((rect) => {
+          if (all && Array.isArray(rect) && rect.length) {
+            resolve2(rect);
+          }
+          if (!all && rect) {
+            resolve2(rect);
+          }
+        }).exec();
+      });
+    },
+    getParentData(parentName = "") {
+      if (!this.parent)
+        this.parent = {};
+      this.parent = $parent$1.call(this, parentName);
+      if (this.parent.children) {
+        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
+      }
+      if (this.parent && this.parentData) {
+        Object.keys(this.parentData).map((key) => {
+          this.parentData[key] = this.parent[key];
+        });
+      }
+    },
+    // 阻止事件冒泡
+    preventEvent(e2) {
+      e2 && typeof e2.stopPropagation === "function" && e2.stopPropagation();
+    },
+    // 空操作
+    noop(e2) {
+      this.preventEvent(e2);
+    }
+  },
+  onReachBottom() {
+    index$1.$emit("uOnReachBottom");
+  },
+  beforeUnmount() {
+    if (this.parent && test$1.array(this.parent.children)) {
+      const childrenList = this.parent.children;
+      childrenList.map((child, index2) => {
+        if (child === this) {
+          childrenList.splice(index2, 1);
+        }
+      });
+    }
+  }
+});
+const mpMixin$1 = defineMixin$1({
+  // 将自定义节点设置成虚拟的，更加接近Vue组件的表现，能更好的使用flex属性
+  options: {
+    virtualHost: true
+  }
+});
+function colorGradient$1(startColor = "rgb(0, 0, 0)", endColor = "rgb(255, 255, 255)", step = 10) {
+  const startRGB = hexToRgb$1(startColor, false);
+  const startR = startRGB[0];
+  const startG = startRGB[1];
+  const startB = startRGB[2];
+  const endRGB = hexToRgb$1(endColor, false);
+  const endR = endRGB[0];
+  const endG = endRGB[1];
+  const endB = endRGB[2];
+  const sR = (endR - startR) / step;
+  const sG = (endG - startG) / step;
+  const sB = (endB - startB) / step;
+  const colorArr = [];
+  for (let i = 0; i < step; i++) {
+    let hex3 = rgbToHex$1(`rgb(${Math.round(sR * i + startR)},${Math.round(sG * i + startG)},${Math.round(sB * i + startB)})`);
+    if (i === 0)
+      hex3 = rgbToHex$1(startColor);
+    if (i === step - 1)
+      hex3 = rgbToHex$1(endColor);
+    colorArr.push(hex3);
+  }
+  return colorArr;
+}
+function hexToRgb$1(sColor, str = true) {
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  sColor = String(sColor).toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      let sColorNew = "#";
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    const sColorChange = [];
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+    }
+    if (!str) {
+      return sColorChange;
+    }
+    return `rgb(${sColorChange[0]},${sColorChange[1]},${sColorChange[2]})`;
+  }
+  if (/^(rgb|RGB)/.test(sColor)) {
+    const arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    return arr.map((val) => Number(val));
+  }
+  return sColor;
+}
+function rgbToHex$1(rgb) {
+  const _this = rgb;
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  if (/^(rgb|RGB)/.test(_this)) {
+    const aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    let strHex = "#";
+    for (let i = 0; i < aColor.length; i++) {
+      let hex3 = Number(aColor[i]).toString(16);
+      hex3 = String(hex3).length == 1 ? `${0}${hex3}` : hex3;
+      if (hex3 === "0") {
+        hex3 += hex3;
+      }
+      strHex += hex3;
+    }
+    if (strHex.length !== 7) {
+      strHex = _this;
+    }
+    return strHex;
+  }
+  if (reg.test(_this)) {
+    const aNum = _this.replace(/#/, "").split("");
+    if (aNum.length === 6) {
+      return _this;
+    }
+    if (aNum.length === 3) {
+      let numHex = "#";
+      for (let i = 0; i < aNum.length; i += 1) {
+        numHex += aNum[i] + aNum[i];
+      }
+      return numHex;
+    }
+  } else {
+    return _this;
+  }
+}
+function colorToRgba(color2, alpha) {
+  color2 = rgbToHex$1(color2);
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  let sColor = String(color2).toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      let sColorNew = "#";
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    const sColorChange = [];
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+    }
+    return `rgba(${sColorChange.join(",")},${alpha})`;
+  }
+  return sColor;
+}
+const colorGradient$2 = {
+  colorGradient: colorGradient$1,
+  hexToRgb: hexToRgb$1,
+  rgbToHex: rgbToHex$1,
+  colorToRgba
+};
+let timeout = null;
+function debounce(func2, wait = 500, immediate = false) {
+  if (timeout !== null)
+    clearTimeout(timeout);
+  if (immediate) {
+    const callNow = !timeout;
+    timeout = setTimeout(() => {
+      timeout = null;
+    }, wait);
+    if (callNow)
+      typeof func2 === "function" && func2();
+  } else {
+    timeout = setTimeout(() => {
+      typeof func2 === "function" && func2();
+    }, wait);
+  }
+}
+let flag;
+function throttle(func2, wait = 500, immediate = true) {
+  if (immediate) {
+    if (!flag) {
+      flag = true;
+      typeof func2 === "function" && func2();
+      setTimeout(() => {
+        flag = false;
+      }, wait);
+    }
+  } else if (!flag) {
+    flag = true;
+    setTimeout(() => {
+      flag = false;
+      typeof func2 === "function" && func2();
+    }, wait);
+  }
+}
+function add(arg1, arg2) {
+  var r1, r2, m2;
+  try {
+    r1 = arg1.toString().split(".")[1].length;
+  } catch (e2) {
+    r1 = 0;
+  }
+  try {
+    r2 = arg2.toString().split(".")[1].length;
+  } catch (e2) {
+    r2 = 0;
+  }
+  m2 = Math.pow(10, Math.max(r1, r2));
+  return (arg1 * m2 + arg2 * m2) / m2;
+}
+function sub(arg1, arg2) {
+  var r1, r2, m2, n2;
+  try {
+    r1 = arg1.toString().split(".")[1].length;
+  } catch (e2) {
+    r1 = 0;
+  }
+  try {
+    r2 = arg2.toString().split(".")[1].length;
+  } catch (e2) {
+    r2 = 0;
+  }
+  m2 = Math.pow(10, Math.max(r1, r2));
+  n2 = r1 >= r2 ? r1 : r2;
+  return Math.abs(((arg1 * m2 - arg2 * m2) / m2).toFixed(n2));
+}
+function mul(a, b) {
+  var c = 0, d = a.toString(), e2 = b.toString();
+  try {
+    c += d.split(".")[1].length;
+  } catch (f2) {
+  }
+  try {
+    c += e2.split(".")[1].length;
+  } catch (f2) {
+  }
+  return Number(d.replace(".", "")) * Number(e2.replace(".", "")) / Math.pow(10, c);
+}
+function div(a, b) {
+  var c, d, e2 = 0, f2 = 0;
+  try {
+    e2 = a.toString().split(".")[1].length;
+  } catch (g) {
+  }
+  try {
+    f2 = b.toString().split(".")[1].length;
+  } catch (g) {
+  }
+  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), xyutil.mul(c / d, Math.pow(10, f2 - e2));
+}
+const calc = {
+  add,
+  sub,
+  mul,
+  div
+};
+const zIndex$1 = {
+  toast: 10090,
+  noNetwork: 10080,
+  // popup包含popup，actionsheet，keyboard，picker的值
+  popup: 10075,
+  mask: 10070,
+  navbar: 980,
+  topTips: 975,
+  sticky: 970,
+  indexListSticky: 965
+};
+const color$8 = {
+  primary: "#3c9cff",
+  info: "#909399",
+  default: "#909399",
+  warning: "#f9ae3d",
+  error: "#f56c6c",
+  success: "#5ac725",
+  mainColor: "#303133",
+  contentColor: "#606266",
+  tipsColor: "#909399",
+  lightColor: "#c0c4cc",
+  borderColor: "#e4e7ed"
+};
+const { toString: toString$1 } = Object.prototype;
+function isArray$1(val) {
+  return toString$1.call(val) === "[object Array]";
+}
+function isObject$1(val) {
+  return val !== null && typeof val === "object";
+}
+function isDate$1(val) {
+  return toString$1.call(val) === "[object Date]";
+}
+function isURLSearchParams$1(val) {
+  return typeof URLSearchParams !== "undefined" && val instanceof URLSearchParams;
+}
+function forEach$1(obj, fn) {
+  if (obj === null || typeof obj === "undefined") {
+    return;
+  }
+  if (typeof obj !== "object") {
+    obj = [obj];
+  }
+  if (isArray$1(obj)) {
+    for (let i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+function isPlainObject$1(obj) {
+  return Object.prototype.toString.call(obj) === "[object Object]";
+}
+function deepMerge$4() {
+  const result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === "object" && typeof val === "object") {
+      result[key] = deepMerge$4(result[key], val);
+    } else if (typeof val === "object") {
+      result[key] = deepMerge$4({}, val);
+    } else {
+      result[key] = val;
+    }
+  }
+  for (let i = 0, l = arguments.length; i < l; i++) {
+    forEach$1(arguments[i], assignValue);
+  }
+  return result;
+}
+function isUndefined$1(val) {
+  return typeof val === "undefined";
+}
+function encode$1(val) {
+  return encodeURIComponent(val).replace(/%40/gi, "@").replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
+}
+function buildURL$1(url4, params2) {
+  if (!params2) {
+    return url4;
+  }
+  let serializedParams;
+  if (isURLSearchParams$1(params2)) {
+    serializedParams = params2.toString();
+  } else {
+    const parts = [];
+    forEach$1(params2, (val, key) => {
+      if (val === null || typeof val === "undefined") {
+        return;
+      }
+      if (isArray$1(val)) {
+        key = `${key}[]`;
+      } else {
+        val = [val];
+      }
+      forEach$1(val, (v) => {
+        if (isDate$1(v)) {
+          v = v.toISOString();
+        } else if (isObject$1(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(`${encode$1(key)}=${encode$1(v)}`);
+      });
+    });
+    serializedParams = parts.join("&");
+  }
+  if (serializedParams) {
+    const hashmarkIndex = url4.indexOf("#");
+    if (hashmarkIndex !== -1) {
+      url4 = url4.slice(0, hashmarkIndex);
+    }
+    url4 += (url4.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+  }
+  return url4;
+}
+function isAbsoluteURL$1(url4) {
+  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url4);
+}
+function combineURLs$1(baseURL, relativeURL) {
+  return relativeURL ? `${baseURL.replace(/\/+$/, "")}/${relativeURL.replace(/^\/+/, "")}` : baseURL;
+}
+function buildFullPath$1(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL$1(requestedURL)) {
+    return combineURLs$1(baseURL, requestedURL);
+  }
+  return requestedURL;
+}
+function settle$1(resolve2, reject, response) {
+  const { validateStatus: validateStatus3 } = response.config;
+  const status = response.statusCode;
+  if (status && (!validateStatus3 || validateStatus3(status))) {
+    resolve2(response);
+  } else {
+    reject(response);
+  }
+}
+const mergeKeys$3 = (keys, config2) => {
+  const config3 = {};
+  keys.forEach((prop) => {
+    if (!isUndefined$1(config2[prop])) {
+      config3[prop] = config2[prop];
+    }
+  });
+  return config3;
+};
+const adapter$1 = (config2) => new Promise((resolve2, reject) => {
+  const fullPath = buildURL$1(buildFullPath$1(config2.baseURL, config2.url), config2.params);
+  const _config = {
+    url: fullPath,
+    header: config2.header,
+    complete: (response) => {
+      config2.fullPath = fullPath;
+      response.config = config2;
+      try {
+        if (typeof response.data === "string") {
+          response.data = JSON.parse(response.data);
+        }
+      } catch (e2) {
+      }
+      settle$1(resolve2, reject, response);
+    }
+  };
+  let requestTask;
+  if (config2.method === "UPLOAD") {
+    delete _config.header["content-type"];
+    delete _config.header["Content-Type"];
+    const otherConfig = {
+      filePath: config2.filePath,
+      name: config2.name
+    };
+    const optionalKeys = [
+      "formData"
+    ];
+    requestTask = index$1.uploadFile({ ..._config, ...otherConfig, ...mergeKeys$3(optionalKeys, config2) });
+  } else if (config2.method === "DOWNLOAD") {
+    requestTask = index$1.downloadFile(_config);
+  } else {
+    const optionalKeys = [
+      "data",
+      "method",
+      "timeout",
+      "dataType",
+      "responseType"
+    ];
+    requestTask = index$1.request({ ..._config, ...mergeKeys$3(optionalKeys, config2) });
+  }
+  if (config2.getTask) {
+    config2.getTask(requestTask, config2);
+  }
+});
+const dispatchRequest$1 = (config2) => adapter$1(config2);
+function InterceptorManager$1() {
+  this.handlers = [];
+}
+InterceptorManager$1.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled,
+    rejected
+  });
+  return this.handlers.length - 1;
+};
+InterceptorManager$1.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+InterceptorManager$1.prototype.forEach = function forEach(fn) {
+  this.handlers.forEach((h) => {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+const mergeKeys$2 = (keys, globalsConfig, config2) => {
+  const config3 = {};
+  keys.forEach((prop) => {
+    if (!isUndefined$1(config2[prop])) {
+      config3[prop] = config2[prop];
+    } else if (!isUndefined$1(globalsConfig[prop])) {
+      config3[prop] = globalsConfig[prop];
+    }
+  });
+  return config3;
+};
+const mergeConfig$1 = (globalsConfig, config2 = {}) => {
+  const method3 = config2.method || globalsConfig.method || "GET";
+  let config3 = {
+    baseURL: globalsConfig.baseURL || "",
+    method: method3,
+    url: config2.url || "",
+    params: config2.params || {},
+    custom: { ...globalsConfig.custom || {}, ...config2.custom || {} },
+    header: deepMerge$4(globalsConfig.header || {}, config2.header || {})
+  };
+  const defaultToConfig2Keys = ["getTask", "validateStatus"];
+  config3 = { ...config3, ...mergeKeys$2(defaultToConfig2Keys, globalsConfig, config2) };
+  if (method3 === "DOWNLOAD")
+    ;
+  else if (method3 === "UPLOAD") {
+    delete config3.header["content-type"];
+    delete config3.header["Content-Type"];
+    const uploadKeys = [
+      "filePath",
+      "name",
+      "formData"
+    ];
+    uploadKeys.forEach((prop) => {
+      if (!isUndefined$1(config2[prop])) {
+        config3[prop] = config2[prop];
+      }
+    });
+  } else {
+    const defaultsKeys = [
+      "data",
+      "timeout",
+      "dataType",
+      "responseType"
+    ];
+    config3 = { ...config3, ...mergeKeys$2(defaultsKeys, globalsConfig, config2) };
+  }
+  return config3;
+};
+const defaults$1 = {
+  baseURL: "",
+  header: {},
+  method: "GET",
+  dataType: "json",
+  responseType: "text",
+  custom: {},
+  timeout: 6e4,
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+var clone$1 = function() {
+  function _instanceof(obj, type2) {
+    return type2 != null && obj instanceof type2;
+  }
+  var nativeMap;
+  try {
+    nativeMap = Map;
+  } catch (_) {
+    nativeMap = function() {
+    };
+  }
+  var nativeSet;
+  try {
+    nativeSet = Set;
+  } catch (_) {
+    nativeSet = function() {
+    };
+  }
+  var nativePromise;
+  try {
+    nativePromise = Promise;
+  } catch (_) {
+    nativePromise = function() {
+    };
+  }
+  function clone2(parent, circular, depth, prototype, includeNonEnumerable) {
+    if (typeof circular === "object") {
+      depth = circular.depth;
+      prototype = circular.prototype;
+      includeNonEnumerable = circular.includeNonEnumerable;
+      circular = circular.circular;
+    }
+    var allParents = [];
+    var allChildren = [];
+    var useBuffer = typeof Buffer != "undefined";
+    if (typeof circular == "undefined")
+      circular = true;
+    if (typeof depth == "undefined")
+      depth = Infinity;
+    function _clone(parent2, depth2) {
+      if (parent2 === null)
+        return null;
+      if (depth2 === 0)
+        return parent2;
+      var child;
+      var proto;
+      if (typeof parent2 != "object") {
+        return parent2;
+      }
+      if (_instanceof(parent2, nativeMap)) {
+        child = new nativeMap();
+      } else if (_instanceof(parent2, nativeSet)) {
+        child = new nativeSet();
+      } else if (_instanceof(parent2, nativePromise)) {
+        child = new nativePromise(function(resolve2, reject) {
+          parent2.then(function(value) {
+            resolve2(_clone(value, depth2 - 1));
+          }, function(err) {
+            reject(_clone(err, depth2 - 1));
+          });
+        });
+      } else if (clone2.__isArray(parent2)) {
+        child = [];
+      } else if (clone2.__isRegExp(parent2)) {
+        child = new RegExp(parent2.source, __getRegExpFlags(parent2));
+        if (parent2.lastIndex)
+          child.lastIndex = parent2.lastIndex;
+      } else if (clone2.__isDate(parent2)) {
+        child = new Date(parent2.getTime());
+      } else if (useBuffer && Buffer.isBuffer(parent2)) {
+        if (Buffer.from) {
+          child = Buffer.from(parent2);
+        } else {
+          child = new Buffer(parent2.length);
+          parent2.copy(child);
+        }
+        return child;
+      } else if (_instanceof(parent2, Error)) {
+        child = Object.create(parent2);
+      } else {
+        if (typeof prototype == "undefined") {
+          proto = Object.getPrototypeOf(parent2);
+          child = Object.create(proto);
+        } else {
+          child = Object.create(prototype);
+          proto = prototype;
+        }
+      }
+      if (circular) {
+        var index2 = allParents.indexOf(parent2);
+        if (index2 != -1) {
+          return allChildren[index2];
+        }
+        allParents.push(parent2);
+        allChildren.push(child);
+      }
+      if (_instanceof(parent2, nativeMap)) {
+        parent2.forEach(function(value, key) {
+          var keyChild = _clone(key, depth2 - 1);
+          var valueChild = _clone(value, depth2 - 1);
+          child.set(keyChild, valueChild);
+        });
+      }
+      if (_instanceof(parent2, nativeSet)) {
+        parent2.forEach(function(value) {
+          var entryChild = _clone(value, depth2 - 1);
+          child.add(entryChild);
+        });
+      }
+      for (var i in parent2) {
+        var attrs = Object.getOwnPropertyDescriptor(parent2, i);
+        if (attrs) {
+          child[i] = _clone(parent2[i], depth2 - 1);
+        }
+        try {
+          var objProperty = Object.getOwnPropertyDescriptor(parent2, i);
+          if (objProperty.set === "undefined") {
+            continue;
+          }
+          child[i] = _clone(parent2[i], depth2 - 1);
+        } catch (e2) {
+          if (e2 instanceof TypeError) {
+            continue;
+          } else if (e2 instanceof ReferenceError) {
+            continue;
+          }
+        }
+      }
+      if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(parent2);
+        for (var i = 0; i < symbols.length; i++) {
+          var symbol = symbols[i];
+          var descriptor = Object.getOwnPropertyDescriptor(parent2, symbol);
+          if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+            continue;
+          }
+          child[symbol] = _clone(parent2[symbol], depth2 - 1);
+          Object.defineProperty(child, symbol, descriptor);
+        }
+      }
+      if (includeNonEnumerable) {
+        var allPropertyNames = Object.getOwnPropertyNames(parent2);
+        for (var i = 0; i < allPropertyNames.length; i++) {
+          var propertyName = allPropertyNames[i];
+          var descriptor = Object.getOwnPropertyDescriptor(parent2, propertyName);
+          if (descriptor && descriptor.enumerable) {
+            continue;
+          }
+          child[propertyName] = _clone(parent2[propertyName], depth2 - 1);
+          Object.defineProperty(child, propertyName, descriptor);
+        }
+      }
+      return child;
+    }
+    return _clone(parent, depth);
+  }
+  clone2.clonePrototype = function clonePrototype(parent) {
+    if (parent === null)
+      return null;
+    var c = function() {
+    };
+    c.prototype = parent;
+    return new c();
+  };
+  function __objToStr(o2) {
+    return Object.prototype.toString.call(o2);
+  }
+  clone2.__objToStr = __objToStr;
+  function __isDate(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object Date]";
+  }
+  clone2.__isDate = __isDate;
+  function __isArray(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object Array]";
+  }
+  clone2.__isArray = __isArray;
+  function __isRegExp(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object RegExp]";
+  }
+  clone2.__isRegExp = __isRegExp;
+  function __getRegExpFlags(re) {
+    var flags = "";
+    if (re.global)
+      flags += "g";
+    if (re.ignoreCase)
+      flags += "i";
+    if (re.multiline)
+      flags += "m";
+    return flags;
+  }
+  clone2.__getRegExpFlags = __getRegExpFlags;
+  return clone2;
+}();
+let Request$1 = class Request {
+  /**
+  * @param {Object} arg - 全局配置
+  * @param {String} arg.baseURL - 全局根路径
+  * @param {Object} arg.header - 全局header
+  * @param {String} arg.method = [GET|POST|PUT|DELETE|CONNECT|HEAD|OPTIONS|TRACE] - 全局默认请求方式
+  * @param {String} arg.dataType = [json] - 全局默认的dataType
+  * @param {String} arg.responseType = [text|arraybuffer] - 全局默认的responseType。支付宝小程序不支持
+  * @param {Object} arg.custom - 全局默认的自定义参数
+  * @param {Number} arg.timeout - 全局默认的超时时间，单位 ms。默认60000。H5(HBuilderX 2.9.9+)、APP(HBuilderX 2.9.9+)、微信小程序（2.10.0）、支付宝小程序
+  * @param {Boolean} arg.sslVerify - 全局默认的是否验证 ssl 证书。默认true.仅App安卓端支持（HBuilderX 2.3.3+）
+  * @param {Boolean} arg.withCredentials - 全局默认的跨域请求时是否携带凭证（cookies）。默认false。仅H5支持（HBuilderX 2.6.15+）
+  * @param {Boolean} arg.firstIpv4 - 全DNS解析时优先使用ipv4。默认false。仅 App-Android 支持 (HBuilderX 2.8.0+)
+  * @param {Function(statusCode):Boolean} arg.validateStatus - 全局默认的自定义验证器。默认statusCode >= 200 && statusCode < 300
+  */
+  constructor(arg = {}) {
+    if (!isPlainObject$1(arg)) {
+      arg = {};
+      console.warn("设置全局参数必须接收一个Object");
+    }
+    this.config = clone$1({ ...defaults$1, ...arg });
+    this.interceptors = {
+      request: new InterceptorManager$1(),
+      response: new InterceptorManager$1()
+    };
+  }
+  /**
+  * @Function
+  * @param {Request~setConfigCallback} f - 设置全局默认配置
+  */
+  setConfig(f2) {
+    this.config = f2(this.config);
+  }
+  middleware(config2) {
+    config2 = mergeConfig$1(this.config, config2);
+    const chain = [dispatchRequest$1, void 0];
+    let promise2 = Promise.resolve(config2);
+    this.interceptors.request.forEach((interceptor) => {
+      chain.unshift(interceptor.fulfilled, interceptor.rejected);
+    });
+    this.interceptors.response.forEach((interceptor) => {
+      chain.push(interceptor.fulfilled, interceptor.rejected);
+    });
+    while (chain.length) {
+      promise2 = promise2.then(chain.shift(), chain.shift());
+    }
+    return promise2;
+  }
+  /**
+  * @Function
+  * @param {Object} config - 请求配置项
+  * @prop {String} options.url - 请求路径
+  * @prop {Object} options.data - 请求参数
+  * @prop {Object} [options.responseType = config.responseType] [text|arraybuffer] - 响应的数据类型
+  * @prop {Object} [options.dataType = config.dataType] - 如果设为 json，会尝试对返回的数据做一次 JSON.parse
+  * @prop {Object} [options.header = config.header] - 请求header
+  * @prop {Object} [options.method = config.method] - 请求方法
+  * @returns {Promise<unknown>}
+  */
+  request(config2 = {}) {
+    return this.middleware(config2);
+  }
+  get(url4, options = {}) {
+    return this.middleware({
+      url: url4,
+      method: "GET",
+      ...options
+    });
+  }
+  post(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "POST",
+      ...options
+    });
+  }
+  put(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "PUT",
+      ...options
+    });
+  }
+  delete(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "DELETE",
+      ...options
+    });
+  }
+  connect(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "CONNECT",
+      ...options
+    });
+  }
+  head(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "HEAD",
+      ...options
+    });
+  }
+  options(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "OPTIONS",
+      ...options
+    });
+  }
+  trace(url4, data, options = {}) {
+    return this.middleware({
+      url: url4,
+      data,
+      method: "TRACE",
+      ...options
+    });
+  }
+  upload(url4, config2 = {}) {
+    config2.url = url4;
+    config2.method = "UPLOAD";
+    return this.middleware(config2);
+  }
+  download(url4, config2 = {}) {
+    config2.url = url4;
+    config2.method = "DOWNLOAD";
+    return this.middleware(config2);
+  }
+};
+const http$1 = new Request$1();
+const ActionSheet$1 = {
+  // action-sheet组件
+  actionSheet: {
+    show: false,
+    title: "",
+    description: "",
+    actions: [],
+    index: "",
+    cancelText: "",
+    closeOnClickAction: true,
+    safeAreaInsetBottom: true,
+    openType: "",
+    closeOnClickOverlay: true,
+    round: 0,
+    wrapMaxHeight: "600px"
+  }
+};
+const Album$1 = {
+  // album 组件
+  album: {
+    urls: [],
+    keyName: "",
+    singleSize: 180,
+    multipleSize: 70,
+    space: 6,
+    singleMode: "scaleToFill",
+    multipleMode: "aspectFill",
+    maxCount: 9,
+    previewFullImage: true,
+    rowCount: 3,
+    showMore: true,
+    autoWrap: false,
+    unit: "px",
+    stop: true
+  }
+};
+const Alert$1 = {
+  // alert警告组件
+  alert: {
+    title: "",
+    type: "warning",
+    description: "",
+    closable: false,
+    showIcon: false,
+    effect: "light",
+    center: false,
+    fontSize: 14,
+    transitionMode: "fade",
+    duration: 0,
+    icon: "",
+    value: true
+  }
+};
+const Avatar$1 = {
+  // avatar 组件
+  avatar: {
+    src: "",
+    shape: "circle",
+    size: 40,
+    mode: "scaleToFill",
+    text: "",
+    bgColor: "#c0c4cc",
+    color: "#ffffff",
+    fontSize: 18,
+    icon: "",
+    mpAvatar: false,
+    randomBgColor: false,
+    defaultUrl: "",
+    colorIndex: "",
+    name: ""
+  }
+};
+const AvatarGroup$1 = {
+  // avatarGroup 组件
+  avatarGroup: {
+    urls: [],
+    maxCount: 5,
+    shape: "circle",
+    mode: "scaleToFill",
+    showMore: true,
+    size: 40,
+    keyName: "",
+    gap: 0.5,
+    extraValue: 0
+  }
+};
+const Backtop$1 = {
+  // backtop组件
+  backtop: {
+    mode: "circle",
+    icon: "arrow-upward",
+    text: "",
+    duration: 100,
+    scrollTop: 0,
+    top: 400,
+    bottom: 100,
+    right: 20,
+    zIndex: 9,
+    iconStyle: {
+      color: "#909399",
+      fontSize: "19px"
+    }
+  }
+};
+const Badge$1 = {
+  // 徽标数组件
+  badge: {
+    isDot: false,
+    value: "",
+    show: true,
+    max: 999,
+    type: "error",
+    showZero: false,
+    bgColor: null,
+    color: null,
+    shape: "circle",
+    numberType: "overflow",
+    offset: [],
+    inverted: false,
+    absolute: false
+  }
+};
+const Button$1 = {
+  // button组件
+  button: {
+    hairline: false,
+    type: "info",
+    size: "normal",
+    shape: "square",
+    plain: false,
+    disabled: false,
+    loading: false,
+    loadingText: "",
+    loadingMode: "spinner",
+    loadingSize: 15,
+    openType: "",
+    formType: "",
+    appParameter: "",
+    hoverStopPropagation: true,
+    lang: "en",
+    sessionFrom: "",
+    sendMessageTitle: "",
+    sendMessagePath: "",
+    sendMessageImg: "",
+    showMessageCard: false,
+    dataName: "",
+    throttleTime: 0,
+    hoverStartTime: 0,
+    hoverStayTime: 200,
+    text: "",
+    icon: "",
+    iconColor: "",
+    color: "",
+    stop: true
+  }
+};
+const Calendar$1 = {
+  // calendar 组件
+  calendar: {
+    title: "日期选择",
+    showTitle: true,
+    showSubtitle: true,
+    mode: "single",
+    startText: "开始",
+    endText: "结束",
+    customList: [],
+    color: "#3c9cff",
+    minDate: 0,
+    maxDate: 0,
+    defaultDate: null,
+    maxCount: Number.MAX_SAFE_INTEGER,
+    // Infinity
+    rowHeight: 56,
+    formatter: null,
+    showLunar: false,
+    showMark: true,
+    confirmText: "确定",
+    confirmDisabledText: "确定",
+    show: false,
+    closeOnClickOverlay: false,
+    readonly: false,
+    showConfirm: true,
+    maxRange: Number.MAX_SAFE_INTEGER,
+    // Infinity
+    rangePrompt: "",
+    showRangePrompt: true,
+    allowSameDay: false,
+    round: 0,
+    monthNum: 3,
+    weekText: ["一", "二", "三", "四", "五", "六", "日"],
+    forbidDays: [],
+    forbidDaysToast: "该日期已禁用"
+  }
+};
+const CarKeyboard$1 = {
+  // 车牌号键盘
+  carKeyboard: {
+    random: false
+  }
+};
+const Card$1 = {
+  // card组件的props
+  card: {
+    full: false,
+    title: "",
+    titleColor: "#303133",
+    titleSize: "15px",
+    subTitle: "",
+    subTitleColor: "#909399",
+    subTitleSize: "13px",
+    border: true,
+    index: "",
+    margin: "15px",
+    borderRadius: "8px",
+    headStyle: {},
+    bodyStyle: {},
+    footStyle: {},
+    headBorderBottom: true,
+    footBorderTop: true,
+    thumb: "",
+    thumbWidth: "30px",
+    thumbCircle: false,
+    padding: "15px",
+    paddingHead: "",
+    paddingBody: "",
+    paddingFoot: "",
+    showHead: true,
+    showFoot: true,
+    boxShadow: "none"
+  }
+};
+const Cell$1 = {
+  // cell组件的props
+  cell: {
+    customClass: "",
+    title: "",
+    label: "",
+    value: "",
+    icon: "",
+    disabled: false,
+    border: true,
+    center: false,
+    url: "",
+    linkType: "navigateTo",
+    clickable: false,
+    isLink: false,
+    required: false,
+    arrowDirection: "",
+    iconStyle: {},
+    rightIconStyle: {},
+    rightIcon: "arrow-right",
+    titleStyle: {},
+    size: "",
+    stop: true,
+    name: ""
+  }
+};
+const CellGroup$1 = {
+  // cell-group组件的props
+  cellGroup: {
+    title: "",
+    border: true,
+    customStyle: {}
+  }
+};
+const Checkbox$1 = {
+  // checkbox组件
+  checkbox: {
+    name: "",
+    shape: "",
+    size: "",
+    checkbox: false,
+    disabled: "",
+    activeColor: "",
+    inactiveColor: "",
+    iconSize: "",
+    iconColor: "",
+    label: "",
+    labelSize: "",
+    labelColor: "",
+    labelDisabled: ""
+  }
+};
+const CheckboxGroup$1 = {
+  // checkbox-group组件
+  checkboxGroup: {
+    name: "",
+    value: [],
+    shape: "square",
+    disabled: false,
+    activeColor: "#2979ff",
+    inactiveColor: "#c8c9cc",
+    size: 18,
+    placement: "row",
+    labelSize: 14,
+    labelColor: "#303133",
+    labelDisabled: false,
+    iconColor: "#ffffff",
+    iconSize: 12,
+    iconPlacement: "left",
+    borderBottom: false
+  }
+};
+const CircleProgress$1 = {
+  // circleProgress 组件
+  circleProgress: {
+    percentage: 30
+  }
+};
+const Code$1 = {
+  // code 组件
+  code: {
+    seconds: 60,
+    startText: "获取验证码",
+    changeText: "X秒重新获取",
+    endText: "重新获取",
+    keepRunning: false,
+    uniqueKey: ""
+  }
+};
+const CodeInput$1 = {
+  // codeInput 组件
+  codeInput: {
+    adjustPosition: true,
+    maxlength: 6,
+    dot: false,
+    mode: "box",
+    hairline: false,
+    space: 10,
+    value: "",
+    focus: false,
+    bold: false,
+    color: "#606266",
+    fontSize: 18,
+    size: 35,
+    disabledKeyboard: false,
+    borderColor: "#c9cacc",
+    disabledDot: true
+  }
+};
+const Col$1 = {
+  // col 组件
+  col: {
+    span: 12,
+    offset: 0,
+    justify: "start",
+    align: "stretch",
+    textAlign: "left"
+  }
+};
+const Collapse$1 = {
+  // collapse 组件
+  collapse: {
+    value: null,
+    accordion: false,
+    border: true
+  }
+};
+const CollapseItem$1 = {
+  // collapseItem 组件
+  collapseItem: {
+    title: "",
+    value: "",
+    label: "",
+    disabled: false,
+    isLink: true,
+    clickable: true,
+    border: true,
+    align: "left",
+    name: "",
+    icon: "",
+    duration: 300,
+    showRight: true,
+    titleStyle: {},
+    iconStyle: {},
+    rightIconStyle: {},
+    cellCustomStyle: {},
+    cellCustomClass: ""
+  }
+};
+const ColumnNotice$1 = {
+  // columnNotice 组件
+  columnNotice: {
+    text: "",
+    icon: "volume",
+    mode: "",
+    color: "#f9ae3d",
+    bgColor: "#fdf6ec",
+    fontSize: 14,
+    speed: 80,
+    step: false,
+    duration: 1500,
+    disableTouch: true,
+    justifyContent: "flex-start"
+  }
+};
+const CountDown$1 = {
+  // u-count-down 计时器组件
+  countDown: {
+    time: 0,
+    format: "HH:mm:ss",
+    autoStart: true,
+    millisecond: false
+  }
+};
+const CountTo$1 = {
+  // countTo 组件
+  countTo: {
+    startVal: 0,
+    endVal: 0,
+    duration: 2e3,
+    autoplay: true,
+    decimals: 0,
+    useEasing: true,
+    decimal: ".",
+    color: "#606266",
+    fontSize: 22,
+    bold: false,
+    separator: ""
+  }
+};
+const DatetimePicker$1 = {
+  // datetimePicker 组件
+  datetimePicker: {
+    show: false,
+    popupMode: "bottom",
+    showToolbar: true,
+    value: "",
+    title: "",
+    mode: "datetime",
+    maxDate: new Date((/* @__PURE__ */ new Date()).getFullYear() + 10, 0, 1).getTime(),
+    minDate: new Date((/* @__PURE__ */ new Date()).getFullYear() - 10, 0, 1).getTime(),
+    minHour: 0,
+    maxHour: 23,
+    minMinute: 0,
+    maxMinute: 59,
+    filter: null,
+    formatter: null,
+    loading: false,
+    itemHeight: 44,
+    cancelText: "取消",
+    confirmText: "确认",
+    cancelColor: "#909193",
+    confirmColor: "#3c9cff",
+    visibleItemCount: 5,
+    closeOnClickOverlay: false,
+    defaultIndex: [],
+    inputBorder: "surround",
+    disabled: false,
+    disabledColor: "",
+    placeholder: "请选择",
+    inputProps: {}
+  }
+};
+const Divider$1 = {
+  // divider组件
+  divider: {
+    dashed: false,
+    hairline: true,
+    dot: false,
+    textPosition: "center",
+    text: "",
+    textSize: 14,
+    textColor: "#909399",
+    lineColor: "#dcdfe6"
+  }
+};
+const Empty$1 = {
+  // empty组件
+  empty: {
+    icon: "",
+    text: "",
+    textColor: "#c0c4cc",
+    textSize: 14,
+    iconColor: "#c0c4cc",
+    iconSize: 90,
+    mode: "data",
+    width: 160,
+    height: 160,
+    show: true,
+    marginTop: 0
+  }
+};
+const Form$1 = {
+  // form 组件
+  form: {
+    model: {},
+    rules: {},
+    errorType: "message",
+    borderBottom: true,
+    labelPosition: "left",
+    labelWidth: 45,
+    labelAlign: "left",
+    labelStyle: {}
+  }
+};
+const GormItem$1 = {
+  // formItem 组件
+  formItem: {
+    label: "",
+    prop: "",
+    rules: [],
+    borderBottom: "",
+    labelPosition: "",
+    labelWidth: "",
+    rightIcon: "",
+    leftIcon: "",
+    required: false,
+    leftIconStyle: ""
+  }
+};
+const Gap$1 = {
+  // gap组件
+  gap: {
+    bgColor: "transparent",
+    height: 20,
+    marginTop: 0,
+    marginBottom: 0,
+    customStyle: {}
+  }
+};
+const Grid$1 = {
+  // grid组件
+  grid: {
+    col: 3,
+    border: false,
+    align: "left"
+  }
+};
+const GridItem$1 = {
+  // grid-item组件
+  gridItem: {
+    name: null,
+    bgColor: "transparent"
+  }
+};
+const {
+  color: color$7
+} = config$1;
+const Icon$1 = {
+  // icon组件
+  icon: {
+    name: "",
+    color: color$7["u-content-color"],
+    size: "16px",
+    bold: false,
+    index: "",
+    hoverClass: "",
+    customPrefix: "uicon",
+    label: "",
+    labelPos: "right",
+    labelSize: "15px",
+    labelColor: color$7["u-content-color"],
+    space: "3px",
+    imgMode: "",
+    width: "",
+    height: "",
+    top: 0,
+    stop: false
+  }
+};
+const Image$1 = {
+  // image组件
+  image: {
+    src: "",
+    mode: "aspectFill",
+    width: "300",
+    height: "225",
+    shape: "square",
+    radius: 0,
+    lazyLoad: true,
+    showMenuByLongpress: true,
+    loadingIcon: "photo",
+    errorIcon: "error-circle",
+    showLoading: true,
+    showError: true,
+    fade: true,
+    webp: false,
+    duration: 500,
+    bgColor: "#f3f4f6"
+  }
+};
+const IndexAnchor$1 = {
+  // indexAnchor 组件
+  indexAnchor: {
+    text: "",
+    color: "#606266",
+    size: 14,
+    bgColor: "#f1f1f1",
+    height: 32
+  }
+};
+const IndexList$1 = {
+  // indexList 组件
+  indexList: {
+    inactiveColor: "#606266",
+    activeColor: "#5677fc",
+    indexList: [],
+    sticky: true,
+    customNavHeight: 0,
+    safeBottomFix: false
+  }
+};
+const Input$1 = {
+  // index 组件
+  input: {
+    value: "",
+    type: "text",
+    fixed: false,
+    disabled: false,
+    disabledColor: "#f5f7fa",
+    clearable: false,
+    password: false,
+    maxlength: 140,
+    placeholder: null,
+    placeholderClass: "input-placeholder",
+    placeholderStyle: "color: #c0c4cc",
+    showWordLimit: false,
+    confirmType: "done",
+    confirmHold: false,
+    holdKeyboard: false,
+    focus: false,
+    autoBlur: false,
+    disableDefaultPadding: false,
+    cursor: -1,
+    cursorSpacing: 30,
+    selectionStart: -1,
+    selectionEnd: -1,
+    adjustPosition: true,
+    inputAlign: "left",
+    fontSize: "15px",
+    color: "#303133",
+    prefixIcon: "",
+    prefixIconStyle: "",
+    suffixIcon: "",
+    suffixIconStyle: "",
+    border: "surround",
+    readonly: false,
+    shape: "square",
+    formatter: null,
+    cursorColor: ""
+  }
+};
+const Keyboard$1 = {
+  // 键盘组件
+  keyboard: {
+    mode: "number",
+    dotDisabled: false,
+    tooltip: true,
+    showTips: true,
+    tips: "",
+    showCancel: true,
+    showConfirm: true,
+    random: false,
+    safeAreaInsetBottom: true,
+    closeOnClickOverlay: true,
+    show: false,
+    overlay: true,
+    zIndex: 10075,
+    cancelText: "取消",
+    confirmText: "确定",
+    autoChange: false
+  }
+};
+const Line$1 = {
+  // line组件
+  line: {
+    color: "#d6d7d9",
+    length: "100%",
+    direction: "row",
+    hairline: true,
+    margin: 0,
+    dashed: false
+  }
+};
+const LineProgress$1 = {
+  // lineProgress 组件
+  lineProgress: {
+    activeColor: "#19be6b",
+    inactiveColor: "#ececec",
+    percentage: 0,
+    showText: true,
+    height: 12,
+    fromRight: false
+  }
+};
+const {
+  color: color$6
+} = config$1;
+const Link$1 = {
+  // link超链接组件props参数
+  link: {
+    color: color$6["u-primary"],
+    fontSize: 15,
+    underLine: false,
+    href: "",
+    mpTips: "链接已复制，请在浏览器打开",
+    lineColor: "",
+    text: ""
+  }
+};
+const List$1 = {
+  // list 组件
+  list: {
+    showScrollbar: false,
+    lowerThreshold: 50,
+    upperThreshold: 0,
+    scrollTop: 0,
+    offsetAccuracy: 10,
+    enableFlex: false,
+    pagingEnabled: false,
+    scrollable: true,
+    scrollIntoView: "",
+    scrollWithAnimation: false,
+    enableBackToTop: false,
+    height: 0,
+    width: 0,
+    preLoadScreen: 1
+  }
+};
+const ListItem$1 = {
+  // listItem 组件
+  listItem: {
+    anchor: ""
+  }
+};
+const {
+  color: color$5
+} = config$1;
+const LoadingIcon$1 = {
+  // loading-icon加载中图标组件
+  loadingIcon: {
+    show: true,
+    color: color$5["u-tips-color"],
+    textColor: color$5["u-tips-color"],
+    vertical: false,
+    mode: "spinner",
+    size: 24,
+    textSize: 15,
+    text: "",
+    timingFunction: "ease-in-out",
+    duration: 1200,
+    inactiveColor: ""
+  }
+};
+const LoadingPage$1 = {
+  // loading-page组件
+  loadingPage: {
+    loadingText: "正在加载",
+    image: "",
+    loadingMode: "circle",
+    loading: false,
+    bgColor: "#ffffff",
+    color: "#C8C8C8",
+    fontSize: 19,
+    iconSize: 28,
+    loadingColor: "#C8C8C8",
+    zIndex: 10
+  }
+};
+const Loadmore$1 = {
+  // loadmore 组件
+  loadmore: {
+    status: "loadmore",
+    bgColor: "transparent",
+    icon: true,
+    fontSize: 14,
+    iconSize: 17,
+    color: "#606266",
+    loadingIcon: "spinner",
+    loadmoreText: "加载更多",
+    loadingText: "正在加载...",
+    nomoreText: "没有更多了",
+    isDot: false,
+    iconColor: "#b7b7b7",
+    marginTop: 10,
+    marginBottom: 10,
+    height: "auto",
+    line: false,
+    lineColor: "#E6E8EB",
+    dashed: false
+  }
+};
+const Modal$1 = {
+  // modal 组件
+  modal: {
+    show: false,
+    title: "",
+    content: "",
+    confirmText: "确认",
+    cancelText: "取消",
+    showConfirmButton: true,
+    showCancelButton: false,
+    confirmColor: "#2979ff",
+    cancelColor: "#606266",
+    buttonReverse: false,
+    zoom: true,
+    asyncClose: false,
+    closeOnClickOverlay: false,
+    negativeTop: 0,
+    width: "650rpx",
+    confirmButtonShape: "",
+    duration: 400,
+    contentTextAlign: "left",
+    asyncCloseTip: "操作中...",
+    asyncCancelClose: false,
+    contentStyle: {}
+  }
+};
+const Navbar$1 = {
+  // navbar 组件
+  navbar: {
+    safeAreaInsetTop: true,
+    placeholder: false,
+    fixed: true,
+    border: false,
+    leftIcon: "arrow-left",
+    leftText: "",
+    rightText: "",
+    rightIcon: "",
+    title: "",
+    titleColor: "",
+    bgColor: "#ffffff",
+    titleWidth: "400rpx",
+    height: "44px",
+    leftIconSize: 20,
+    leftIconColor: color$8.mainColor,
+    autoBack: false,
+    titleStyle: ""
+  }
+};
+const NoNetwork$1 = {
+  // noNetwork
+  noNetwork: {
+    tips: "哎呀，网络信号丢失",
+    zIndex: "",
+    image: "data:image/png;base64,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"
+  }
+};
+const NoticeBar$1 = {
+  // noticeBar
+  noticeBar: {
+    text: [],
+    direction: "row",
+    step: false,
+    icon: "volume",
+    mode: "",
+    color: "#f9ae3d",
+    bgColor: "#fdf6ec",
+    speed: 80,
+    fontSize: 14,
+    duration: 2e3,
+    disableTouch: true,
+    url: "",
+    linkType: "navigateTo",
+    justifyContent: "flex-start"
+  }
+};
+const Notify$1 = {
+  // notify组件
+  notify: {
+    top: 0,
+    type: "primary",
+    color: "#ffffff",
+    bgColor: "",
+    message: "",
+    duration: 3e3,
+    fontSize: 15,
+    safeAreaInsetTop: false
+  }
+};
+const NumberBox$1 = {
+  // 步进器组件
+  numberBox: {
+    name: "",
+    value: 0,
+    min: 1,
+    max: Number.MAX_SAFE_INTEGER,
+    step: 1,
+    integer: false,
+    disabled: false,
+    disabledInput: false,
+    asyncChange: false,
+    inputWidth: 35,
+    showMinus: true,
+    showPlus: true,
+    decimalLength: null,
+    longPress: true,
+    color: "#323233",
+    buttonWidth: 30,
+    buttonSize: 30,
+    buttonRadius: "0px",
+    bgColor: "#EBECEE",
+    disabledBgColor: "#f7f8fa",
+    inputBgColor: "#EBECEE",
+    cursorSpacing: 100,
+    disableMinus: false,
+    disablePlus: false,
+    iconStyle: "",
+    miniMode: false
+  }
+};
+const NumberKeyboard$1 = {
+  // 数字键盘
+  numberKeyboard: {
+    mode: "number",
+    dotDisabled: false,
+    random: false
+  }
+};
+const Overlay$1 = {
+  // overlay组件
+  overlay: {
+    show: false,
+    zIndex: 10070,
+    duration: 300,
+    opacity: 0.5
+  }
+};
+const Parse$1 = {
+  // parse
+  parse: {
+    copyLink: true,
+    errorImg: "",
+    lazyLoad: false,
+    loadingImg: "",
+    pauseVideo: true,
+    previewImg: true,
+    setTitle: true,
+    showImgMenu: true
+  }
+};
+const Picker$1 = {
+  // picker
+  picker: {
+    show: false,
+    popupMode: "bottom",
+    showToolbar: true,
+    title: "",
+    columns: [],
+    loading: false,
+    itemHeight: 44,
+    cancelText: "取消",
+    confirmText: "确定",
+    cancelColor: "#909193",
+    confirmColor: "",
+    visibleItemCount: 5,
+    keyName: "text",
+    valueName: "value",
+    closeOnClickOverlay: false,
+    defaultIndex: [],
+    immediateChange: true,
+    zIndex: 10076,
+    disabled: false,
+    disabledColor: "",
+    placeholder: "请选择",
+    inputProps: {},
+    bgColor: "",
+    round: 0,
+    duration: 300,
+    overlayOpacity: 0.5
+  }
+};
+const Popup$1 = {
+  // popup组件
+  popup: {
+    show: false,
+    overlay: true,
+    mode: "bottom",
+    duration: 300,
+    closeable: false,
+    overlayStyle: {},
+    closeOnClickOverlay: true,
+    zIndex: 10075,
+    safeAreaInsetBottom: true,
+    safeAreaInsetTop: false,
+    closeIconPos: "top-right",
+    round: 0,
+    zoom: true,
+    bgColor: "",
+    overlayOpacity: 0.5
+  }
+};
+const Radio$1 = {
+  // radio组件
+  radio: {
+    name: "",
+    shape: "",
+    disabled: "",
+    labelDisabled: "",
+    activeColor: "",
+    inactiveColor: "",
+    iconSize: "",
+    labelSize: "",
+    label: "",
+    labelColor: "",
+    size: "",
+    iconColor: "",
+    placement: ""
+  }
+};
+const RadioGroup$1 = {
+  // radio-group组件
+  radioGroup: {
+    value: "",
+    disabled: false,
+    shape: "circle",
+    activeColor: "#2979ff",
+    inactiveColor: "#c8c9cc",
+    name: "",
+    size: 18,
+    placement: "row",
+    label: "",
+    labelColor: "#303133",
+    labelSize: 14,
+    labelDisabled: false,
+    iconColor: "#ffffff",
+    iconSize: 12,
+    borderBottom: false,
+    iconPlacement: "left",
+    gap: "10px"
+  }
+};
+const Rate$1 = {
+  // rate组件
+  rate: {
+    value: 1,
+    count: 5,
+    disabled: false,
+    size: 18,
+    inactiveColor: "#b2b2b2",
+    activeColor: "#FA3534",
+    gutter: 4,
+    minCount: 1,
+    allowHalf: false,
+    activeIcon: "star-fill",
+    inactiveIcon: "star",
+    touchable: true
+  }
+};
+const ReadMore$1 = {
+  // readMore
+  readMore: {
+    showHeight: 400,
+    toggle: false,
+    closeText: "展开阅读全文",
+    openText: "收起",
+    color: "#2979ff",
+    fontSize: 14,
+    textIndent: "2em",
+    name: ""
+  }
+};
+const Row$1 = {
+  // row
+  row: {
+    gutter: 0,
+    justify: "start",
+    align: "center"
+  }
+};
+const RowNotice$1 = {
+  // rowNotice
+  rowNotice: {
+    text: "",
+    icon: "volume",
+    mode: "",
+    color: "#f9ae3d",
+    bgColor: "#fdf6ec",
+    fontSize: 14,
+    speed: 80
+  }
+};
+const ScrollList$1 = {
+  // scrollList
+  scrollList: {
+    indicatorWidth: 50,
+    indicatorBarWidth: 20,
+    indicator: true,
+    indicatorColor: "#f2f2f2",
+    indicatorActiveColor: "#3c9cff",
+    indicatorStyle: ""
+  }
+};
+const Search$1 = {
+  // search
+  search: {
+    shape: "round",
+    bgColor: "#f2f2f2",
+    placeholder: "请输入关键字",
+    clearabled: true,
+    focus: false,
+    showAction: true,
+    actionStyle: {},
+    actionText: "搜索",
+    inputAlign: "left",
+    inputStyle: {},
+    disabled: false,
+    borderColor: "transparent",
+    searchIconColor: "#909399",
+    searchIconSize: 22,
+    color: "#606266",
+    placeholderColor: "#909399",
+    searchIcon: "search",
+    iconPosition: "left",
+    margin: "0",
+    animation: false,
+    value: "",
+    maxlength: "-1",
+    height: 32,
+    label: null
+  }
+};
+const Section$1 = {
+  // u-section组件
+  section: {
+    title: "",
+    subTitle: "更多",
+    right: true,
+    fontSize: 15,
+    bold: true,
+    color: "#303133",
+    subColor: "#909399",
+    showLine: true,
+    lineColor: "",
+    arrow: true
+  }
+};
+const Skeleton$1 = {
+  // skeleton
+  skeleton: {
+    loading: true,
+    animate: true,
+    rows: 0,
+    rowsWidth: "100%",
+    rowsHeight: 18,
+    title: true,
+    titleWidth: "50%",
+    titleHeight: 18,
+    avatar: false,
+    avatarSize: 32,
+    avatarShape: "circle"
+  }
+};
+const Slider$1 = {
+  // slider组件
+  slider: {
+    value: 0,
+    blockSize: 18,
+    min: 0,
+    max: 100,
+    step: 1,
+    activeColor: "#2979ff",
+    inactiveColor: "#c0c4cc",
+    blockColor: "#ffffff",
+    showValue: false,
+    disabled: false,
+    blockStyle: {},
+    useNative: false,
+    height: "2px"
+  }
+};
+const StatusBar$1 = {
+  // statusBar
+  statusBar: {
+    bgColor: "transparent",
+    height: 0
+  }
+};
+const Steps$1 = {
+  // steps组件
+  steps: {
+    direction: "row",
+    current: 0,
+    activeColor: "#3c9cff",
+    inactiveColor: "#969799",
+    activeIcon: "",
+    inactiveIcon: "",
+    dot: false
+  }
+};
+const StepsItem$1 = {
+  // steps-item组件
+  stepsItem: {
+    title: "",
+    desc: "",
+    iconSize: 17,
+    error: false
+  }
+};
+const Sticky$1 = {
+  // sticky组件
+  sticky: {
+    offsetTop: 0,
+    customNavHeight: 0,
+    disabled: false,
+    bgColor: "transparent",
+    zIndex: "",
+    index: ""
+  }
+};
+const Subsection$1 = {
+  // subsection组件
+  subsection: {
+    list: [],
+    current: 0,
+    activeColor: "#3c9cff",
+    inactiveColor: "#303133",
+    mode: "button",
+    fontSize: 12,
+    bold: true,
+    bgColor: "#eeeeef",
+    keyName: "name",
+    activeColorKeyName: "activeColorKey",
+    inactiveColorKeyName: "inactiveColorKey",
+    disabled: false
+  }
+};
+const SwipeAction$1 = {
+  // swipe-action组件
+  swipeAction: {
+    autoClose: true
+  }
+};
+const SwipeActionItem$1 = {
+  // swipeActionItem 组件
+  swipeActionItem: {
+    show: false,
+    closeOnClick: true,
+    name: "",
+    disabled: false,
+    threshold: 20,
+    autoClose: true,
+    options: [],
+    duration: 300
+  }
+};
+const Swiper$1 = {
+  // swiper 组件
+  swiper: {
+    list: [],
+    indicator: false,
+    indicatorActiveColor: "#FFFFFF",
+    indicatorInactiveColor: "rgba(255, 255, 255, 0.35)",
+    indicatorStyle: "",
+    indicatorMode: "line",
+    autoplay: true,
+    current: 0,
+    currentItemId: "",
+    interval: 3e3,
+    duration: 300,
+    circular: false,
+    previousMargin: 0,
+    nextMargin: 0,
+    acceleration: false,
+    displayMultipleItems: 1,
+    easingFunction: "default",
+    keyName: "url",
+    imgMode: "aspectFill",
+    height: 130,
+    bgColor: "#f3f4f6",
+    radius: 4,
+    loading: false,
+    showTitle: false
+  }
+};
+const SwipterIndicator$1 = {
+  // swiperIndicator 组件
+  swiperIndicator: {
+    length: 0,
+    current: 0,
+    indicatorActiveColor: "",
+    indicatorInactiveColor: "",
+    indicatorMode: "line"
+  }
+};
+const Switch$1 = {
+  // switch
+  switch: {
+    loading: false,
+    disabled: false,
+    size: 25,
+    activeColor: "#2979ff",
+    inactiveColor: "#ffffff",
+    value: false,
+    activeValue: true,
+    inactiveValue: false,
+    asyncChange: false,
+    space: 0
+  }
+};
+const Tabbar$1 = {
+  // tabbar
+  tabbar: {
+    value: null,
+    safeAreaInsetBottom: true,
+    border: true,
+    zIndex: 1,
+    activeColor: "#1989fa",
+    inactiveColor: "#7d7e80",
+    fixed: true,
+    placeholder: true
+  }
+};
+const TabbarItem$1 = {
+  //
+  tabbarItem: {
+    name: null,
+    icon: "",
+    badge: null,
+    dot: false,
+    text: "",
+    badgeStyle: "top: 6px;right:2px;"
+  }
+};
+const Tabs$1 = {
+  //
+  tabs: {
+    duration: 300,
+    list: [],
+    lineColor: "",
+    activeStyle: {
+      color: "#303133"
+    },
+    inactiveStyle: {
+      color: "#606266"
+    },
+    lineWidth: 20,
+    lineHeight: 3,
+    lineBgSize: "cover",
+    itemStyle: {
+      height: "44px"
+    },
+    scrollable: true,
+    current: 0,
+    keyName: "name",
+    iconStyle: {}
+  }
+};
+const Tag$1 = {
+  // tag 组件
+  tag: {
+    type: "primary",
+    disabled: false,
+    size: "medium",
+    shape: "square",
+    text: "",
+    bgColor: "",
+    color: "",
+    borderColor: "",
+    closeColor: "#C6C7CB",
+    name: "",
+    plainFill: false,
+    plain: false,
+    closable: false,
+    show: true,
+    icon: "",
+    iconColor: "",
+    textSize: "",
+    height: "",
+    padding: "",
+    borderRadius: "",
+    autoBgColor: 0
+  }
+};
+const Text$1 = {
+  // text 组件
+  text: {
+    type: "",
+    show: true,
+    text: "",
+    prefixIcon: "",
+    suffixIcon: "",
+    mode: "",
+    href: "",
+    format: "",
+    call: false,
+    openType: "",
+    bold: false,
+    block: false,
+    lines: "",
+    color: "#303133",
+    size: 15,
+    iconStyle: {
+      fontSize: "15px"
+    },
+    decoration: "none",
+    margin: 0,
+    lineHeight: "",
+    align: "left",
+    wordWrap: "normal",
+    flex1: true
+  }
+};
+const Textarea$1 = {
+  // textarea 组件
+  textarea: {
+    value: "",
+    placeholder: "",
+    placeholderClass: "textarea-placeholder",
+    placeholderStyle: "color: #c0c4cc",
+    height: 70,
+    confirmType: "done",
+    disabled: false,
+    count: false,
+    focus: false,
+    autoHeight: false,
+    fixed: false,
+    cursorSpacing: 0,
+    cursor: "",
+    showConfirmBar: true,
+    selectionStart: -1,
+    selectionEnd: -1,
+    adjustPosition: true,
+    disableDefaultPadding: false,
+    holdKeyboard: false,
+    maxlength: 140,
+    border: "surround",
+    formatter: null
+  }
+};
+const Toast$1 = {
+  // toast组件
+  toast: {
+    zIndex: 10090,
+    loading: false,
+    message: "",
+    icon: "",
+    type: "",
+    loadingMode: "",
+    show: "",
+    overlay: false,
+    position: "center",
+    params: {},
+    duration: 2e3,
+    isTab: false,
+    url: "",
+    callback: null,
+    back: false
+  }
+};
+const Toolbar$1 = {
+  // toolbar 组件
+  toolbar: {
+    show: true,
+    cancelText: "取消",
+    confirmText: "确认",
+    cancelColor: "#909193",
+    confirmColor: "",
+    title: ""
+  }
+};
+const Tooltip$1 = {
+  // tooltip 组件
+  tooltip: {
+    text: "",
+    copyText: "",
+    size: 14,
+    color: "#606266",
+    bgColor: "transparent",
+    direction: "top",
+    zIndex: 10071,
+    showCopy: true,
+    buttons: [],
+    overlay: true,
+    showToast: true
+  }
+};
+const Transition$1 = {
+  // transition动画组件的props
+  transition: {
+    show: false,
+    mode: "fade",
+    duration: "300",
+    timingFunction: "ease-out"
+  }
+};
+const Upload$1 = {
+  // upload组件
+  upload: {
+    accept: "image",
+    extension: [],
+    capture: ["album", "camera"],
+    compressed: true,
+    camera: "back",
+    maxDuration: 60,
+    uploadIcon: "camera-fill",
+    uploadIconColor: "#D3D4D6",
+    useBeforeRead: false,
+    previewFullImage: true,
+    maxCount: 52,
+    disabled: false,
+    imageMode: "aspectFill",
+    name: "",
+    sizeType: ["original", "compressed"],
+    multiple: false,
+    deletable: true,
+    maxSize: Number.MAX_VALUE,
+    fileList: [],
+    uploadText: "",
+    width: 80,
+    height: 80,
+    previewImage: true,
+    autoDelete: false,
+    autoUpload: false,
+    autoUploadApi: "",
+    autoUploadAuthUrl: "",
+    autoUploadDriver: "",
+    autoUploadHeader: {},
+    getVideoThumb: false,
+    customAfterAutoUpload: false,
+    videoPreviewObjectFit: "cover"
+  }
+};
+const props$g = {
+  ...ActionSheet$1,
+  ...Album$1,
+  ...Alert$1,
+  ...Avatar$1,
+  ...AvatarGroup$1,
+  ...Backtop$1,
+  ...Badge$1,
+  ...Button$1,
+  ...Calendar$1,
+  ...CarKeyboard$1,
+  ...Card$1,
+  ...Cell$1,
+  ...CellGroup$1,
+  ...Checkbox$1,
+  ...CheckboxGroup$1,
+  ...CircleProgress$1,
+  ...Code$1,
+  ...CodeInput$1,
+  ...Col$1,
+  ...Collapse$1,
+  ...CollapseItem$1,
+  ...ColumnNotice$1,
+  ...CountDown$1,
+  ...CountTo$1,
+  ...DatetimePicker$1,
+  ...Divider$1,
+  ...Empty$1,
+  ...Form$1,
+  ...GormItem$1,
+  ...Gap$1,
+  ...Grid$1,
+  ...GridItem$1,
+  ...Icon$1,
+  ...Image$1,
+  ...IndexAnchor$1,
+  ...IndexList$1,
+  ...Input$1,
+  ...Keyboard$1,
+  ...Line$1,
+  ...LineProgress$1,
+  ...Link$1,
+  ...List$1,
+  ...ListItem$1,
+  ...LoadingIcon$1,
+  ...LoadingPage$1,
+  ...Loadmore$1,
+  ...Modal$1,
+  ...Navbar$1,
+  ...NoNetwork$1,
+  ...NoticeBar$1,
+  ...Notify$1,
+  ...NumberBox$1,
+  ...NumberKeyboard$1,
+  ...Overlay$1,
+  ...Parse$1,
+  ...Picker$1,
+  ...Popup$1,
+  ...Radio$1,
+  ...RadioGroup$1,
+  ...Rate$1,
+  ...ReadMore$1,
+  ...Row$1,
+  ...RowNotice$1,
+  ...ScrollList$1,
+  ...Search$1,
+  ...Section$1,
+  ...Skeleton$1,
+  ...Slider$1,
+  ...StatusBar$1,
+  ...Steps$1,
+  ...StepsItem$1,
+  ...Sticky$1,
+  ...Subsection$1,
+  ...SwipeAction$1,
+  ...SwipeActionItem$1,
+  ...Swiper$1,
+  ...SwipterIndicator$1,
+  ...Switch$1,
+  ...Tabbar$1,
+  ...TabbarItem$1,
+  ...Tabs$1,
+  ...Tag$1,
+  ...Text$1,
+  ...Textarea$1,
+  ...Toast$1,
+  ...Toolbar$1,
+  ...Tooltip$1,
+  ...Transition$1,
+  ...Upload$1
+};
+function setConfig$2(configs) {
+  shallowMerge$1(config$1, configs.config || {});
+  shallowMerge$1(props$g, configs.props || {});
+  shallowMerge$1(color$8, configs.color || {});
+  shallowMerge$1(zIndex$1, configs.zIndex || {});
+}
+if (index$1 && index$1.upuiParams) {
+  console.log("setting uview-plus");
+  let temp = index$1.upuiParams();
+  if (temp.httpIns) {
+    temp.httpIns(http$1);
+  }
+  if (temp.options) {
+    setConfig$2(temp.options);
+  }
+}
+let platform = "none";
+platform = "vue3";
+platform = "mp";
+platform = "weixin";
+const platform$1 = platform;
+let params$1 = {
+  loaded: false
+};
+const loadFont$1 = () => {
+  if (config$1.loadFontOnce) {
+    params$1.loaded = true;
+  }
+  index$1.loadFontFace({
+    global: true,
+    // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
+    family: "uicon-iconfont",
+    source: 'url("' + config$1.iconUrl + '")',
+    success() {
+    },
+    fail() {
+    }
+  });
+  if (config$1.customIcon.family) {
+    index$1.loadFontFace({
+      global: true,
+      // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
+      family: config$1.customIcon.family,
+      source: 'url("' + config$1.customIcon.url + '")',
+      success() {
+      },
+      fail() {
+      }
+    });
+  }
+  return true;
+};
+const fontUtil$1 = {
+  params: params$1,
+  loadFont: loadFont$1
+};
+let themeType = ["primary", "success", "error", "warning", "info"];
+function setConfig$1(configs) {
+  index.shallowMerge(config$1, configs.config || {});
+  index.shallowMerge(props$g, configs.props || {});
+  index.shallowMerge(color$8, configs.color || {});
+  index.shallowMerge(zIndex$1, configs.zIndex || {});
+}
+index.setConfig = setConfig$1;
+const $u = {
+  route: route$1,
+  date: index.timeFormat,
+  // 另名date
+  colorGradient: colorGradient$2.colorGradient,
+  hexToRgb: colorGradient$2.hexToRgb,
+  rgbToHex: colorGradient$2.rgbToHex,
+  colorToRgba: colorGradient$2.colorToRgba,
+  test: test$1,
+  type: themeType,
+  http: http$1,
+  config: config$1,
+  // uview-plus配置信息相关，比如版本号
+  zIndex: zIndex$1,
+  debounce,
+  throttle,
+  calc,
+  mixin: mixin$1,
+  mpMixin: mpMixin$1,
+  props: props$g,
+  ...index,
+  color: color$8,
+  platform: platform$1
+};
+const install = (Vue, upuiParams = "") => {
+  if (upuiParams) {
+    index$1.upuiParams = upuiParams;
+    let temp = upuiParams();
+    if (temp.httpIns) {
+      temp.httpIns(http$1);
+    }
+    if (temp.options) {
+      setConfig$1(temp.options);
+    }
+  }
+  index$1.$u = $u;
+  Vue.config.globalProperties.$u = $u;
+  Vue.mixin(mixin$1);
+};
+const uviewPlus = {
+  install
+};
+const props$f = defineMixin$1({
+  props: {
+    // 当前展开面板的name，非手风琴模式：[<string | number>]，手风琴模式：string | number
+    value: {
+      type: [String, Number, Array, null],
+      default: () => props$g.collapse.value
+    },
+    // 是否手风琴模式
+    accordion: {
+      type: Boolean,
+      default: () => props$g.collapse.accordion
+    },
+    // 是否显示外边框
+    border: {
+      type: Boolean,
+      default: () => props$g.collapse.border
+    }
+  }
+});
+const gradient = [
+  "linear-gradient(135deg, #235BF7 0%, #d55fc6 100%)",
+  //default
+  "linear-gradient(135deg, #e9aa4d 0%, #f8e0be 100%)",
+  //warning
+  "linear-gradient(135deg, #0b4590 0%,  #15afba 100%)",
+  //info
+  "linear-gradient(  #ffffff)"
+  //plain
+];
+const activeGradient = [
+  "linear-gradient(135deg, #1a4bd6 0%, #c14cb2 100%)",
+  // default active
+  "linear-gradient(135deg, #d6993a 0%, #e6d0ab 100%)",
+  // warning active
+  "linear-gradient(135deg, #093874 0%, #1195a1 100%)",
+  // info active
+  "linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%)"
+  // plain active
+];
+const color$4 = [
+  " #527afd ",
+  " #53defd",
+  " #54e185",
+  " #ffb258",
+  " #e5b1d9",
+  " #f06060",
+  " #9cf16e",
+  " #ffffff",
+  "rgba(61, 53, 53, 0.97)"
+];
+const activeColor = [
+  " #4269e6 ",
+  // purple active
+  " #48c8e6",
+  // blue active
+  " #49c874",
+  // green active
+  " #e69f4d",
+  // orange active
+  " #d8a1cc",
+  // pink active
+  " #d95353",
+  // red active
+  " #8cd863",
+  // light-green active
+  " #f5f5f5",
+  // white active
+  "rgba(48, 42, 42, 0.97)"
+  // black active
+];
+const textColor = [" #ffffff", " #000000", "gray"];
+const _ButtonTypeMap = /* @__PURE__ */ new Map([
+  [
+    "default",
+    {
+      bgColor: gradient[0],
+      textColor: textColor[1],
+      activeColor: activeGradient[0]
+    }
+  ],
+  [
+    "warning",
+    {
+      bgColor: gradient[1],
+      textColor: textColor[1],
+      activeColor: activeGradient[1]
+    }
+  ],
+  [
+    "info",
+    {
+      bgColor: gradient[2],
+      textColor: textColor[1],
+      activeColor: activeGradient[2]
+    }
+  ],
+  [
+    "plain",
+    {
+      bgColor: gradient[3],
+      textColor: textColor[1],
+      activeColor: activeGradient[3]
+    }
+  ],
+  [
+    "purple",
+    { bgColor: color$4[0], textColor: textColor[1], activeColor: activeColor[0] }
+  ],
+  [
+    "blue",
+    { bgColor: color$4[1], textColor: textColor[1], activeColor: activeColor[1] }
+  ],
+  [
+    "green",
+    { bgColor: color$4[2], textColor: textColor[1], activeColor: activeColor[2] }
+  ],
+  [
+    "orange",
+    { bgColor: color$4[3], textColor: textColor[1], activeColor: activeColor[3] }
+  ],
+  [
+    "pink",
+    { bgColor: color$4[4], textColor: textColor[1], activeColor: activeColor[4] }
+  ],
+  [
+    "red",
+    { bgColor: color$4[5], textColor: textColor[1], activeColor: activeColor[5] }
+  ],
+  [
+    "light-green",
+    { bgColor: color$4[6], textColor: textColor[1], activeColor: activeColor[6] }
+  ],
+  [
+    "white",
+    { bgColor: color$4[7], textColor: textColor[1], activeColor: activeColor[7] }
+  ],
+  [
+    "black",
+    { bgColor: color$4[8], textColor: textColor[0], activeColor: activeColor[8] }
+  ]
+]);
+function getContrastTextColor(color2) {
+  try {
+    const rgb = parseColorToRgb(color2);
+    if (!rgb)
+      return "black";
+    const brightness = calculateBrightness(rgb);
+    return brightness > 128 ? "black" : "white";
+  } catch {
+    return "black";
+  }
+}
+function parseColorToRgb(color2) {
+  if (!color2)
+    return null;
+  color2 = color2.trim().toLowerCase();
+  if (color2.startsWith("#")) {
+    return parseHexColor(color2);
+  }
+  if (color2.startsWith("rgb(")) {
+    return parseRgbColor(color2);
+  }
+  if (color2.startsWith("rgba(")) {
+    return parseRgbaColor(color2);
+  }
+  if (/^[a-z]+$/.test(color2)) {
+    return parseNamedColor(color2);
+  }
+  if (color2.includes("gradient") || color2.includes("url")) {
+    return { r: 255, g: 255, b: 255 };
+  }
+  return null;
+}
+function parseHexColor(hex3) {
+  hex3 = hex3.replace("#", "");
+  if (hex3.length === 3) {
+    hex3 = hex3.split("").map((c) => c + c).join("");
+  }
+  if (hex3.length === 6) {
+    return {
+      r: parseInt(hex3.slice(0, 2), 16),
+      g: parseInt(hex3.slice(2, 4), 16),
+      b: parseInt(hex3.slice(4, 6), 16)
+    };
+  }
+  if (hex3.length === 8) {
+    return {
+      r: parseInt(hex3.slice(0, 2), 16),
+      g: parseInt(hex3.slice(2, 4), 16),
+      b: parseInt(hex3.slice(4, 6), 16)
+    };
+  }
+  return null;
+}
+function parseRgbColor(rgb) {
+  const match = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  if (match) {
+    return {
+      r: Math.min(255, Math.max(0, parseInt(match[1]))),
+      g: Math.min(255, Math.max(0, parseInt(match[2]))),
+      b: Math.min(255, Math.max(0, parseInt(match[3])))
+    };
+  }
+  return null;
+}
+function parseRgbaColor(rgba) {
+  const match = rgba.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+  if (match) {
+    return {
+      r: Math.min(255, Math.max(0, parseInt(match[1]))),
+      g: Math.min(255, Math.max(0, parseInt(match[2]))),
+      b: Math.min(255, Math.max(0, parseInt(match[3])))
+    };
+  }
+  return null;
+}
+function parseNamedColor(name) {
+  const colorMap = {
+    black: "#000000",
+    white: "#ffffff",
+    red: "#ff0000",
+    green: "#008000",
+    blue: "#0000ff",
+    yellow: "#ffff00",
+    purple: "#800080",
+    orange: "#ffa500",
+    pink: "#ffc0cb",
+    gray: "#808080",
+    grey: "#808080",
+    brown: "#a52a2a",
+    cyan: "#00ffff",
+    magenta: "#ff00ff",
+    silver: "#c0c0c0",
+    gold: "#ffd700",
+    maroon: "#800000",
+    navy: "#000080",
+    teal: "#008080",
+    lime: "#00ff00",
+    olive: "#808000",
+    aqua: "#00ffff",
+    fuchsia: "#ff00ff"
+  };
+  const hexColor = colorMap[name];
+  if (hexColor) {
+    return parseHexColor(hexColor);
+  }
+  return null;
+}
+function calculateBrightness(rgb) {
+  return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1e3;
+}
+function getDarkerActiveColor(baseColor, intensity = 0.2) {
+  try {
+    const rgb = parseColorToRgb(baseColor);
+    if (!rgb)
+      return baseColor;
+    const darkerRgb = {
+      r: Math.max(0, Math.floor(rgb.r * (1 - intensity))),
+      g: Math.max(0, Math.floor(rgb.g * (1 - intensity))),
+      b: Math.max(0, Math.floor(rgb.b * (1 - intensity)))
+    };
+    if (baseColor.startsWith("rgb(")) {
+      return `rgb(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b})`;
+    } else if (baseColor.startsWith("rgba(")) {
+      const alphaMatch = baseColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+      if (alphaMatch) {
+        return `rgba(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b}, ${alphaMatch[4]})`;
+      }
+    } else if (baseColor.startsWith("#")) {
+      return `#${darkerRgb.r.toString(16).padStart(2, "0")}${darkerRgb.g.toString(16).padStart(2, "0")}${darkerRgb.b.toString(16).padStart(2, "0")}`;
+    }
+    return `rgb(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b})`;
+  } catch {
+    return baseColor;
+  }
+}
+const baseEmits = ["click", "onClick", "change", "onChange", "onBlur", "blur", "update:modelValue"];
+function emitClick(emit2, ...args) {
+  emit2("onClick", ...args);
+  emit2("click", ...args);
+}
+function emitChange(emit2, ...args) {
+  emit2("onChange", ...args);
+  emit2("change", ...args);
+}
+function emitBlur(emit2, ...args) {
+  emit2("onBlur", ...args);
+  emit2("blur", ...args);
+}
+function emitVModel(emit2, ...args) {
+  emit2("update:modelValue", ...args);
+}
+const props$e = defineMixin$1({
+  props: {
+    // input的label提示语
+    label: {
+      type: String,
+      default: () => props$g.formItem.label
+    },
+    // 绑定的值
+    prop: {
+      type: String,
+      default: () => props$g.formItem.prop
+    },
+    // 绑定的规则
+    rules: {
+      type: Array,
+      default: () => props$g.formItem.rules
+    },
+    // 是否显示表单域的下划线边框
+    borderBottom: {
+      type: [String, Boolean],
+      default: () => props$g.formItem.borderBottom
+    },
+    // label的位置，left-左边，top-上边
+    labelPosition: {
+      type: String,
+      default: () => props$g.formItem.labelPosition
+    },
+    // label的宽度，单位px
+    labelWidth: {
+      type: [String, Number],
+      default: () => props$g.formItem.labelWidth
+    },
+    // 右侧图标
+    rightIcon: {
+      type: String,
+      default: () => props$g.formItem.rightIcon
+    },
+    // 左侧图标
+    leftIcon: {
+      type: String,
+      default: () => props$g.formItem.leftIcon
+    },
+    // 是否显示左边的必填星号，只作显示用，具体校验必填的逻辑，请在rules中配置
+    required: {
+      type: Boolean,
+      default: () => props$g.formItem.required
+    },
+    leftIconStyle: {
+      type: [String, Object],
+      default: () => props$g.formItem.leftIconStyle
+    }
+  }
+});
+const props$d = defineMixin$1({
+  props: {
+    // 当前form的需要验证字段的集合
+    model: {
+      type: Object,
+      default: () => props$g.form.model
+    },
+    // 验证规则
+    rules: {
+      type: [Object, Function, Array],
+      default: () => props$g.form.rules
+    },
+    // 有错误时的提示方式，message-提示信息，toast-进行toast提示
+    // border-bottom-下边框呈现红色，none-无提示
+    errorType: {
+      type: String,
+      default: () => props$g.form.errorType
+    },
+    // 是否显示表单域的下划线边框
+    borderBottom: {
+      type: Boolean,
+      default: () => props$g.form.borderBottom
+    },
+    // label的位置，left-左边，top-上边
+    labelPosition: {
+      type: String,
+      default: () => props$g.form.labelPosition
+    },
+    // label的宽度，单位px
+    labelWidth: {
+      type: [String, Number],
+      default: () => props$g.form.labelWidth
+    },
+    // lable字体的对齐方式
+    labelAlign: {
+      type: String,
+      default: () => props$g.form.labelAlign
+    },
+    // lable的样式，对象形式
+    labelStyle: {
+      type: Object,
+      default: () => props$g.form.labelStyle
+    }
+  }
+});
+const formatRegExp$1 = /%[sdj%]/g;
+let warning$1 = function warning2() {
+};
+if (typeof process !== "undefined" && process.env && true && typeof window !== "undefined" && typeof document !== "undefined") {
+  warning$1 = function warning3(type2, errors) {
+    if (typeof console !== "undefined" && console.warn) {
+      if (errors.every((e2) => typeof e2 === "string")) {
+        console.warn(type2, errors);
+      }
+    }
+  };
+}
+function convertFieldsError$1(errors) {
+  if (!errors || !errors.length)
+    return null;
+  const fields = {};
+  errors.forEach((error2) => {
+    const { field } = error2;
+    fields[field] = fields[field] || [];
+    fields[field].push(error2);
+  });
+  return fields;
+}
+function format$1() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+  let i = 1;
+  const f2 = args[0];
+  const len = args.length;
+  if (typeof f2 === "function") {
+    return f2.apply(null, args.slice(1));
+  }
+  if (typeof f2 === "string") {
+    let str = String(f2).replace(formatRegExp$1, (x) => {
+      if (x === "%%") {
+        return "%";
+      }
+      if (i >= len) {
+        return x;
+      }
+      switch (x) {
+        case "%s":
+          return String(args[i++]);
+        case "%d":
+          return Number(args[i++]);
+        case "%j":
+          try {
+            return JSON.stringify(args[i++]);
+          } catch (_) {
+            return "[Circular]";
+          }
+          break;
+        default:
+          return x;
+      }
+    });
+    for (let arg = args[i]; i < len; arg = args[++i]) {
+      str += ` ${arg}`;
+    }
+    return str;
+  }
+  return f2;
+}
+function isNativeStringType$1(type2) {
+  return type2 === "string" || type2 === "url" || type2 === "hex" || type2 === "email" || type2 === "pattern";
+}
+function isEmptyValue$1(value, type2) {
+  if (value === void 0 || value === null) {
+    return true;
+  }
+  if (type2 === "array" && Array.isArray(value) && !value.length) {
+    return true;
+  }
+  if (isNativeStringType$1(type2) && typeof value === "string" && !value) {
+    return true;
+  }
+  return false;
+}
+function asyncParallelArray$1(arr, func2, callback) {
+  const results = [];
+  let total = 0;
+  const arrLength = arr.length;
+  function count(errors) {
+    results.push.apply(results, errors);
+    total++;
+    if (total === arrLength) {
+      callback(results);
+    }
+  }
+  arr.forEach((a) => {
+    func2(a, count);
+  });
+}
+function asyncSerialArray$1(arr, func2, callback) {
+  let index2 = 0;
+  const arrLength = arr.length;
+  function next(errors) {
+    if (errors && errors.length) {
+      callback(errors);
+      return;
+    }
+    const original = index2;
+    index2 += 1;
+    if (original < arrLength) {
+      func2(arr[original], next);
+    } else {
+      callback([]);
+    }
+  }
+  next([]);
+}
+function flattenObjArr$1(objArr) {
+  const ret = [];
+  Object.keys(objArr).forEach((k) => {
+    ret.push.apply(ret, objArr[k]);
+  });
+  return ret;
+}
+function asyncMap$1(objArr, option, func2, callback) {
+  if (option.first) {
+    const _pending = new Promise((resolve2, reject) => {
+      const next = function next2(errors) {
+        callback(errors);
+        return errors.length ? reject({
+          errors,
+          fields: convertFieldsError$1(errors)
+        }) : resolve2();
+      };
+      const flattenArr = flattenObjArr$1(objArr);
+      asyncSerialArray$1(flattenArr, func2, next);
+    });
+    _pending.catch((e2) => e2);
+    return _pending;
+  }
+  let firstFields = option.firstFields || [];
+  if (firstFields === true) {
+    firstFields = Object.keys(objArr);
+  }
+  const objArrKeys = Object.keys(objArr);
+  const objArrLength = objArrKeys.length;
+  let total = 0;
+  const results = [];
+  const pending = new Promise((resolve2, reject) => {
+    const next = function next2(errors) {
+      results.push.apply(results, errors);
+      total++;
+      if (total === objArrLength) {
+        callback(results);
+        return results.length ? reject({
+          errors: results,
+          fields: convertFieldsError$1(results)
+        }) : resolve2();
+      }
+    };
+    if (!objArrKeys.length) {
+      callback(results);
+      resolve2();
+    }
+    objArrKeys.forEach((key) => {
+      const arr = objArr[key];
+      if (firstFields.indexOf(key) !== -1) {
+        asyncSerialArray$1(arr, func2, next);
+      } else {
+        asyncParallelArray$1(arr, func2, next);
+      }
+    });
+  });
+  pending.catch((e2) => e2);
+  return pending;
+}
+function complementError$1(rule) {
+  return function(oe) {
+    if (oe && oe.message) {
+      oe.field = oe.field || rule.fullField;
+      return oe;
+    }
+    return {
+      message: typeof oe === "function" ? oe() : oe,
+      field: oe.field || rule.fullField
+    };
+  };
+}
+function deepMerge$3(target, source) {
+  if (source) {
+    for (const s2 in source) {
+      if (source.hasOwnProperty(s2)) {
+        const value = source[s2];
+        if (typeof value === "object" && typeof target[s2] === "object") {
+          target[s2] = { ...target[s2], ...value };
+        } else {
+          target[s2] = value;
+        }
+      }
+    }
+  }
+  return target;
+}
+function required$2(rule, value, source, errors, options, type2) {
+  if (rule.required && (!source.hasOwnProperty(rule.field) || isEmptyValue$1(value, type2 || rule.type))) {
+    errors.push(format$1(options.messages.required, rule.fullField));
+  }
+}
+function whitespace$1(rule, value, source, errors, options) {
+  if (/^\s+$/.test(value) || value === "") {
+    errors.push(format$1(options.messages.whitespace, rule.fullField));
+  }
+}
+const pattern$3 = {
+  // http://emailregex.com/
+  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  url: new RegExp(
+    "^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$",
+    "i"
+  ),
+  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i
+};
+var types$1 = {
+  integer: function integer(value) {
+    return /^(-)?\d+$/.test(value);
+  },
+  float: function float(value) {
+    return /^(-)?\d+(\.\d+)?$/.test(value);
+  },
+  array: function array(value) {
+    return Array.isArray(value);
+  },
+  regexp: function regexp(value) {
+    if (value instanceof RegExp) {
+      return true;
+    }
+    try {
+      return !!new RegExp(value);
+    } catch (e2) {
+      return false;
+    }
+  },
+  date: function date(value) {
+    return typeof value.getTime === "function" && typeof value.getMonth === "function" && typeof value.getYear === "function";
+  },
+  number: function number(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+    return typeof +value === "number";
+  },
+  object: function object(value) {
+    return typeof value === "object" && !types$1.array(value);
+  },
+  method: function method(value) {
+    return typeof value === "function";
+  },
+  email: function email(value) {
+    return typeof value === "string" && !!value.match(pattern$3.email) && value.length < 255;
+  },
+  url: function url(value) {
+    return typeof value === "string" && !!value.match(pattern$3.url);
+  },
+  hex: function hex(value) {
+    return typeof value === "string" && !!value.match(pattern$3.hex);
+  }
+};
+function type$2(rule, value, source, errors, options) {
+  if (rule.required && value === void 0) {
+    required$2(rule, value, source, errors, options);
+    return;
+  }
+  const custom = ["integer", "float", "array", "regexp", "object", "method", "email", "number", "date", "url", "hex"];
+  const ruleType = rule.type;
+  if (custom.indexOf(ruleType) > -1) {
+    if (!types$1[ruleType](value)) {
+      errors.push(format$1(options.messages.types[ruleType], rule.fullField, rule.type));
+    }
+  } else if (ruleType && typeof value !== rule.type) {
+    errors.push(format$1(options.messages.types[ruleType], rule.fullField, rule.type));
+  }
+}
+function range$2(rule, value, source, errors, options) {
+  const len = typeof rule.len === "number";
+  const min = typeof rule.min === "number";
+  const max = typeof rule.max === "number";
+  const spRegexp = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  let val = value;
+  let key = null;
+  const num = typeof value === "number";
+  const str = typeof value === "string";
+  const arr = Array.isArray(value);
+  if (num) {
+    key = "number";
+  } else if (str) {
+    key = "string";
+  } else if (arr) {
+    key = "array";
+  }
+  if (!key) {
+    return false;
+  }
+  if (arr) {
+    val = value.length;
+  }
+  if (str) {
+    val = value.replace(spRegexp, "_").length;
+  }
+  if (len) {
+    if (val !== rule.len) {
+      errors.push(format$1(options.messages[key].len, rule.fullField, rule.len));
+    }
+  } else if (min && !max && val < rule.min) {
+    errors.push(format$1(options.messages[key].min, rule.fullField, rule.min));
+  } else if (max && !min && val > rule.max) {
+    errors.push(format$1(options.messages[key].max, rule.fullField, rule.max));
+  } else if (min && max && (val < rule.min || val > rule.max)) {
+    errors.push(format$1(options.messages[key].range, rule.fullField, rule.min, rule.max));
+  }
+}
+const ENUM$2 = "enum";
+function enumerable$2(rule, value, source, errors, options) {
+  rule[ENUM$2] = Array.isArray(rule[ENUM$2]) ? rule[ENUM$2] : [];
+  if (rule[ENUM$2].indexOf(value) === -1) {
+    errors.push(format$1(options.messages[ENUM$2], rule.fullField, rule[ENUM$2].join(", ")));
+  }
+}
+function pattern$1$1(rule, value, source, errors, options) {
+  if (rule.pattern) {
+    if (rule.pattern instanceof RegExp) {
+      rule.pattern.lastIndex = 0;
+      if (!rule.pattern.test(value)) {
+        errors.push(format$1(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    } else if (typeof rule.pattern === "string") {
+      const _pattern = new RegExp(rule.pattern);
+      if (!_pattern.test(value)) {
+        errors.push(format$1(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    }
+  }
+}
+const rules$1 = {
+  required: required$2,
+  whitespace: whitespace$1,
+  type: type$2,
+  range: range$2,
+  enum: enumerable$2,
+  pattern: pattern$1$1
+};
+function string$2(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value, "string") && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options, "string");
+    if (!isEmptyValue$1(value, "string")) {
+      rules$1.type(rule, value, source, errors, options);
+      rules$1.range(rule, value, source, errors, options);
+      rules$1.pattern(rule, value, source, errors, options);
+      if (rule.whitespace === true) {
+        rules$1.whitespace(rule, value, source, errors, options);
+      }
+    }
+  }
+  callback(errors);
+}
+function method2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function number2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (value === "") {
+      value = void 0;
+    }
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+      rules$1.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function _boolean$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function regexp2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (!isEmptyValue$1(value)) {
+      rules$1.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function integer2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+      rules$1.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function floatFn$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+      rules$1.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function array2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value, "array") && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options, "array");
+    if (!isEmptyValue$1(value, "array")) {
+      rules$1.type(rule, value, source, errors, options);
+      rules$1.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function object2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+const ENUM$1$1 = "enum";
+function enumerable$1$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (value !== void 0) {
+      rules$1[ENUM$1$1](rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function pattern$2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value, "string") && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (!isEmptyValue$1(value, "string")) {
+      rules$1.pattern(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function date2$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+    if (!isEmptyValue$1(value)) {
+      let dateObject;
+      if (typeof value === "number") {
+        dateObject = new Date(value);
+      } else {
+        dateObject = value;
+      }
+      rules$1.type(rule, dateObject, source, errors, options);
+      if (dateObject) {
+        rules$1.range(rule, dateObject.getTime(), source, errors, options);
+      }
+    }
+  }
+  callback(errors);
+}
+function required$1$1(rule, value, callback, source, options) {
+  const errors = [];
+  const type2 = Array.isArray(value) ? "array" : typeof value;
+  rules$1.required(rule, value, source, errors, options, type2);
+  callback(errors);
+}
+function type$1$1(rule, value, callback, source, options) {
+  const ruleType = rule.type;
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value, ruleType) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options, ruleType);
+    if (!isEmptyValue$1(value, ruleType)) {
+      rules$1.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function any$1(rule, value, callback, source, options) {
+  const errors = [];
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
+    if (isEmptyValue$1(value) && !rule.required) {
+      return callback();
+    }
+    rules$1.required(rule, value, source, errors, options);
+  }
+  callback(errors);
+}
+const validators$1 = {
+  string: string$2,
+  method: method2$1,
+  number: number2$1,
+  boolean: _boolean$1,
+  regexp: regexp2$1,
+  integer: integer2$1,
+  float: floatFn$1,
+  array: array2$1,
+  object: object2$1,
+  enum: enumerable$1$1,
+  pattern: pattern$2$1,
+  date: date2$1,
+  url: type$1$1,
+  hex: type$1$1,
+  email: type$1$1,
+  required: required$1$1,
+  any: any$1
+};
+function newMessages$1() {
+  return {
+    default: "Validation error on field %s",
+    required: "%s is required",
+    enum: "%s must be one of %s",
+    whitespace: "%s cannot be empty",
+    date: {
+      format: "%s date %s is invalid for format %s",
+      parse: "%s date could not be parsed, %s is invalid ",
+      invalid: "%s date %s is invalid"
+    },
+    types: {
+      string: "%s is not a %s",
+      method: "%s is not a %s (function)",
+      array: "%s is not an %s",
+      object: "%s is not an %s",
+      number: "%s is not a %s",
+      date: "%s is not a %s",
+      boolean: "%s is not a %s",
+      integer: "%s is not an %s",
+      float: "%s is not a %s",
+      regexp: "%s is not a valid %s",
+      email: "%s is not a valid %s",
+      url: "%s is not a valid %s",
+      hex: "%s is not a valid %s"
+    },
+    string: {
+      len: "%s must be exactly %s characters",
+      min: "%s must be at least %s characters",
+      max: "%s cannot be longer than %s characters",
+      range: "%s must be between %s and %s characters"
+    },
+    number: {
+      len: "%s must equal %s",
+      min: "%s cannot be less than %s",
+      max: "%s cannot be greater than %s",
+      range: "%s must be between %s and %s"
+    },
+    array: {
+      len: "%s must be exactly %s in length",
+      min: "%s cannot be less than %s in length",
+      max: "%s cannot be greater than %s in length",
+      range: "%s must be between %s and %s in length"
+    },
+    pattern: {
+      mismatch: "%s value %s does not match pattern %s"
+    },
+    clone: function clone2() {
+      const cloned = JSON.parse(JSON.stringify(this));
+      cloned.clone = this.clone;
+      return cloned;
+    }
+  };
+}
+const messages$1 = newMessages$1();
+function Schema$1(descriptor) {
+  this.rules = null;
+  this._messages = messages$1;
+  this.define(descriptor);
+}
+Schema$1.prototype = {
+  messages: function messages2(_messages) {
+    if (_messages) {
+      this._messages = deepMerge$3(newMessages$1(), _messages);
+    }
+    return this._messages;
+  },
+  define: function define(rules2) {
+    if (!rules2) {
+      throw new Error("Cannot configure a schema with no rules");
+    }
+    if (typeof rules2 !== "object" || Array.isArray(rules2)) {
+      throw new Error("Rules must be an object");
+    }
+    this.rules = {};
+    let z;
+    let item;
+    for (z in rules2) {
+      if (rules2.hasOwnProperty(z)) {
+        item = rules2[z];
+        this.rules[z] = Array.isArray(item) ? item : [item];
+      }
+    }
+  },
+  validate: function validate(source_, o2, oc) {
+    const _this = this;
+    if (o2 === void 0) {
+      o2 = {};
+    }
+    if (oc === void 0) {
+      oc = function oc2() {
+      };
+    }
+    let source = source_;
+    let options = o2;
+    let callback = oc;
+    if (typeof options === "function") {
+      callback = options;
+      options = {};
+    }
+    if (!this.rules || Object.keys(this.rules).length === 0) {
+      if (callback) {
+        callback();
+      }
+      return Promise.resolve();
+    }
+    function complete(results) {
+      let i;
+      let errors = [];
+      let fields = {};
+      function add2(e2) {
+        if (Array.isArray(e2)) {
+          let _errors;
+          errors = (_errors = errors).concat.apply(_errors, e2);
+        } else {
+          errors.push(e2);
+        }
+      }
+      for (i = 0; i < results.length; i++) {
+        add2(results[i]);
+      }
+      if (!errors.length) {
+        errors = null;
+        fields = null;
+      } else {
+        fields = convertFieldsError$1(errors);
+      }
+      callback(errors, fields);
+    }
+    if (options.messages) {
+      let messages$1$1 = this.messages();
+      if (messages$1$1 === messages$1) {
+        messages$1$1 = newMessages$1();
+      }
+      deepMerge$3(messages$1$1, options.messages);
+      options.messages = messages$1$1;
+    } else {
+      options.messages = this.messages();
+    }
+    let arr;
+    let value;
+    const series = {};
+    const keys = options.keys || Object.keys(this.rules);
+    keys.forEach((z) => {
+      arr = _this.rules[z];
+      value = source[z];
+      arr.forEach((r) => {
+        let rule = r;
+        if (typeof rule.transform === "function") {
+          if (source === source_) {
+            source = { ...source };
+          }
+          value = source[z] = rule.transform(value);
+        }
+        if (typeof rule === "function") {
+          rule = {
+            validator: rule
+          };
+        } else {
+          rule = { ...rule };
+        }
+        rule.validator = _this.getValidationMethod(rule);
+        rule.field = z;
+        rule.fullField = rule.fullField || z;
+        rule.type = _this.getType(rule);
+        if (!rule.validator) {
+          return;
+        }
+        series[z] = series[z] || [];
+        series[z].push({
+          rule,
+          value,
+          source,
+          field: z
+        });
+      });
+    });
+    const errorFields = {};
+    return asyncMap$1(series, options, (data, doIt) => {
+      const { rule } = data;
+      let deep = (rule.type === "object" || rule.type === "array") && (typeof rule.fields === "object" || typeof rule.defaultField === "object");
+      deep = deep && (rule.required || !rule.required && data.value);
+      rule.field = data.field;
+      function addFullfield(key, schema) {
+        return { ...schema, fullField: `${rule.fullField}.${key}` };
+      }
+      function cb(e2) {
+        if (e2 === void 0) {
+          e2 = [];
+        }
+        let errors = e2;
+        if (!Array.isArray(errors)) {
+          errors = [errors];
+        }
+        if (!options.suppressWarning && errors.length) {
+          Schema$1.warning("async-validator:", errors);
+        }
+        if (errors.length && rule.message) {
+          errors = [].concat(rule.message);
+        }
+        errors = errors.map(complementError$1(rule));
+        if (options.first && errors.length) {
+          errorFields[rule.field] = 1;
+          return doIt(errors);
+        }
+        if (!deep) {
+          doIt(errors);
+        } else {
+          if (rule.required && !data.value) {
+            if (rule.message) {
+              errors = [].concat(rule.message).map(complementError$1(rule));
+            } else if (options.error) {
+              errors = [options.error(rule, format$1(options.messages.required, rule.field))];
+            } else {
+              errors = [];
+            }
+            return doIt(errors);
+          }
+          let fieldsSchema = {};
+          if (rule.defaultField) {
+            for (const k in data.value) {
+              if (data.value.hasOwnProperty(k)) {
+                fieldsSchema[k] = rule.defaultField;
+              }
+            }
+          }
+          fieldsSchema = { ...fieldsSchema, ...data.rule.fields };
+          for (const f2 in fieldsSchema) {
+            if (fieldsSchema.hasOwnProperty(f2)) {
+              const fieldSchema = Array.isArray(fieldsSchema[f2]) ? fieldsSchema[f2] : [fieldsSchema[f2]];
+              fieldsSchema[f2] = fieldSchema.map(addFullfield.bind(null, f2));
+            }
+          }
+          const schema = new Schema$1(fieldsSchema);
+          schema.messages(options.messages);
+          if (data.rule.options) {
+            data.rule.options.messages = options.messages;
+            data.rule.options.error = options.error;
+          }
+          schema.validate(data.value, data.rule.options || options, (errs) => {
+            const finalErrors = [];
+            if (errors && errors.length) {
+              finalErrors.push.apply(finalErrors, errors);
+            }
+            if (errs && errs.length) {
+              finalErrors.push.apply(finalErrors, errs);
+            }
+            doIt(finalErrors.length ? finalErrors : null);
+          });
+        }
+      }
+      let res;
+      if (rule.asyncValidator) {
+        res = rule.asyncValidator(rule, data.value, cb, data.source, options);
+      } else if (rule.validator) {
+        res = rule.validator(rule, data.value, cb, data.source, options);
+        if (res === true) {
+          cb();
+        } else if (res === false) {
+          cb(rule.message || `${rule.field} fails`);
+        } else if (res instanceof Array) {
+          cb(res);
+        } else if (res instanceof Error) {
+          cb(res.message);
+        }
+      }
+      if (res && res.then) {
+        res.then(() => cb(), (e2) => cb(e2));
+      }
+    }, (results) => {
+      complete(results);
+    });
+  },
+  getType: function getType2(rule) {
+    if (rule.type === void 0 && rule.pattern instanceof RegExp) {
+      rule.type = "pattern";
+    }
+    if (typeof rule.validator !== "function" && rule.type && !validators$1.hasOwnProperty(rule.type)) {
+      throw new Error(format$1("Unknown rule type %s", rule.type));
+    }
+    return rule.type || "string";
+  },
+  getValidationMethod: function getValidationMethod(rule) {
+    if (typeof rule.validator === "function") {
+      return rule.validator;
+    }
+    const keys = Object.keys(rule);
+    const messageIndex = keys.indexOf("message");
+    if (messageIndex !== -1) {
+      keys.splice(messageIndex, 1);
+    }
+    if (keys.length === 1 && keys[0] === "required") {
+      return validators$1.required;
+    }
+    return validators$1[this.getType(rule)] || false;
+  }
+};
+Schema$1.register = function register(type2, validator) {
+  if (typeof validator !== "function") {
+    throw new Error("Cannot register a validator by type, validator is not a function");
+  }
+  validators$1[type2] = validator;
+};
+Schema$1.warning = warning$1;
+Schema$1.messages = messages$1;
+const props$c = defineMixin$1({
+  props: {
+    // 是否为加载中状态
+    loading: {
+      type: Boolean,
+      default: () => props$g.switch.loading
+    },
+    // 是否为禁用装填
+    disabled: {
+      type: Boolean,
+      default: () => props$g.switch.disabled
+    },
+    // 开关尺寸，单位px
+    size: {
+      type: [String, Number],
+      default: () => props$g.switch.size
+    },
+    // 打开时的背景颜色
+    activeColor: {
+      type: String,
+      default: () => props$g.switch.activeColor
+    },
+    // 关闭时的背景颜色
+    inactiveColor: {
+      type: String,
+      default: () => props$g.switch.inactiveColor
+    },
+    // 通过v-model双向绑定的值
+    modelValue: {
+      type: [Boolean, String, Number],
+      default: () => props$g.switch.value
+    },
+    // switch打开时的值
+    activeValue: {
+      type: [String, Number, Boolean],
+      default: () => props$g.switch.activeValue
+    },
+    // switch关闭时的值
+    inactiveValue: {
+      type: [String, Number, Boolean],
+      default: () => props$g.switch.inactiveValue
+    },
+    // 是否开启异步变更，开启后需要手动控制输入值
+    asyncChange: {
+      type: Boolean,
+      default: () => props$g.switch.asyncChange
+    },
+    // 圆点与外边框的距离
+    space: {
+      type: [String, Number],
+      default: () => props$g.switch.space
+    }
+  }
+});
+const props$b = defineMixin$1({
+  props: {
+    color: {
+      type: String,
+      default: () => props$g.line.color
+    },
+    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
+    length: {
+      type: [String, Number],
+      default: () => props$g.line.length
+    },
+    // 线条方向，col-竖向，row-横向
+    direction: {
+      type: String,
+      default: () => props$g.line.direction
+    },
+    // 是否显示细边框
+    hairline: {
+      type: Boolean,
+      default: () => props$g.line.hairline
+    },
+    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+    margin: {
+      type: [String, Number],
+      default: () => props$g.line.margin
+    },
+    // 是否虚线，true-虚线，false-实线
+    dashed: {
+      type: Boolean,
+      default: () => props$g.line.dashed
+    }
+  }
+});
+const defineMixin = (options) => {
+  return options;
+};
 const version = "3";
 {
   console.log(`
@@ -7835,1018 +12620,6 @@ const config = {
   // 只加载一次字体
   loadFontOnce: false
 };
-function range$1(min = 0, max = 0, value = 0) {
-  return Math.max(min, Math.min(max, Number(value)));
-}
-function getPx(value, unit = false) {
-  if (number(value)) {
-    return unit ? `${value}px` : Number(value);
-  }
-  if (/(rpx|upx)$/.test(value)) {
-    return unit ? `${index$1.upx2px(parseInt(value))}px` : Number(index$1.upx2px(parseInt(value)));
-  }
-  return unit ? `${parseInt(value)}px` : parseInt(value);
-}
-function sleep(value = 30) {
-  return new Promise((resolve2) => {
-    setTimeout(() => {
-      resolve2();
-    }, value);
-  });
-}
-function os() {
-  return index$1.getDeviceInfo().platform.toLowerCase();
-}
-function sys() {
-  return index$1.getSystemInfoSync();
-}
-function getWindowInfo() {
-  let ret = {};
-  ret = sys();
-  return ret;
-}
-function random(min, max) {
-  if (min >= 0 && max > 0 && max >= min) {
-    const gab = max - min + 1;
-    return Math.floor(Math.random() * gab + min);
-  }
-  return 0;
-}
-function guid(len = 32, firstU = true, radix = null) {
-  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
-  const uuid = [];
-  radix = radix || chars.length;
-  if (len) {
-    for (let i = 0; i < len; i++)
-      uuid[i] = chars[0 | Math.random() * radix];
-  } else {
-    let r;
-    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
-    uuid[14] = "4";
-    for (let i = 0; i < 36; i++) {
-      if (!uuid[i]) {
-        r = 0 | Math.random() * 16;
-        uuid[i] = chars[i == 19 ? r & 3 | 8 : r];
-      }
-    }
-  }
-  if (firstU) {
-    uuid.shift();
-    return `u${uuid.join("")}`;
-  }
-  return uuid.join("");
-}
-function $parent(name = void 0) {
-  let parent = this.$parent;
-  while (parent) {
-    name = name.replace(/up-([a-zA-Z0-9-_]+)/g, "u-$1");
-    if (parent.$options && parent.$options.name !== name) {
-      parent = parent.$parent;
-    } else {
-      return parent;
-    }
-  }
-  return false;
-}
-function addStyle(customStyle, target = "object") {
-  if (empty(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
-    return customStyle;
-  }
-  if (target === "object") {
-    customStyle = trim(customStyle);
-    const styleArray = customStyle.split(";");
-    const style = {};
-    for (let i = 0; i < styleArray.length; i++) {
-      if (styleArray[i]) {
-        const item = styleArray[i].split(":");
-        style[trim(item[0])] = trim(item[1]);
-      }
-    }
-    return style;
-  }
-  let string2 = "";
-  if (typeof customStyle === "object") {
-    customStyle.forEach((val, i) => {
-      const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
-      string2 += `${key}:${val};`;
-    });
-  }
-  return trim(string2);
-}
-function addUnit(value = "auto", unit = "") {
-  if (!unit) {
-    unit = config.unit || "px";
-  }
-  if (unit == "rpx" && number(String(value))) {
-    value = value * 2;
-  }
-  value = String(value);
-  return number(value) ? `${value}${unit}` : value;
-}
-function deepClone(obj) {
-  if ([null, void 0, NaN, false].includes(obj))
-    return obj;
-  if (typeof obj !== "object" && typeof obj !== "function") {
-    return obj;
-  }
-  const o2 = array(obj) ? [] : {};
-  for (const i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      o2[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
-    }
-  }
-  return o2;
-}
-function deepMerge$2(targetOrigin = {}, source = {}) {
-  let target = deepClone(targetOrigin);
-  if (typeof target !== "object" || typeof source !== "object")
-    return false;
-  for (const prop in source) {
-    if (!source.hasOwnProperty(prop))
-      continue;
-    if (prop in target) {
-      if (source[prop] == null) {
-        target[prop] = source[prop];
-      } else if (typeof target[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (typeof source[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (target[prop].concat && source[prop].concat) {
-        target[prop] = target[prop].concat(source[prop]);
-      } else {
-        target[prop] = deepMerge$2(target[prop], source[prop]);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-function shallowMerge(target, source = {}) {
-  if (typeof target !== "object" || typeof source !== "object")
-    return false;
-  for (const prop in source) {
-    if (!source.hasOwnProperty(prop))
-      continue;
-    if (prop in target) {
-      if (source[prop] == null) {
-        target[prop] = source[prop];
-      } else if (typeof target[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (typeof source[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (target[prop].concat && source[prop].concat) {
-        target[prop] = target[prop].concat(source[prop]);
-      } else {
-        target[prop] = shallowMerge(target[prop], source[prop]);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-function error(err) {
-  {
-    console.error(`uView提示：${err}`);
-  }
-}
-function randomArray(array3 = []) {
-  return array3.sort(() => Math.random() - 0.5);
-}
-if (!String.prototype.padStart) {
-  String.prototype.padStart = function(maxLength, fillString = " ") {
-    if (Object.prototype.toString.call(fillString) !== "[object String]") {
-      throw new TypeError(
-        "fillString must be String"
-      );
-    }
-    const str = this;
-    if (str.length >= maxLength)
-      return String(str);
-    const fillLength = maxLength - str.length;
-    let times2 = Math.ceil(fillLength / fillString.length);
-    while (times2 >>= 1) {
-      fillString += fillString;
-      if (times2 === 1) {
-        fillString += fillString;
-      }
-    }
-    return fillString.slice(0, fillLength) + str;
-  };
-}
-function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
-  let date3;
-  if (!dateTime) {
-    date3 = /* @__PURE__ */ new Date();
-  } else if (/^\d{10}$/.test(dateTime.toString().trim())) {
-    date3 = new Date(dateTime * 1e3);
-  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
-    date3 = new Date(Number(dateTime));
-  } else if (typeof dateTime === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(dateTime)) {
-    date3 = new Date(dateTime);
-  } else {
-    date3 = new Date(
-      typeof dateTime === "string" ? dateTime.replace(/-/g, "/") : dateTime
-    );
-  }
-  const timeSource = {
-    "y": date3.getFullYear().toString(),
-    // 年
-    "m": (date3.getMonth() + 1).toString().padStart(2, "0"),
-    // 月
-    "d": date3.getDate().toString().padStart(2, "0"),
-    // 日
-    "h": date3.getHours().toString().padStart(2, "0"),
-    // 时
-    "M": date3.getMinutes().toString().padStart(2, "0"),
-    // 分
-    "s": date3.getSeconds().toString().padStart(2, "0")
-    // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  };
-  for (const key in timeSource) {
-    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
-    if (ret) {
-      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
-      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
-    }
-  }
-  return formatStr;
-}
-function timeFrom(timestamp = null, format2 = "yyyy-mm-dd") {
-  if (timestamp == null)
-    timestamp = Number(/* @__PURE__ */ new Date());
-  timestamp = parseInt(timestamp);
-  if (timestamp.toString().length == 10)
-    timestamp *= 1e3;
-  let timer = (/* @__PURE__ */ new Date()).getTime() - timestamp;
-  timer = parseInt(timer / 1e3);
-  let tips = "";
-  switch (true) {
-    case timer < 300:
-      tips = "刚刚";
-      break;
-    case (timer >= 300 && timer < 3600):
-      tips = `${parseInt(timer / 60)}分钟前`;
-      break;
-    case (timer >= 3600 && timer < 86400):
-      tips = `${parseInt(timer / 3600)}小时前`;
-      break;
-    case (timer >= 86400 && timer < 2592e3):
-      tips = `${parseInt(timer / 86400)}天前`;
-      break;
-    default:
-      if (format2 === false) {
-        if (timer >= 2592e3 && timer < 365 * 86400) {
-          tips = `${parseInt(timer / (86400 * 30))}个月前`;
-        } else {
-          tips = `${parseInt(timer / (86400 * 365))}年前`;
-        }
-      } else {
-        tips = timeFormat(timestamp, format2);
-      }
-  }
-  return tips;
-}
-function trim(str, pos = "both") {
-  str = String(str);
-  if (pos == "both") {
-    return str.replace(/^\s+|\s+$/g, "");
-  }
-  if (pos == "left") {
-    return str.replace(/^\s*/, "");
-  }
-  if (pos == "right") {
-    return str.replace(/(\s*$)/g, "");
-  }
-  if (pos == "all") {
-    return str.replace(/\s+/g, "");
-  }
-  return str;
-}
-function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
-  const prefix = isPrefix ? "?" : "";
-  const _result = [];
-  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
-    arrayFormat = "brackets";
-  for (const key in data) {
-    const value = data[key];
-    if (["", void 0, null].indexOf(value) >= 0) {
-      continue;
-    }
-    if (value.constructor === Array) {
-      switch (arrayFormat) {
-        case "indices":
-          for (let i = 0; i < value.length; i++) {
-            _result.push(`${key}[${i}]=${value[i]}`);
-          }
-          break;
-        case "brackets":
-          value.forEach((_value) => {
-            _result.push(`${key}[]=${_value}`);
-          });
-          break;
-        case "repeat":
-          value.forEach((_value) => {
-            _result.push(`${key}=${_value}`);
-          });
-          break;
-        case "comma":
-          let commaStr = "";
-          value.forEach((_value) => {
-            commaStr += (commaStr ? "," : "") + _value;
-          });
-          _result.push(`${key}=${commaStr}`);
-          break;
-        default:
-          value.forEach((_value) => {
-            _result.push(`${key}[]=${_value}`);
-          });
-      }
-    } else {
-      _result.push(`${key}=${value}`);
-    }
-  }
-  return _result.length ? prefix + _result.join("&") : "";
-}
-function toast(title, duration = 2e3) {
-  index$1.showToast({
-    title: String(title),
-    icon: "none",
-    duration
-  });
-}
-function type2icon(type2 = "success", fill = false) {
-  if (["primary", "info", "error", "warning", "success"].indexOf(type2) == -1)
-    type2 = "success";
-  let iconName = "";
-  switch (type2) {
-    case "primary":
-      iconName = "info-circle";
-      break;
-    case "info":
-      iconName = "info-circle";
-      break;
-    case "error":
-      iconName = "close-circle";
-      break;
-    case "warning":
-      iconName = "error-circle";
-      break;
-    case "success":
-      iconName = "checkmark-circle";
-      break;
-    default:
-      iconName = "checkmark-circle";
-  }
-  if (fill)
-    iconName += "-fill";
-  return iconName;
-}
-function priceFormat(number3, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
-  number3 = `${number3}`.replace(/[^0-9+-Ee.]/g, "");
-  const n2 = !isFinite(+number3) ? 0 : +number3;
-  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
-  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
-  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
-  let s2 = "";
-  s2 = (prec ? round(n2, prec) + "" : `${Math.round(n2)}`).split(".");
-  const re = /(-?\d+)(\d{3})/;
-  while (re.test(s2[0])) {
-    s2[0] = s2[0].replace(re, `$1${sep}$2`);
-  }
-  if ((s2[1] || "").length < prec) {
-    s2[1] = s2[1] || "";
-    s2[1] += new Array(prec - s2[1].length + 1).join("0");
-  }
-  return s2.join(dec);
-}
-function getDuration(value, unit = true) {
-  const valueNum = parseInt(value);
-  if (unit) {
-    if (/s$/.test(value))
-      return value;
-    return value > 30 ? `${value}ms` : `${value}s`;
-  }
-  if (/ms$/.test(value))
-    return valueNum;
-  if (/s$/.test(value))
-    return valueNum > 30 ? valueNum : valueNum * 1e3;
-  return valueNum;
-}
-function padZero(value) {
-  return `00${value}`.slice(-2);
-}
-function formValidate(instance, event) {
-  const formItem = $parent.call(instance, "u-form-item");
-  const form = $parent.call(instance, "u-form");
-  if (formItem && form) {
-    form.validateField(formItem.prop, () => {
-    }, event);
-  }
-}
-function getProperty(obj, key) {
-  if (typeof obj !== "object" || null == obj) {
-    return "";
-  }
-  if (typeof key !== "string" || key === "") {
-    return "";
-  }
-  if (key.indexOf(".") !== -1) {
-    const keys = key.split(".");
-    let firstObj = obj[keys[0]] || {};
-    for (let i = 1; i < keys.length; i++) {
-      if (firstObj) {
-        firstObj = firstObj[keys[i]];
-      }
-    }
-    return firstObj;
-  }
-  return obj[key];
-}
-function setProperty(obj, key, value) {
-  if (typeof obj !== "object" || null == obj) {
-    return;
-  }
-  const inFn = function(_obj, keys, v) {
-    if (keys.length === 1) {
-      _obj[keys[0]] = v;
-      return;
-    }
-    while (keys.length > 1) {
-      const k = keys[0];
-      if (!_obj[k] || typeof _obj[k] !== "object") {
-        _obj[k] = {};
-      }
-      keys.shift();
-      inFn(_obj[k], keys, v);
-    }
-  };
-  if (typeof key !== "string" || key === "")
-    ;
-  else if (key.indexOf(".") !== -1) {
-    const keys = key.split(".");
-    inFn(obj, keys, value);
-  } else {
-    obj[key] = value;
-  }
-}
-function page() {
-  const pages2 = getCurrentPages();
-  return `/${pages2[pages2.length - 1].route || ""}`;
-}
-function pages() {
-  const pages2 = getCurrentPages();
-  return pages2;
-}
-function getValueByPath(obj, path) {
-  const pathArr = path.split(".");
-  return pathArr.reduce((acc, curr) => {
-    return acc && acc[curr] !== void 0 ? acc[curr] : void 0;
-  }, obj);
-}
-function genLightColor(textColor2, lightness = 95) {
-  const rgb = parseColorWithoutDOM(textColor2);
-  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-  const bgHsl = {
-    h: hsl.h,
-    s: hsl.s,
-    l: Math.min(lightness, 95)
-  };
-  return hslToHex(bgHsl.h, bgHsl.s, bgHsl.l);
-}
-function parseColorWithoutDOM(colorStr) {
-  const str = colorStr.toLowerCase().trim();
-  if (str.startsWith("#")) {
-    const hex2 = str.replace("#", "");
-    const fullHex = hex2.length === 3 ? hex2.split("").map((c) => c + c).join("") : hex2;
-    return {
-      r: parseInt(fullHex.substring(0, 2), 16),
-      g: parseInt(fullHex.substring(2, 4), 16),
-      b: parseInt(fullHex.substring(4, 6), 16)
-    };
-  }
-  const rgbMatch = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (rgbMatch) {
-    return {
-      r: +rgbMatch[1],
-      g: +rgbMatch[2],
-      b: +rgbMatch[3]
-    };
-  }
-  throw new Error("Invalid color format");
-}
-function rgbToHsl(r, g, b) {
-  r /= 255, g /= 255, b /= 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h, s2, l = (max + min) / 2;
-  if (max === min) {
-    h = s2 = 0;
-  } else {
-    const d = max - min;
-    s2 = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    h = (h * 60).toFixed(1);
-  }
-  return { h: +h, s: +(s2 * 100).toFixed(1), l: +(l * 100).toFixed(1) };
-}
-function hslToHex(h, s2, l) {
-  l /= 100;
-  const a = s2 * Math.min(l, 1 - l) / 100;
-  const f2 = (n2) => {
-    const k = (n2 + h / 30) % 12;
-    const color2 = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color2).toString(16).padStart(2, "0");
-  };
-  return `#${f2(0)}${f2(8)}${f2(4)}`;
-}
-const index = {
-  range: range$1,
-  getPx,
-  sleep,
-  os,
-  sys,
-  getWindowInfo,
-  random,
-  guid,
-  $parent,
-  addStyle,
-  addUnit,
-  deepClone,
-  deepMerge: deepMerge$2,
-  shallowMerge,
-  error,
-  randomArray,
-  timeFormat,
-  timeFrom,
-  trim,
-  queryParams,
-  toast,
-  type2icon,
-  priceFormat,
-  getDuration,
-  padZero,
-  formValidate,
-  getProperty,
-  setProperty,
-  page,
-  pages,
-  getValueByPath,
-  genLightColor
-};
-class Router {
-  constructor() {
-    this.config = {
-      type: "navigateTo",
-      url: "",
-      delta: 1,
-      // navigateBack页面后退时,回退的层数
-      params: {},
-      // 传递的参数
-      animationType: "pop-in",
-      // 窗口动画,只在APP有效
-      animationDuration: 300,
-      // 窗口动画持续时间,单位毫秒,只在APP有效
-      intercept: false
-      // 是否需要拦截
-    };
-    this.route = this.route.bind(this);
-  }
-  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
-  addRootPath(url3) {
-    return url3[0] === "/" ? url3 : `/${url3}`;
-  }
-  // 整合路由参数
-  mixinParam(url3, params2) {
-    url3 = url3 && this.addRootPath(url3);
-    let query = "";
-    if (/.*\/.*\?.*=.*/.test(url3)) {
-      query = queryParams(params2, false);
-      return url3 += `&${query}`;
-    }
-    query = queryParams(params2);
-    return url3 += query;
-  }
-  // 对外的方法名称
-  async route(options = {}, params2 = {}) {
-    let mergeConfig2 = {};
-    if (typeof options === "string") {
-      mergeConfig2.url = this.mixinParam(options, params2);
-      mergeConfig2.type = "navigateTo";
-    } else {
-      mergeConfig2 = deepMerge$2(this.config, options);
-      mergeConfig2.url = this.mixinParam(options.url, options.params);
-    }
-    if (mergeConfig2.url === page())
-      return;
-    if (params2.intercept) {
-      this.config.intercept = params2.intercept;
-    }
-    mergeConfig2.params = params2;
-    mergeConfig2 = deepMerge$2(this.config, mergeConfig2);
-    if (typeof index$1.$u.routeIntercept === "function") {
-      const isNext = await new Promise((resolve2, reject) => {
-        index$1.$u.routeIntercept(mergeConfig2, resolve2);
-      });
-      isNext && this.openPage(mergeConfig2);
-    } else {
-      this.openPage(mergeConfig2);
-    }
-  }
-  // 执行路由跳转
-  openPage(config2) {
-    const {
-      url: url3,
-      type: type2,
-      delta,
-      animationType,
-      animationDuration
-    } = config2;
-    if (config2.type == "navigateTo" || config2.type == "to") {
-      index$1.navigateTo({
-        url: url3,
-        animationType,
-        animationDuration
-      });
-    }
-    if (config2.type == "redirectTo" || config2.type == "redirect") {
-      index$1.redirectTo({
-        url: url3
-      });
-    }
-    if (config2.type == "switchTab" || config2.type == "tab") {
-      index$1.switchTab({
-        url: url3
-      });
-    }
-    if (config2.type == "reLaunch" || config2.type == "launch") {
-      index$1.reLaunch({
-        url: url3
-      });
-    }
-    if (config2.type == "navigateBack" || config2.type == "back") {
-      index$1.navigateBack({
-        delta
-      });
-    }
-  }
-}
-const route = new Router().route;
-const mixin = defineMixin({
-  // 定义每个组件都可能需要用到的外部样式以及类名
-  props: {
-    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
-    customStyle: {
-      type: [Object, String],
-      default: () => ({})
-    },
-    customClass: {
-      type: String,
-      default: ""
-    },
-    // 跳转的页面路径
-    url: {
-      type: String,
-      default: ""
-    },
-    // 页面跳转的类型
-    linkType: {
-      type: String,
-      default: "navigateTo"
-    }
-  },
-  data() {
-    return {};
-  },
-  onLoad() {
-    this.$u.getRect = this.$uGetRect;
-  },
-  created() {
-    this.$u.getRect = this.$uGetRect;
-  },
-  computed: {
-    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
-    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
-    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
-    $u() {
-      return deepMerge$2(index$1.$u, {
-        props: void 0,
-        http: void 0,
-        mixin: void 0
-      });
-    },
-    /**
-     * 生成bem规则类名
-     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
-     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
-     * @param {String} name 组件名称
-     * @param {Array} fixed 一直会存在的类名
-     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
-     * @returns {Array|string}
-     */
-    bem() {
-      return function(name, fixed, change) {
-        const prefix = `u-${name}--`;
-        const classes = {};
-        if (fixed) {
-          fixed.map((item) => {
-            classes[prefix + this[item]] = true;
-          });
-        }
-        if (change) {
-          change.map((item) => {
-            this[item] ? classes[prefix + item] = this[item] : delete classes[prefix + item];
-          });
-        }
-        return Object.keys(classes);
-      };
-    }
-  },
-  methods: {
-    // 跳转某一个页面
-    openPage(urlKey = "url") {
-      const url3 = this[urlKey];
-      if (url3) {
-        route({ type: this.linkType, url: url3 });
-      }
-    },
-    navTo(url3 = "", linkType = "navigateTo") {
-      route({ type: this.linkType, url: url3 });
-    },
-    // 查询节点信息
-    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
-    // 解决办法为在组件根部再套一个没有任何作用的view元素
-    $uGetRect(selector, all) {
-      return new Promise((resolve2) => {
-        index$1.createSelectorQuery().in(this)[all ? "selectAll" : "select"](selector).boundingClientRect((rect) => {
-          if (all && Array.isArray(rect) && rect.length) {
-            resolve2(rect);
-          }
-          if (!all && rect) {
-            resolve2(rect);
-          }
-        }).exec();
-      });
-    },
-    getParentData(parentName = "") {
-      if (!this.parent)
-        this.parent = {};
-      this.parent = $parent.call(this, parentName);
-      if (this.parent.children) {
-        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
-      }
-      if (this.parent && this.parentData) {
-        Object.keys(this.parentData).map((key) => {
-          this.parentData[key] = this.parent[key];
-        });
-      }
-    },
-    // 阻止事件冒泡
-    preventEvent(e2) {
-      e2 && typeof e2.stopPropagation === "function" && e2.stopPropagation();
-    },
-    // 空操作
-    noop(e2) {
-      this.preventEvent(e2);
-    }
-  },
-  onReachBottom() {
-    index$1.$emit("uOnReachBottom");
-  },
-  beforeUnmount() {
-    if (this.parent && test.array(this.parent.children)) {
-      const childrenList = this.parent.children;
-      childrenList.map((child, index2) => {
-        if (child === this) {
-          childrenList.splice(index2, 1);
-        }
-      });
-    }
-  }
-});
-const mpMixin = defineMixin({
-  // 将自定义节点设置成虚拟的，更加接近Vue组件的表现，能更好的使用flex属性
-  options: {
-    virtualHost: true
-  }
-});
-function colorGradient(startColor = "rgb(0, 0, 0)", endColor = "rgb(255, 255, 255)", step = 10) {
-  const startRGB = hexToRgb(startColor, false);
-  const startR = startRGB[0];
-  const startG = startRGB[1];
-  const startB = startRGB[2];
-  const endRGB = hexToRgb(endColor, false);
-  const endR = endRGB[0];
-  const endG = endRGB[1];
-  const endB = endRGB[2];
-  const sR = (endR - startR) / step;
-  const sG = (endG - startG) / step;
-  const sB = (endB - startB) / step;
-  const colorArr = [];
-  for (let i = 0; i < step; i++) {
-    let hex2 = rgbToHex(`rgb(${Math.round(sR * i + startR)},${Math.round(sG * i + startG)},${Math.round(sB * i + startB)})`);
-    if (i === 0)
-      hex2 = rgbToHex(startColor);
-    if (i === step - 1)
-      hex2 = rgbToHex(endColor);
-    colorArr.push(hex2);
-  }
-  return colorArr;
-}
-function hexToRgb(sColor, str = true) {
-  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-  sColor = String(sColor).toLowerCase();
-  if (sColor && reg.test(sColor)) {
-    if (sColor.length === 4) {
-      let sColorNew = "#";
-      for (let i = 1; i < 4; i += 1) {
-        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
-      }
-      sColor = sColorNew;
-    }
-    const sColorChange = [];
-    for (let i = 1; i < 7; i += 2) {
-      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
-    }
-    if (!str) {
-      return sColorChange;
-    }
-    return `rgb(${sColorChange[0]},${sColorChange[1]},${sColorChange[2]})`;
-  }
-  if (/^(rgb|RGB)/.test(sColor)) {
-    const arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
-    return arr.map((val) => Number(val));
-  }
-  return sColor;
-}
-function rgbToHex(rgb) {
-  const _this = rgb;
-  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-  if (/^(rgb|RGB)/.test(_this)) {
-    const aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
-    let strHex = "#";
-    for (let i = 0; i < aColor.length; i++) {
-      let hex2 = Number(aColor[i]).toString(16);
-      hex2 = String(hex2).length == 1 ? `${0}${hex2}` : hex2;
-      if (hex2 === "0") {
-        hex2 += hex2;
-      }
-      strHex += hex2;
-    }
-    if (strHex.length !== 7) {
-      strHex = _this;
-    }
-    return strHex;
-  }
-  if (reg.test(_this)) {
-    const aNum = _this.replace(/#/, "").split("");
-    if (aNum.length === 6) {
-      return _this;
-    }
-    if (aNum.length === 3) {
-      let numHex = "#";
-      for (let i = 0; i < aNum.length; i += 1) {
-        numHex += aNum[i] + aNum[i];
-      }
-      return numHex;
-    }
-  } else {
-    return _this;
-  }
-}
-function colorToRgba(color2, alpha) {
-  color2 = rgbToHex(color2);
-  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-  let sColor = String(color2).toLowerCase();
-  if (sColor && reg.test(sColor)) {
-    if (sColor.length === 4) {
-      let sColorNew = "#";
-      for (let i = 1; i < 4; i += 1) {
-        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
-      }
-      sColor = sColorNew;
-    }
-    const sColorChange = [];
-    for (let i = 1; i < 7; i += 2) {
-      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
-    }
-    return `rgba(${sColorChange.join(",")},${alpha})`;
-  }
-  return sColor;
-}
-const colorGradient$1 = {
-  colorGradient,
-  hexToRgb,
-  rgbToHex,
-  colorToRgba
-};
-let timeout = null;
-function debounce(func2, wait = 500, immediate = false) {
-  if (timeout !== null)
-    clearTimeout(timeout);
-  if (immediate) {
-    const callNow = !timeout;
-    timeout = setTimeout(() => {
-      timeout = null;
-    }, wait);
-    if (callNow)
-      typeof func2 === "function" && func2();
-  } else {
-    timeout = setTimeout(() => {
-      typeof func2 === "function" && func2();
-    }, wait);
-  }
-}
-let flag;
-function throttle(func2, wait = 500, immediate = true) {
-  if (immediate) {
-    if (!flag) {
-      flag = true;
-      typeof func2 === "function" && func2();
-      setTimeout(() => {
-        flag = false;
-      }, wait);
-    }
-  } else if (!flag) {
-    flag = true;
-    setTimeout(() => {
-      flag = false;
-      typeof func2 === "function" && func2();
-    }, wait);
-  }
-}
-function add(arg1, arg2) {
-  var r1, r2, m;
-  try {
-    r1 = arg1.toString().split(".")[1].length;
-  } catch (e2) {
-    r1 = 0;
-  }
-  try {
-    r2 = arg2.toString().split(".")[1].length;
-  } catch (e2) {
-    r2 = 0;
-  }
-  m = Math.pow(10, Math.max(r1, r2));
-  return (arg1 * m + arg2 * m) / m;
-}
-function sub(arg1, arg2) {
-  var r1, r2, m, n2;
-  try {
-    r1 = arg1.toString().split(".")[1].length;
-  } catch (e2) {
-    r1 = 0;
-  }
-  try {
-    r2 = arg2.toString().split(".")[1].length;
-  } catch (e2) {
-    r2 = 0;
-  }
-  m = Math.pow(10, Math.max(r1, r2));
-  n2 = r1 >= r2 ? r1 : r2;
-  return Math.abs(((arg1 * m - arg2 * m) / m).toFixed(n2));
-}
-function mul(a, b) {
-  var c = 0, d = a.toString(), e2 = b.toString();
-  try {
-    c += d.split(".")[1].length;
-  } catch (f2) {
-  }
-  try {
-    c += e2.split(".")[1].length;
-  } catch (f2) {
-  }
-  return Number(d.replace(".", "")) * Number(e2.replace(".", "")) / Math.pow(10, c);
-}
-function div(a, b) {
-  var c, d, e2 = 0, f2 = 0;
-  try {
-    e2 = a.toString().split(".")[1].length;
-  } catch (g) {
-  }
-  try {
-    f2 = b.toString().split(".")[1].length;
-  } catch (g) {
-  }
-  return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), xyutil.mul(c / d, Math.pow(10, f2 - e2));
-}
-const calc = {
-  add,
-  sub,
-  mul,
-  div
-};
 const zIndex = {
   toast: 10090,
   noNetwork: 10080,
@@ -8858,7 +12631,7 @@ const zIndex = {
   sticky: 970,
   indexListSticky: 965
 };
-const color$4 = {
+const color$3 = {
   primary: "#3c9cff",
   info: "#909399",
   default: "#909399",
@@ -8884,7 +12657,7 @@ function isDate(val) {
 function isURLSearchParams(val) {
   return typeof URLSearchParams !== "undefined" && val instanceof URLSearchParams;
 }
-function forEach(obj, fn) {
+function forEach2(obj, fn) {
   if (obj === null || typeof obj === "undefined") {
     return;
   }
@@ -8906,19 +12679,19 @@ function forEach(obj, fn) {
 function isPlainObject(obj) {
   return Object.prototype.toString.call(obj) === "[object Object]";
 }
-function deepMerge$1() {
+function deepMerge$2() {
   const result = {};
   function assignValue(val, key) {
     if (typeof result[key] === "object" && typeof val === "object") {
-      result[key] = deepMerge$1(result[key], val);
+      result[key] = deepMerge$2(result[key], val);
     } else if (typeof val === "object") {
-      result[key] = deepMerge$1({}, val);
+      result[key] = deepMerge$2({}, val);
     } else {
       result[key] = val;
     }
   }
   for (let i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
+    forEach2(arguments[i], assignValue);
   }
   return result;
 }
@@ -8928,16 +12701,16 @@ function isUndefined(val) {
 function encode(val) {
   return encodeURIComponent(val).replace(/%40/gi, "@").replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
 }
-function buildURL(url3, params2) {
+function buildURL(url4, params2) {
   if (!params2) {
-    return url3;
+    return url4;
   }
   let serializedParams;
   if (isURLSearchParams(params2)) {
     serializedParams = params2.toString();
   } else {
     const parts = [];
-    forEach(params2, (val, key) => {
+    forEach2(params2, (val, key) => {
       if (val === null || typeof val === "undefined") {
         return;
       }
@@ -8946,7 +12719,7 @@ function buildURL(url3, params2) {
       } else {
         val = [val];
       }
-      forEach(val, (v) => {
+      forEach2(val, (v) => {
         if (isDate(v)) {
           v = v.toISOString();
         } else if (isObject(v)) {
@@ -8958,16 +12731,16 @@ function buildURL(url3, params2) {
     serializedParams = parts.join("&");
   }
   if (serializedParams) {
-    const hashmarkIndex = url3.indexOf("#");
+    const hashmarkIndex = url4.indexOf("#");
     if (hashmarkIndex !== -1) {
-      url3 = url3.slice(0, hashmarkIndex);
+      url4 = url4.slice(0, hashmarkIndex);
     }
-    url3 += (url3.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+    url4 += (url4.indexOf("?") === -1 ? "?" : "&") + serializedParams;
   }
-  return url3;
+  return url4;
 }
-function isAbsoluteURL(url3) {
-  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url3);
+function isAbsoluteURL(url4) {
+  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url4);
 }
 function combineURLs(baseURL, relativeURL) {
   return relativeURL ? `${baseURL.replace(/\/+$/, "")}/${relativeURL.replace(/^\/+/, "")}` : baseURL;
@@ -8979,9 +12752,9 @@ function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 }
 function settle(resolve2, reject, response) {
-  const { validateStatus: validateStatus2 } = response.config;
+  const { validateStatus: validateStatus3 } = response.config;
   const status = response.statusCode;
-  if (status && (!validateStatus2 || validateStatus2(status))) {
+  if (status && (!validateStatus3 || validateStatus3(status))) {
     resolve2(response);
   } else {
     reject(response);
@@ -9045,19 +12818,19 @@ const dispatchRequest = (config2) => adapter(config2);
 function InterceptorManager() {
   this.handlers = [];
 }
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+InterceptorManager.prototype.use = function use2(fulfilled, rejected) {
   this.handlers.push({
     fulfilled,
     rejected
   });
   return this.handlers.length - 1;
 };
-InterceptorManager.prototype.eject = function eject(id) {
+InterceptorManager.prototype.eject = function eject2(id) {
   if (this.handlers[id]) {
     this.handlers[id] = null;
   }
 };
-InterceptorManager.prototype.forEach = function forEach2(fn) {
+InterceptorManager.prototype.forEach = function forEach3(fn) {
   this.handlers.forEach((h) => {
     if (h !== null) {
       fn(h);
@@ -9083,7 +12856,7 @@ const mergeConfig = (globalsConfig, config2 = {}) => {
     url: config2.url || "",
     params: config2.params || {},
     custom: { ...globalsConfig.custom || {}, ...config2.custom || {} },
-    header: deepMerge$1(globalsConfig.header || {}, config2.header || {})
+    header: deepMerge$2(globalsConfig.header || {}, config2.header || {})
   };
   const defaultToConfig2Keys = ["getTask", "validateStatus"];
   config3 = { ...config3, ...mergeKeys(defaultToConfig2Keys, globalsConfig, config2) };
@@ -9121,7 +12894,7 @@ const defaults = {
   responseType: "text",
   custom: {},
   timeout: 6e4,
-  validateStatus: function validateStatus(status) {
+  validateStatus: function validateStatus2(status) {
     return status >= 200 && status < 300;
   }
 };
@@ -9318,7 +13091,7 @@ var clone = function() {
   clone2.__getRegExpFlags = __getRegExpFlags;
   return clone2;
 }();
-class Request {
+class Request2 {
   /**
   * @param {Object} arg - 全局配置
   * @param {String} arg.baseURL - 全局根路径
@@ -9380,81 +13153,546 @@ class Request {
   request(config2 = {}) {
     return this.middleware(config2);
   }
-  get(url3, options = {}) {
+  get(url4, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       method: "GET",
       ...options
     });
   }
-  post(url3, data, options = {}) {
+  post(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "POST",
       ...options
     });
   }
-  put(url3, data, options = {}) {
+  put(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "PUT",
       ...options
     });
   }
-  delete(url3, data, options = {}) {
+  delete(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "DELETE",
       ...options
     });
   }
-  connect(url3, data, options = {}) {
+  connect(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "CONNECT",
       ...options
     });
   }
-  head(url3, data, options = {}) {
+  head(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "HEAD",
       ...options
     });
   }
-  options(url3, data, options = {}) {
+  options(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "OPTIONS",
       ...options
     });
   }
-  trace(url3, data, options = {}) {
+  trace(url4, data, options = {}) {
     return this.middleware({
-      url: url3,
+      url: url4,
       data,
       method: "TRACE",
       ...options
     });
   }
-  upload(url3, config2 = {}) {
-    config2.url = url3;
+  upload(url4, config2 = {}) {
+    config2.url = url4;
     config2.method = "UPLOAD";
     return this.middleware(config2);
   }
-  download(url3, config2 = {}) {
-    config2.url = url3;
+  download(url4, config2 = {}) {
+    config2.url = url4;
     config2.method = "DOWNLOAD";
     return this.middleware(config2);
   }
 }
-const http = new Request();
+const http = new Request2();
+function email2(value) {
+  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
+}
+function mobile(value) {
+  return /^1[23456789]\d{9}$/.test(value);
+}
+function url2(value) {
+  return /^((https|http|ftp|rtsp|mms):\/\/)(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z].[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+\/?)$/.test(value);
+}
+function date2(value) {
+  if (!value)
+    return false;
+  if (typeof value === "number") {
+    if (value.toString().length !== 10 && value.toString().length !== 13) {
+      return false;
+    }
+    return !isNaN(new Date(value).getTime());
+  }
+  if (typeof value === "string") {
+    const numV = Number(value);
+    if (!isNaN(numV)) {
+      if (numV.toString().length === 10 || numV.toString().length === 13) {
+        return !isNaN(new Date(numV).getTime());
+      }
+    }
+    if (value.length < 10 || value.length > 19) {
+      return false;
+    }
+    const dateRegex = /^\d{4}[-\/]\d{2}[-\/]\d{2}( \d{1,2}:\d{2}(:\d{2})?)?$/;
+    if (!dateRegex.test(value)) {
+      return false;
+    }
+    const dateValue = new Date(value);
+    return !isNaN(dateValue.getTime());
+  }
+  return false;
+}
+function dateISO(value) {
+  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
+}
+function number2(value) {
+  return /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/.test(value);
+}
+function string$1(value) {
+  return typeof value === "string";
+}
+function digits(value) {
+  return /^\d+$/.test(value);
+}
+function idCard(value) {
+  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
+    value
+  );
+}
+function carNo(value) {
+  const xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
+  const creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
+  if (value.length === 7) {
+    return creg.test(value);
+  }
+  if (value.length === 8) {
+    return xreg.test(value);
+  }
+  return false;
+}
+function amount(value) {
+  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
+}
+function chinese(value) {
+  const reg = /^[\u4e00-\u9fa5]+$/gi;
+  return reg.test(value);
+}
+function letter(value) {
+  return /^[a-zA-Z]*$/.test(value);
+}
+function enOrNum(value) {
+  const reg = /^[0-9a-zA-Z]*$/g;
+  return reg.test(value);
+}
+function contains(value, param) {
+  return value.indexOf(param) >= 0;
+}
+function range$1(value, param) {
+  return value >= param[0] && value <= param[1];
+}
+function rangeLength(value, param) {
+  return value.length >= param[0] && value.length <= param[1];
+}
+function landline(value) {
+  const reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
+  return reg.test(value);
+}
+function empty(value) {
+  switch (typeof value) {
+    case "undefined":
+      return true;
+    case "string":
+      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, "").length == 0)
+        return true;
+      break;
+    case "boolean":
+      if (!value)
+        return true;
+      break;
+    case "number":
+      if (value === 0 || isNaN(value))
+        return true;
+      break;
+    case "object":
+      if (value === null || value.length === 0)
+        return true;
+      for (const i in value) {
+        return false;
+      }
+      return true;
+  }
+  return false;
+}
+function jsonString(value) {
+  if (typeof value === "string") {
+    try {
+      const obj = JSON.parse(value);
+      if (typeof obj === "object" && obj) {
+        return true;
+      }
+      return false;
+    } catch (e2) {
+      return false;
+    }
+  }
+  return false;
+}
+function array2(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  }
+  return Object.prototype.toString.call(value) === "[object Array]";
+}
+function object2(value) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}
+function objectPromise(value) {
+  return Object.prototype.toString.call(value) === "[object Promise]";
+}
+function code(value, len = 6) {
+  return new RegExp(`^\\d{${len}}$`).test(value);
+}
+function func(value) {
+  return typeof value === "function";
+}
+function promise(value) {
+  return objectPromise(value) && func(value.then) && func(value.catch);
+}
+function image(value) {
+  const newValue = value.split("?")[0];
+  const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+  return IMAGE_REGEXP.test(newValue);
+}
+function video(value) {
+  const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv|m3u8)/i;
+  return VIDEO_REGEXP.test(value);
+}
+function regExp(o2) {
+  return o2 && Object.prototype.toString.call(o2) === "[object RegExp]";
+}
+const test = {
+  email: email2,
+  mobile,
+  url: url2,
+  date: date2,
+  dateISO,
+  number: number2,
+  digits,
+  idCard,
+  carNo,
+  amount,
+  chinese,
+  letter,
+  enOrNum,
+  contains,
+  range: range$1,
+  rangeLength,
+  empty,
+  isEmpty: empty,
+  jsonString,
+  landline,
+  object: object2,
+  array: array2,
+  code,
+  func,
+  promise,
+  video,
+  image,
+  regExp,
+  string: string$1
+};
+function sleep(value = 30) {
+  return new Promise((resolve2) => {
+    setTimeout(() => {
+      resolve2();
+    }, value);
+  });
+}
+function $parent(name = void 0) {
+  let parent = this.$parent;
+  while (parent) {
+    name = name.replace(/up-([a-zA-Z0-9-_]+)/g, "u-$1");
+    if (parent.$options && parent.$options.name !== name) {
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+function addStyle(customStyle, target = "object") {
+  if (empty(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
+    return customStyle;
+  }
+  if (target === "object") {
+    customStyle = trim(customStyle);
+    const styleArray = customStyle.split(";");
+    const style = {};
+    for (let i = 0; i < styleArray.length; i++) {
+      if (styleArray[i]) {
+        const item = styleArray[i].split(":");
+        style[trim(item[0])] = trim(item[1]);
+      }
+    }
+    return style;
+  }
+  let string2 = "";
+  if (typeof customStyle === "object") {
+    customStyle.forEach((val, i) => {
+      const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
+      string2 += `${key}:${val};`;
+    });
+  }
+  return trim(string2);
+}
+function addUnit(value = "auto", unit = "") {
+  if (!unit) {
+    unit = config.unit || "px";
+  }
+  if (unit == "rpx" && number2(String(value))) {
+    value = value * 2;
+  }
+  value = String(value);
+  return number2(value) ? `${value}${unit}` : value;
+}
+function deepClone(obj) {
+  if ([null, void 0, NaN, false].includes(obj))
+    return obj;
+  if (typeof obj !== "object" && typeof obj !== "function") {
+    return obj;
+  }
+  const o2 = array2(obj) ? [] : {};
+  for (const i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o2[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
+    }
+  }
+  return o2;
+}
+function deepMerge$1(targetOrigin = {}, source = {}) {
+  let target = deepClone(targetOrigin);
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = deepMerge$1(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function shallowMerge(target, source = {}) {
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = shallowMerge(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function error(err) {
+  {
+    console.error(`uView提示：${err}`);
+  }
+}
+if (!String.prototype.padStart) {
+  String.prototype.padStart = function(maxLength, fillString = " ") {
+    if (Object.prototype.toString.call(fillString) !== "[object String]") {
+      throw new TypeError(
+        "fillString must be String"
+      );
+    }
+    const str = this;
+    if (str.length >= maxLength)
+      return String(str);
+    const fillLength = maxLength - str.length;
+    let times2 = Math.ceil(fillLength / fillString.length);
+    while (times2 >>= 1) {
+      fillString += fillString;
+      if (times2 === 1) {
+        fillString += fillString;
+      }
+    }
+    return fillString.slice(0, fillLength) + str;
+  };
+}
+function trim(str, pos = "both") {
+  str = String(str);
+  if (pos == "both") {
+    return str.replace(/^\s+|\s+$/g, "");
+  }
+  if (pos == "left") {
+    return str.replace(/^\s*/, "");
+  }
+  if (pos == "right") {
+    return str.replace(/(\s*$)/g, "");
+  }
+  if (pos == "all") {
+    return str.replace(/\s+/g, "");
+  }
+  return str;
+}
+function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
+  const prefix = isPrefix ? "?" : "";
+  const _result = [];
+  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
+    arrayFormat = "brackets";
+  for (const key in data) {
+    const value = data[key];
+    if (["", void 0, null].indexOf(value) >= 0) {
+      continue;
+    }
+    if (value.constructor === Array) {
+      switch (arrayFormat) {
+        case "indices":
+          for (let i = 0; i < value.length; i++) {
+            _result.push(`${key}[${i}]=${value[i]}`);
+          }
+          break;
+        case "brackets":
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+          break;
+        case "repeat":
+          value.forEach((_value) => {
+            _result.push(`${key}=${_value}`);
+          });
+          break;
+        case "comma":
+          let commaStr = "";
+          value.forEach((_value) => {
+            commaStr += (commaStr ? "," : "") + _value;
+          });
+          _result.push(`${key}=${commaStr}`);
+          break;
+        default:
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+      }
+    } else {
+      _result.push(`${key}=${value}`);
+    }
+  }
+  return _result.length ? prefix + _result.join("&") : "";
+}
+function toast(title, duration = 2e3) {
+  index$1.showToast({
+    title: String(title),
+    icon: "none",
+    duration
+  });
+}
+function formValidate(instance, event) {
+  const formItem = $parent.call(instance, "u-form-item");
+  const form = $parent.call(instance, "u-form");
+  if (formItem && form) {
+    form.validateField(formItem.prop, () => {
+    }, event);
+  }
+}
+function getProperty(obj, key) {
+  if (typeof obj !== "object" || null == obj) {
+    return "";
+  }
+  if (typeof key !== "string" || key === "") {
+    return "";
+  }
+  if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    let firstObj = obj[keys[0]] || {};
+    for (let i = 1; i < keys.length; i++) {
+      if (firstObj) {
+        firstObj = firstObj[keys[i]];
+      }
+    }
+    return firstObj;
+  }
+  return obj[key];
+}
+function setProperty(obj, key, value) {
+  if (typeof obj !== "object" || null == obj) {
+    return;
+  }
+  const inFn = function(_obj, keys, v) {
+    if (keys.length === 1) {
+      _obj[keys[0]] = v;
+      return;
+    }
+    while (keys.length > 1) {
+      const k = keys[0];
+      if (!_obj[k] || typeof _obj[k] !== "object") {
+        _obj[k] = {};
+      }
+      keys.shift();
+      inFn(_obj[k], keys, v);
+    }
+  };
+  if (typeof key !== "string" || key === "")
+    ;
+  else if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    inFn(obj, keys, value);
+  } else {
+    obj[key] = value;
+  }
+}
+function page() {
+  const pages2 = getCurrentPages();
+  return `/${pages2[pages2.length - 1].route || ""}`;
+}
 const ActionSheet = {
   // action-sheet组件
   actionSheet: {
@@ -9992,13 +14230,13 @@ const GridItem = {
   }
 };
 const {
-  color: color$3
+  color: color$2
 } = config;
 const Icon = {
   // icon组件
   icon: {
     name: "",
-    color: color$3["u-content-color"],
+    color: color$2["u-content-color"],
     size: "16px",
     bold: false,
     index: "",
@@ -10007,7 +14245,7 @@ const Icon = {
     label: "",
     labelPos: "right",
     labelSize: "15px",
-    labelColor: color$3["u-content-color"],
+    labelColor: color$2["u-content-color"],
     space: "3px",
     imgMode: "",
     width: "",
@@ -10142,12 +14380,12 @@ const LineProgress = {
   }
 };
 const {
-  color: color$2
+  color: color$1
 } = config;
 const Link = {
   // link超链接组件props参数
   link: {
-    color: color$2["u-primary"],
+    color: color$1["u-primary"],
     fontSize: 15,
     underLine: false,
     href: "",
@@ -10182,14 +14420,14 @@ const ListItem = {
   }
 };
 const {
-  color: color$1
+  color
 } = config;
 const LoadingIcon = {
   // loading-icon加载中图标组件
   loadingIcon: {
     show: true,
-    color: color$1["u-tips-color"],
-    textColor: color$1["u-tips-color"],
+    color: color["u-tips-color"],
+    textColor: color["u-tips-color"],
     vertical: false,
     mode: "spinner",
     size: 24,
@@ -10281,7 +14519,7 @@ const Navbar = {
     titleWidth: "400rpx",
     height: "44px",
     leftIconSize: 20,
-    leftIconColor: color$4.mainColor,
+    leftIconColor: color$3.mainColor,
     autoBack: false,
     titleStyle: ""
   }
@@ -10969,7 +15207,7 @@ const Upload = {
     videoPreviewObjectFit: "cover"
   }
 };
-const props$9 = {
+const props$a = {
   ...ActionSheet,
   ...Album,
   ...Alert,
@@ -11060,10 +15298,10 @@ const props$9 = {
   ...Transition,
   ...Upload
 };
-function setConfig$1(configs) {
+function setConfig(configs) {
   shallowMerge(config, configs.config || {});
-  shallowMerge(props$9, configs.props || {});
-  shallowMerge(color$4, configs.color || {});
+  shallowMerge(props$a, configs.props || {});
+  shallowMerge(color$3, configs.color || {});
   shallowMerge(zIndex, configs.zIndex || {});
 }
 if (index$1 && index$1.upuiParams) {
@@ -11073,483 +15311,15 @@ if (index$1 && index$1.upuiParams) {
     temp.httpIns(http);
   }
   if (temp.options) {
-    setConfig$1(temp.options);
+    setConfig(temp.options);
   }
 }
-let platform = "none";
-platform = "vue3";
-platform = "mp";
-platform = "weixin";
-const platform$1 = platform;
-let params = {
-  loaded: false
-};
-const loadFont = () => {
-  if (config.loadFontOnce) {
-    params.loaded = true;
-  }
-  index$1.loadFontFace({
-    global: true,
-    // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
-    family: "uicon-iconfont",
-    source: 'url("' + config.iconUrl + '")',
-    success() {
-    },
-    fail() {
-    }
-  });
-  if (config.customIcon.family) {
-    index$1.loadFontFace({
-      global: true,
-      // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
-      family: config.customIcon.family,
-      source: 'url("' + config.customIcon.url + '")',
-      success() {
-      },
-      fail() {
-      }
-    });
-  }
-  return true;
-};
-const fontUtil = {
-  params,
-  loadFont
-};
-let themeType = ["primary", "success", "error", "warning", "info"];
-function setConfig(configs) {
-  index.shallowMerge(config, configs.config || {});
-  index.shallowMerge(props$9, configs.props || {});
-  index.shallowMerge(color$4, configs.color || {});
-  index.shallowMerge(zIndex, configs.zIndex || {});
-}
-index.setConfig = setConfig;
-const $u = {
-  route,
-  date: index.timeFormat,
-  // 另名date
-  colorGradient: colorGradient$1.colorGradient,
-  hexToRgb: colorGradient$1.hexToRgb,
-  rgbToHex: colorGradient$1.rgbToHex,
-  colorToRgba: colorGradient$1.colorToRgba,
-  test,
-  type: themeType,
-  http,
-  config,
-  // uview-plus配置信息相关，比如版本号
-  zIndex,
-  debounce,
-  throttle,
-  calc,
-  mixin,
-  mpMixin,
-  props: props$9,
-  ...index,
-  color: color$4,
-  platform: platform$1
-};
-const install = (Vue, upuiParams = "") => {
-  if (upuiParams) {
-    index$1.upuiParams = upuiParams;
-    let temp = upuiParams();
-    if (temp.httpIns) {
-      temp.httpIns(http);
-    }
-    if (temp.options) {
-      setConfig(temp.options);
-    }
-  }
-  index$1.$u = $u;
-  Vue.config.globalProperties.$u = $u;
-  Vue.mixin(mixin);
-};
-const uviewPlus = {
-  install
-};
-const props$8 = defineMixin({
-  props: {
-    // 当前展开面板的name，非手风琴模式：[<string | number>]，手风琴模式：string | number
-    value: {
-      type: [String, Number, Array, null],
-      default: () => props$9.collapse.value
-    },
-    // 是否手风琴模式
-    accordion: {
-      type: Boolean,
-      default: () => props$9.collapse.accordion
-    },
-    // 是否显示外边框
-    border: {
-      type: Boolean,
-      default: () => props$9.collapse.border
-    }
-  }
-});
-const gradient = [
-  "linear-gradient(135deg, #235BF7 0%, #d55fc6 100%)",
-  //default
-  "linear-gradient(135deg, #e9aa4d 0%, #f8e0be 100%)",
-  //warning
-  "linear-gradient(135deg, #0b4590 0%,  #15afba 100%)",
-  //info
-  "linear-gradient(  #ffffff)"
-  //plain
-];
-const activeGradient = [
-  "linear-gradient(135deg, #1a4bd6 0%, #c14cb2 100%)",
-  // default active
-  "linear-gradient(135deg, #d6993a 0%, #e6d0ab 100%)",
-  // warning active
-  "linear-gradient(135deg, #093874 0%, #1195a1 100%)",
-  // info active
-  "linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%)"
-  // plain active
-];
-const color = [
-  " #527afd ",
-  " #53defd",
-  " #54e185",
-  " #ffb258",
-  " #e5b1d9",
-  " #f06060",
-  " #9cf16e",
-  " #ffffff",
-  "rgba(61, 53, 53, 0.97)"
-];
-const activeColor = [
-  " #4269e6 ",
-  // purple active
-  " #48c8e6",
-  // blue active
-  " #49c874",
-  // green active
-  " #e69f4d",
-  // orange active
-  " #d8a1cc",
-  // pink active
-  " #d95353",
-  // red active
-  " #8cd863",
-  // light-green active
-  " #f5f5f5",
-  // white active
-  "rgba(48, 42, 42, 0.97)"
-  // black active
-];
-const textColor = [" #ffffff", " #000000", "gray"];
-const _ButtonTypeMap = /* @__PURE__ */ new Map([
-  [
-    "default",
-    {
-      bgColor: gradient[0],
-      textColor: textColor[1],
-      activeColor: activeGradient[0]
-    }
-  ],
-  [
-    "warning",
-    {
-      bgColor: gradient[1],
-      textColor: textColor[1],
-      activeColor: activeGradient[1]
-    }
-  ],
-  [
-    "info",
-    {
-      bgColor: gradient[2],
-      textColor: textColor[1],
-      activeColor: activeGradient[2]
-    }
-  ],
-  [
-    "plain",
-    {
-      bgColor: gradient[3],
-      textColor: textColor[1],
-      activeColor: activeGradient[3]
-    }
-  ],
-  [
-    "purple",
-    { bgColor: color[0], textColor: textColor[1], activeColor: activeColor[0] }
-  ],
-  [
-    "blue",
-    { bgColor: color[1], textColor: textColor[1], activeColor: activeColor[1] }
-  ],
-  [
-    "green",
-    { bgColor: color[2], textColor: textColor[1], activeColor: activeColor[2] }
-  ],
-  [
-    "orange",
-    { bgColor: color[3], textColor: textColor[1], activeColor: activeColor[3] }
-  ],
-  [
-    "pink",
-    { bgColor: color[4], textColor: textColor[1], activeColor: activeColor[4] }
-  ],
-  [
-    "red",
-    { bgColor: color[5], textColor: textColor[1], activeColor: activeColor[5] }
-  ],
-  [
-    "light-green",
-    { bgColor: color[6], textColor: textColor[1], activeColor: activeColor[6] }
-  ],
-  [
-    "white",
-    { bgColor: color[7], textColor: textColor[1], activeColor: activeColor[7] }
-  ],
-  [
-    "black",
-    { bgColor: color[8], textColor: textColor[0], activeColor: activeColor[8] }
-  ]
-]);
-function getContrastTextColor(color2) {
-  try {
-    const rgb = parseColorToRgb(color2);
-    if (!rgb)
-      return "black";
-    const brightness = calculateBrightness(rgb);
-    return brightness > 128 ? "black" : "white";
-  } catch {
-    return "black";
-  }
-}
-function parseColorToRgb(color2) {
-  if (!color2)
-    return null;
-  color2 = color2.trim().toLowerCase();
-  if (color2.startsWith("#")) {
-    return parseHexColor(color2);
-  }
-  if (color2.startsWith("rgb(")) {
-    return parseRgbColor(color2);
-  }
-  if (color2.startsWith("rgba(")) {
-    return parseRgbaColor(color2);
-  }
-  if (/^[a-z]+$/.test(color2)) {
-    return parseNamedColor(color2);
-  }
-  if (color2.includes("gradient") || color2.includes("url")) {
-    return { r: 255, g: 255, b: 255 };
-  }
-  return null;
-}
-function parseHexColor(hex2) {
-  hex2 = hex2.replace("#", "");
-  if (hex2.length === 3) {
-    hex2 = hex2.split("").map((c) => c + c).join("");
-  }
-  if (hex2.length === 6) {
-    return {
-      r: parseInt(hex2.slice(0, 2), 16),
-      g: parseInt(hex2.slice(2, 4), 16),
-      b: parseInt(hex2.slice(4, 6), 16)
-    };
-  }
-  if (hex2.length === 8) {
-    return {
-      r: parseInt(hex2.slice(0, 2), 16),
-      g: parseInt(hex2.slice(2, 4), 16),
-      b: parseInt(hex2.slice(4, 6), 16)
-    };
-  }
-  return null;
-}
-function parseRgbColor(rgb) {
-  const match = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-  if (match) {
-    return {
-      r: Math.min(255, Math.max(0, parseInt(match[1]))),
-      g: Math.min(255, Math.max(0, parseInt(match[2]))),
-      b: Math.min(255, Math.max(0, parseInt(match[3])))
-    };
-  }
-  return null;
-}
-function parseRgbaColor(rgba) {
-  const match = rgba.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
-  if (match) {
-    return {
-      r: Math.min(255, Math.max(0, parseInt(match[1]))),
-      g: Math.min(255, Math.max(0, parseInt(match[2]))),
-      b: Math.min(255, Math.max(0, parseInt(match[3])))
-    };
-  }
-  return null;
-}
-function parseNamedColor(name) {
-  const colorMap = {
-    black: "#000000",
-    white: "#ffffff",
-    red: "#ff0000",
-    green: "#008000",
-    blue: "#0000ff",
-    yellow: "#ffff00",
-    purple: "#800080",
-    orange: "#ffa500",
-    pink: "#ffc0cb",
-    gray: "#808080",
-    grey: "#808080",
-    brown: "#a52a2a",
-    cyan: "#00ffff",
-    magenta: "#ff00ff",
-    silver: "#c0c0c0",
-    gold: "#ffd700",
-    maroon: "#800000",
-    navy: "#000080",
-    teal: "#008080",
-    lime: "#00ff00",
-    olive: "#808000",
-    aqua: "#00ffff",
-    fuchsia: "#ff00ff"
-  };
-  const hexColor = colorMap[name];
-  if (hexColor) {
-    return parseHexColor(hexColor);
-  }
-  return null;
-}
-function calculateBrightness(rgb) {
-  return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1e3;
-}
-function getDarkerActiveColor(baseColor, intensity = 0.2) {
-  try {
-    const rgb = parseColorToRgb(baseColor);
-    if (!rgb)
-      return baseColor;
-    const darkerRgb = {
-      r: Math.max(0, Math.floor(rgb.r * (1 - intensity))),
-      g: Math.max(0, Math.floor(rgb.g * (1 - intensity))),
-      b: Math.max(0, Math.floor(rgb.b * (1 - intensity)))
-    };
-    if (baseColor.startsWith("rgb(")) {
-      return `rgb(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b})`;
-    } else if (baseColor.startsWith("rgba(")) {
-      const alphaMatch = baseColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
-      if (alphaMatch) {
-        return `rgba(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b}, ${alphaMatch[4]})`;
-      }
-    } else if (baseColor.startsWith("#")) {
-      return `#${darkerRgb.r.toString(16).padStart(2, "0")}${darkerRgb.g.toString(16).padStart(2, "0")}${darkerRgb.b.toString(16).padStart(2, "0")}`;
-    }
-    return `rgb(${darkerRgb.r}, ${darkerRgb.g}, ${darkerRgb.b})`;
-  } catch {
-    return baseColor;
-  }
-}
-const baseEmits = ["click", "onClick", "change", "onChange", "onBlur", "blur", "update:modelValue"];
-function emitClick(emit2, ...args) {
-  emit2("onClick", ...args);
-  emit2("click", ...args);
-}
-function emitChange(emit2, ...args) {
-  emit2("onChange", ...args);
-  emit2("change", ...args);
-}
-function emitBlur(emit2, ...args) {
-  emit2("onBlur", ...args);
-  emit2("blur", ...args);
-}
-function emitVModel(emit2, ...args) {
-  emit2("update:modelValue", ...args);
-}
-const props$7 = defineMixin({
-  props: {
-    // input的label提示语
-    label: {
-      type: String,
-      default: () => props$9.formItem.label
-    },
-    // 绑定的值
-    prop: {
-      type: String,
-      default: () => props$9.formItem.prop
-    },
-    // 绑定的规则
-    rules: {
-      type: Array,
-      default: () => props$9.formItem.rules
-    },
-    // 是否显示表单域的下划线边框
-    borderBottom: {
-      type: [String, Boolean],
-      default: () => props$9.formItem.borderBottom
-    },
-    // label的位置，left-左边，top-上边
-    labelPosition: {
-      type: String,
-      default: () => props$9.formItem.labelPosition
-    },
-    // label的宽度，单位px
-    labelWidth: {
-      type: [String, Number],
-      default: () => props$9.formItem.labelWidth
-    },
-    // 右侧图标
-    rightIcon: {
-      type: String,
-      default: () => props$9.formItem.rightIcon
-    },
-    // 左侧图标
-    leftIcon: {
-      type: String,
-      default: () => props$9.formItem.leftIcon
-    },
-    // 是否显示左边的必填星号，只作显示用，具体校验必填的逻辑，请在rules中配置
-    required: {
-      type: Boolean,
-      default: () => props$9.formItem.required
-    },
-    leftIconStyle: {
-      type: [String, Object],
-      default: () => props$9.formItem.leftIconStyle
-    }
-  }
-});
-const props$6 = defineMixin({
-  props: {
-    color: {
-      type: String,
-      default: () => props$9.line.color
-    },
-    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
-    length: {
-      type: [String, Number],
-      default: () => props$9.line.length
-    },
-    // 线条方向，col-竖向，row-横向
-    direction: {
-      type: String,
-      default: () => props$9.line.direction
-    },
-    // 是否显示细边框
-    hairline: {
-      type: Boolean,
-      default: () => props$9.line.hairline
-    },
-    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
-    margin: {
-      type: [String, Number],
-      default: () => props$9.line.margin
-    },
-    // 是否虚线，true-虚线，false-实线
-    dashed: {
-      type: Boolean,
-      default: () => props$9.line.dashed
-    }
-  }
-});
-const props$5 = defineMixin({
+const props$9 = defineMixin({
   props: {
     // 绑定的值
     modelValue: {
       type: [String, Number],
-      default: () => props$9.input.value
+      default: () => props$a.input.value
     },
     // number-数字输入键盘，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数
     // idcard-身份证输入键盘，微信、支付宝、百度、QQ小程序
@@ -11557,171 +15327,171 @@ const props$5 = defineMixin({
     // text-文本输入键盘
     type: {
       type: String,
-      default: () => props$9.input.type
+      default: () => props$a.input.type
     },
     // 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true，
     // 兼容性：微信小程序、百度小程序、字节跳动小程序、QQ小程序
     fixed: {
       type: Boolean,
-      default: () => props$9.input.fixed
+      default: () => props$a.input.fixed
     },
     // 是否禁用输入框
     disabled: {
       type: Boolean,
-      default: () => props$9.input.disabled
+      default: () => props$a.input.disabled
     },
     // 禁用状态时的背景色
     disabledColor: {
       type: String,
-      default: () => props$9.input.disabledColor
+      default: () => props$a.input.disabledColor
     },
     // 是否显示清除控件
     clearable: {
       type: Boolean,
-      default: () => props$9.input.clearable
+      default: () => props$a.input.clearable
     },
     // 是否密码类型
     password: {
       type: Boolean,
-      default: () => props$9.input.password
+      default: () => props$a.input.password
     },
     // 最大输入长度，设置为 -1 的时候不限制最大长度
     maxlength: {
       type: [String, Number],
-      default: () => props$9.input.maxlength
+      default: () => props$a.input.maxlength
     },
     // 	输入框为空时的占位符
     placeholder: {
       type: String,
-      default: () => props$9.input.placeholder
+      default: () => props$a.input.placeholder
     },
     // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
     placeholderClass: {
       type: String,
-      default: () => props$9.input.placeholderClass
+      default: () => props$a.input.placeholderClass
     },
     // 指定placeholder的样式
     placeholderStyle: {
       type: [String, Object],
-      default: () => props$9.input.placeholderStyle
+      default: () => props$a.input.placeholderStyle
     },
     // 是否显示输入字数统计，只在 type ="text"或type ="textarea"时有效
     showWordLimit: {
       type: Boolean,
-      default: () => props$9.input.showWordLimit
+      default: () => props$a.input.showWordLimit
     },
     // 设置右下角按钮的文字，有效值：send|search|next|go|done，兼容性详见uni-app文档
     // https://uniapp.dcloud.io/component/input
     // https://uniapp.dcloud.io/component/textarea
     confirmType: {
       type: String,
-      default: () => props$9.input.confirmType
+      default: () => props$a.input.confirmType
     },
     // 点击键盘右下角按钮时是否保持键盘不收起，H5无效
     confirmHold: {
       type: Boolean,
-      default: () => props$9.input.confirmHold
+      default: () => props$a.input.confirmHold
     },
     // focus时，点击页面的时候不收起键盘，微信小程序有效
     holdKeyboard: {
       type: Boolean,
-      default: () => props$9.input.holdKeyboard
+      default: () => props$a.input.holdKeyboard
     },
     // 自动获取焦点
     // 在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。nvue 页面不支持，需使用组件的 focus()、blur() 方法控制焦点
     focus: {
       type: Boolean,
-      default: () => props$9.input.focus
+      default: () => props$a.input.focus
     },
     // 键盘收起时，是否自动失去焦点，目前仅App3.0.0+有效
     autoBlur: {
       type: Boolean,
-      default: () => props$9.input.autoBlur
+      default: () => props$a.input.autoBlur
     },
     // 是否去掉 iOS 下的默认内边距，仅微信小程序，且type=textarea时有效
     disableDefaultPadding: {
       type: Boolean,
-      default: () => props$9.input.disableDefaultPadding
+      default: () => props$a.input.disableDefaultPadding
     },
     // 指定focus时光标的位置
     cursor: {
       type: [String, Number],
-      default: () => props$9.input.cursor
+      default: () => props$a.input.cursor
     },
     // 输入框聚焦时底部与键盘的距离
     cursorSpacing: {
       type: [String, Number],
-      default: () => props$9.input.cursorSpacing
+      default: () => props$a.input.cursorSpacing
     },
     // 光标起始位置，自动聚集时有效，需与selection-end搭配使用
     selectionStart: {
       type: [String, Number],
-      default: () => props$9.input.selectionStart
+      default: () => props$a.input.selectionStart
     },
     // 光标结束位置，自动聚集时有效，需与selection-start搭配使用
     selectionEnd: {
       type: [String, Number],
-      default: () => props$9.input.selectionEnd
+      default: () => props$a.input.selectionEnd
     },
     // 键盘弹起时，是否自动上推页面
     adjustPosition: {
       type: Boolean,
-      default: () => props$9.input.adjustPosition
+      default: () => props$a.input.adjustPosition
     },
     // 输入框内容对齐方式，可选值为：left|center|right
     inputAlign: {
       type: String,
-      default: () => props$9.input.inputAlign
+      default: () => props$a.input.inputAlign
     },
     // 输入框字体的大小
     fontSize: {
       type: [String, Number],
-      default: () => props$9.input.fontSize
+      default: () => props$a.input.fontSize
     },
     // 输入框字体颜色
     color: {
       type: String,
-      default: () => props$9.input.color
+      default: () => props$a.input.color
     },
     // 输入框前置图标
     prefixIcon: {
       type: String,
-      default: () => props$9.input.prefixIcon
+      default: () => props$a.input.prefixIcon
     },
     // 前置图标样式，对象或字符串
     prefixIconStyle: {
       type: [String, Object],
-      default: () => props$9.input.prefixIconStyle
+      default: () => props$a.input.prefixIconStyle
     },
     // 输入框后置图标
     suffixIcon: {
       type: String,
-      default: () => props$9.input.suffixIcon
+      default: () => props$a.input.suffixIcon
     },
     // 后置图标样式，对象或字符串
     suffixIconStyle: {
       type: [String, Object],
-      default: () => props$9.input.suffixIconStyle
+      default: () => props$a.input.suffixIconStyle
     },
     // 边框类型，surround-四周边框，bottom-底部边框，none-无边框
     border: {
       type: String,
-      default: () => props$9.input.border
+      default: () => props$a.input.border
     },
     // 是否只读，与disabled不同之处在于disabled会置灰组件，而readonly则不会
     readonly: {
       type: Boolean,
-      default: () => props$9.input.readonly
+      default: () => props$a.input.readonly
     },
     // 输入框形状，circle-圆形，square-方形
     shape: {
       type: String,
-      default: () => props$9.input.shape
+      default: () => props$a.input.shape
     },
     // 用于处理或者过滤输入框内容的方法
     formatter: {
       type: [Function, null],
-      default: () => props$9.input.formatter
+      default: () => props$a.input.formatter
     },
     // 是否忽略组件内对文本合成系统事件的处理
     ignoreCompositionEvent: {
@@ -11731,126 +15501,362 @@ const props$5 = defineMixin({
     // 光标颜色
     cursorColor: {
       type: String,
-      default: () => props$9.input.cursorColor
+      default: () => props$a.input.cursorColor
     }
   }
 });
-const props$4 = defineMixin({
+const mpMixin = defineMixin({
+  // 将自定义节点设置成虚拟的，更加接近Vue组件的表现，能更好的使用flex属性
+  options: {
+    virtualHost: true
+  }
+});
+class Router2 {
+  constructor() {
+    this.config = {
+      type: "navigateTo",
+      url: "",
+      delta: 1,
+      // navigateBack页面后退时,回退的层数
+      params: {},
+      // 传递的参数
+      animationType: "pop-in",
+      // 窗口动画,只在APP有效
+      animationDuration: 300,
+      // 窗口动画持续时间,单位毫秒,只在APP有效
+      intercept: false
+      // 是否需要拦截
+    };
+    this.route = this.route.bind(this);
+  }
+  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
+  addRootPath(url4) {
+    return url4[0] === "/" ? url4 : `/${url4}`;
+  }
+  // 整合路由参数
+  mixinParam(url4, params2) {
+    url4 = url4 && this.addRootPath(url4);
+    let query = "";
+    if (/.*\/.*\?.*=.*/.test(url4)) {
+      query = queryParams(params2, false);
+      return url4 += `&${query}`;
+    }
+    query = queryParams(params2);
+    return url4 += query;
+  }
+  // 对外的方法名称
+  async route(options = {}, params2 = {}) {
+    let mergeConfig2 = {};
+    if (typeof options === "string") {
+      mergeConfig2.url = this.mixinParam(options, params2);
+      mergeConfig2.type = "navigateTo";
+    } else {
+      mergeConfig2 = deepMerge$1(this.config, options);
+      mergeConfig2.url = this.mixinParam(options.url, options.params);
+    }
+    if (mergeConfig2.url === page())
+      return;
+    if (params2.intercept) {
+      this.config.intercept = params2.intercept;
+    }
+    mergeConfig2.params = params2;
+    mergeConfig2 = deepMerge$1(this.config, mergeConfig2);
+    if (typeof index$1.$u.routeIntercept === "function") {
+      const isNext = await new Promise((resolve2, reject) => {
+        index$1.$u.routeIntercept(mergeConfig2, resolve2);
+      });
+      isNext && this.openPage(mergeConfig2);
+    } else {
+      this.openPage(mergeConfig2);
+    }
+  }
+  // 执行路由跳转
+  openPage(config2) {
+    const {
+      url: url4,
+      type: type2,
+      delta,
+      animationType,
+      animationDuration
+    } = config2;
+    if (config2.type == "navigateTo" || config2.type == "to") {
+      index$1.navigateTo({
+        url: url4,
+        animationType,
+        animationDuration
+      });
+    }
+    if (config2.type == "redirectTo" || config2.type == "redirect") {
+      index$1.redirectTo({
+        url: url4
+      });
+    }
+    if (config2.type == "switchTab" || config2.type == "tab") {
+      index$1.switchTab({
+        url: url4
+      });
+    }
+    if (config2.type == "reLaunch" || config2.type == "launch") {
+      index$1.reLaunch({
+        url: url4
+      });
+    }
+    if (config2.type == "navigateBack" || config2.type == "back") {
+      index$1.navigateBack({
+        delta
+      });
+    }
+  }
+}
+const route = new Router2().route;
+const mixin = defineMixin({
+  // 定义每个组件都可能需要用到的外部样式以及类名
+  props: {
+    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
+    customStyle: {
+      type: [Object, String],
+      default: () => ({})
+    },
+    customClass: {
+      type: String,
+      default: ""
+    },
+    // 跳转的页面路径
+    url: {
+      type: String,
+      default: ""
+    },
+    // 页面跳转的类型
+    linkType: {
+      type: String,
+      default: "navigateTo"
+    }
+  },
+  data() {
+    return {};
+  },
+  onLoad() {
+    this.$u.getRect = this.$uGetRect;
+  },
+  created() {
+    this.$u.getRect = this.$uGetRect;
+  },
+  computed: {
+    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
+    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
+    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
+    $u() {
+      return deepMerge$1(index$1.$u, {
+        props: void 0,
+        http: void 0,
+        mixin: void 0
+      });
+    },
+    /**
+     * 生成bem规则类名
+     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
+     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
+     * @param {String} name 组件名称
+     * @param {Array} fixed 一直会存在的类名
+     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
+     * @returns {Array|string}
+     */
+    bem() {
+      return function(name, fixed, change) {
+        const prefix = `u-${name}--`;
+        const classes = {};
+        if (fixed) {
+          fixed.map((item) => {
+            classes[prefix + this[item]] = true;
+          });
+        }
+        if (change) {
+          change.map((item) => {
+            this[item] ? classes[prefix + item] = this[item] : delete classes[prefix + item];
+          });
+        }
+        return Object.keys(classes);
+      };
+    }
+  },
+  methods: {
+    // 跳转某一个页面
+    openPage(urlKey = "url") {
+      const url4 = this[urlKey];
+      if (url4) {
+        route({ type: this.linkType, url: url4 });
+      }
+    },
+    navTo(url4 = "", linkType = "navigateTo") {
+      route({ type: this.linkType, url: url4 });
+    },
+    // 查询节点信息
+    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
+    // 解决办法为在组件根部再套一个没有任何作用的view元素
+    $uGetRect(selector, all) {
+      return new Promise((resolve2) => {
+        index$1.createSelectorQuery().in(this)[all ? "selectAll" : "select"](selector).boundingClientRect((rect) => {
+          if (all && Array.isArray(rect) && rect.length) {
+            resolve2(rect);
+          }
+          if (!all && rect) {
+            resolve2(rect);
+          }
+        }).exec();
+      });
+    },
+    getParentData(parentName = "") {
+      if (!this.parent)
+        this.parent = {};
+      this.parent = $parent.call(this, parentName);
+      if (this.parent.children) {
+        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
+      }
+      if (this.parent && this.parentData) {
+        Object.keys(this.parentData).map((key) => {
+          this.parentData[key] = this.parent[key];
+        });
+      }
+    },
+    // 阻止事件冒泡
+    preventEvent(e2) {
+      e2 && typeof e2.stopPropagation === "function" && e2.stopPropagation();
+    },
+    // 空操作
+    noop(e2) {
+      this.preventEvent(e2);
+    }
+  },
+  onReachBottom() {
+    index$1.$emit("uOnReachBottom");
+  },
+  beforeUnmount() {
+    if (this.parent && test.array(this.parent.children)) {
+      const childrenList = this.parent.children;
+      childrenList.map((child, index2) => {
+        if (child === this) {
+          childrenList.splice(index2, 1);
+        }
+      });
+    }
+  }
+});
+const props$8 = defineMixin({
   props: {
     // 输入框的内容
     value: {
       type: [String, Number],
-      default: () => props$9.textarea.value
+      default: () => props$a.textarea.value
     },
     // 输入框的内容
     modelValue: {
       type: [String, Number],
-      default: () => props$9.textarea.value
+      default: () => props$a.textarea.value
     },
     // 输入框为空时占位符
     placeholder: {
       type: [String, Number],
-      default: () => props$9.textarea.placeholder
+      default: () => props$a.textarea.placeholder
     },
     // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
     placeholderClass: {
       type: String,
-      default: () => props$9.input.placeholderClass
+      default: () => props$a.input.placeholderClass
     },
     // 指定placeholder的样式
     placeholderStyle: {
       type: [String, Object],
-      default: () => props$9.input.placeholderStyle
+      default: () => props$a.input.placeholderStyle
     },
     // 输入框高度
     height: {
       type: [String, Number],
-      default: () => props$9.textarea.height
+      default: () => props$a.textarea.height
     },
     // 设置键盘右下角按钮的文字，仅微信小程序，App-vue和H5有效
     confirmType: {
       type: String,
-      default: () => props$9.textarea.confirmType
+      default: () => props$a.textarea.confirmType
     },
     // 是否禁用
     disabled: {
       type: Boolean,
-      default: () => props$9.textarea.disabled
+      default: () => props$a.textarea.disabled
     },
     // 是否显示统计字数
     count: {
       type: Boolean,
-      default: () => props$9.textarea.count
+      default: () => props$a.textarea.count
     },
     // 是否自动获取焦点，nvue不支持，H5取决于浏览器的实现
     focus: {
       type: Boolean,
-      default: () => props$9.textarea.focus
+      default: () => props$a.textarea.focus
     },
     // 是否自动增加高度
     autoHeight: {
       type: Boolean,
-      default: () => props$9.textarea.autoHeight
+      default: () => props$a.textarea.autoHeight
     },
     // 如果textarea是在一个position:fixed的区域，需要显示指定属性fixed为true
     fixed: {
       type: Boolean,
-      default: () => props$9.textarea.fixed
+      default: () => props$a.textarea.fixed
     },
     // 指定光标与键盘的距离
     cursorSpacing: {
       type: Number,
-      default: () => props$9.textarea.cursorSpacing
+      default: () => props$a.textarea.cursorSpacing
     },
     // 指定focus时的光标位置
     cursor: {
       type: [String, Number],
-      default: () => props$9.textarea.cursor
+      default: () => props$a.textarea.cursor
     },
     // 是否显示键盘上方带有”完成“按钮那一栏，
     showConfirmBar: {
       type: Boolean,
-      default: () => props$9.textarea.showConfirmBar
+      default: () => props$a.textarea.showConfirmBar
     },
     // 光标起始位置，自动聚焦时有效，需与selection-end搭配使用
     selectionStart: {
       type: Number,
-      default: () => props$9.textarea.selectionStart
+      default: () => props$a.textarea.selectionStart
     },
     // 光标结束位置，自动聚焦时有效，需与selection-start搭配使用
     selectionEnd: {
       type: Number,
-      default: () => props$9.textarea.selectionEnd
+      default: () => props$a.textarea.selectionEnd
     },
     // 键盘弹起时，是否自动上推页面
     adjustPosition: {
       type: Boolean,
-      default: () => props$9.textarea.adjustPosition
+      default: () => props$a.textarea.adjustPosition
     },
     // 是否去掉 iOS 下的默认内边距，只微信小程序有效
     disableDefaultPadding: {
       type: Boolean,
-      default: () => props$9.textarea.disableDefaultPadding
+      default: () => props$a.textarea.disableDefaultPadding
     },
     // focus时，点击页面的时候不收起键盘，只微信小程序有效
     holdKeyboard: {
       type: Boolean,
-      default: () => props$9.textarea.holdKeyboard
+      default: () => props$a.textarea.holdKeyboard
     },
     // 最大输入长度，设置为 -1 的时候不限制最大长度
     maxlength: {
       type: [String, Number],
-      default: () => props$9.textarea.maxlength
+      default: () => props$a.textarea.maxlength
     },
     // 边框类型，surround-四周边框，bottom-底部边框
     border: {
       type: String,
-      default: () => props$9.textarea.border
+      default: () => props$a.textarea.border
     },
     // 用于处理或者过滤输入框内容的方法
     formatter: {
       type: [Function, null],
-      default: () => props$9.textarea.formatter
+      default: () => props$a.textarea.formatter
     },
     // 是否忽略组件内对文本合成系统事件的处理
     ignoreCompositionEvent: {
@@ -11859,53 +15865,106 @@ const props$4 = defineMixin({
     }
   }
 });
-const props$3 = defineMixin({
+const props$7 = defineMixin({
+  props: {
+    // input的label提示语
+    label: {
+      type: String,
+      default: () => props$a.formItem.label
+    },
+    // 绑定的值
+    prop: {
+      type: String,
+      default: () => props$a.formItem.prop
+    },
+    // 绑定的规则
+    rules: {
+      type: Array,
+      default: () => props$a.formItem.rules
+    },
+    // 是否显示表单域的下划线边框
+    borderBottom: {
+      type: [String, Boolean],
+      default: () => props$a.formItem.borderBottom
+    },
+    // label的位置，left-左边，top-上边
+    labelPosition: {
+      type: String,
+      default: () => props$a.formItem.labelPosition
+    },
+    // label的宽度，单位px
+    labelWidth: {
+      type: [String, Number],
+      default: () => props$a.formItem.labelWidth
+    },
+    // 右侧图标
+    rightIcon: {
+      type: String,
+      default: () => props$a.formItem.rightIcon
+    },
+    // 左侧图标
+    leftIcon: {
+      type: String,
+      default: () => props$a.formItem.leftIcon
+    },
+    // 是否显示左边的必填星号，只作显示用，具体校验必填的逻辑，请在rules中配置
+    required: {
+      type: Boolean,
+      default: () => props$a.formItem.required
+    },
+    leftIconStyle: {
+      type: [String, Object],
+      default: () => props$a.formItem.leftIconStyle
+    }
+  }
+});
+const props$6 = defineMixin({
   props: {
     // 当前form的需要验证字段的集合
     model: {
       type: Object,
-      default: () => props$9.form.model
+      default: () => props$a.form.model
     },
     // 验证规则
     rules: {
       type: [Object, Function, Array],
-      default: () => props$9.form.rules
+      default: () => props$a.form.rules
     },
     // 有错误时的提示方式，message-提示信息，toast-进行toast提示
     // border-bottom-下边框呈现红色，none-无提示
     errorType: {
       type: String,
-      default: () => props$9.form.errorType
+      default: () => props$a.form.errorType
     },
     // 是否显示表单域的下划线边框
     borderBottom: {
       type: Boolean,
-      default: () => props$9.form.borderBottom
+      default: () => props$a.form.borderBottom
     },
     // label的位置，left-左边，top-上边
     labelPosition: {
       type: String,
-      default: () => props$9.form.labelPosition
+      default: () => props$a.form.labelPosition
     },
     // label的宽度，单位px
     labelWidth: {
       type: [String, Number],
-      default: () => props$9.form.labelWidth
+      default: () => props$a.form.labelWidth
     },
     // lable字体的对齐方式
     labelAlign: {
       type: String,
-      default: () => props$9.form.labelAlign
+      default: () => props$a.form.labelAlign
     },
     // lable的样式，对象形式
     labelStyle: {
       type: Object,
-      default: () => props$9.form.labelStyle
+      default: () => props$a.form.labelStyle
     }
   }
 });
 const formatRegExp = /%[sdj%]/g;
-let warning = function warning2() {
+let warning = function warning22() {
 };
 if (typeof process !== "undefined" && process.env && true && typeof window !== "undefined" && typeof document !== "undefined") {
   warning = function warning3(type2, errors) {
@@ -12122,16 +16181,16 @@ const pattern = {
   hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i
 };
 var types = {
-  integer: function integer(value) {
+  integer: function integer2(value) {
     return /^(-)?\d+$/.test(value);
   },
-  float: function float(value) {
+  float: function float2(value) {
     return /^(-)?\d+(\.\d+)?$/.test(value);
   },
-  array: function array2(value) {
+  array: function array3(value) {
     return Array.isArray(value);
   },
-  regexp: function regexp(value) {
+  regexp: function regexp2(value) {
     if (value instanceof RegExp) {
       return true;
     }
@@ -12141,28 +16200,28 @@ var types = {
       return false;
     }
   },
-  date: function date2(value) {
+  date: function date3(value) {
     return typeof value.getTime === "function" && typeof value.getMonth === "function" && typeof value.getYear === "function";
   },
-  number: function number2(value) {
+  number: function number3(value) {
     if (isNaN(value)) {
       return false;
     }
     return typeof +value === "number";
   },
-  object: function object2(value) {
+  object: function object3(value) {
     return typeof value === "object" && !types.array(value);
   },
-  method: function method(value) {
+  method: function method2(value) {
     return typeof value === "function";
   },
-  email: function email2(value) {
+  email: function email3(value) {
     return typeof value === "string" && !!value.match(pattern.email) && value.length < 255;
   },
-  url: function url2(value) {
+  url: function url3(value) {
     return typeof value === "string" && !!value.match(pattern.url);
   },
-  hex: function hex(value) {
+  hex: function hex2(value) {
     return typeof value === "string" && !!value.match(pattern.hex);
   }
 };
@@ -12251,8 +16310,8 @@ const rules = {
 };
 function string(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value, "string") && !rule.required) {
       return callback();
     }
@@ -12268,10 +16327,10 @@ function string(rule, value, callback, source, options) {
   }
   callback(errors);
 }
-function method2(rule, value, callback, source, options) {
+function method22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12284,8 +16343,8 @@ function method2(rule, value, callback, source, options) {
 }
 function number22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (value === "") {
       value = void 0;
     }
@@ -12302,8 +16361,8 @@ function number22(rule, value, callback, source, options) {
 }
 function _boolean(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12314,10 +16373,10 @@ function _boolean(rule, value, callback, source, options) {
   }
   callback(errors);
 }
-function regexp2(rule, value, callback, source, options) {
+function regexp22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12328,10 +16387,10 @@ function regexp2(rule, value, callback, source, options) {
   }
   callback(errors);
 }
-function integer2(rule, value, callback, source, options) {
+function integer22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12345,8 +16404,8 @@ function integer2(rule, value, callback, source, options) {
 }
 function floatFn(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12360,8 +16419,8 @@ function floatFn(rule, value, callback, source, options) {
 }
 function array22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value, "array") && !rule.required) {
       return callback();
     }
@@ -12375,8 +16434,8 @@ function array22(rule, value, callback, source, options) {
 }
 function object22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12390,8 +16449,8 @@ function object22(rule, value, callback, source, options) {
 const ENUM$1 = "enum";
 function enumerable$1(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12404,8 +16463,8 @@ function enumerable$1(rule, value, callback, source, options) {
 }
 function pattern$2(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value, "string") && !rule.required) {
       return callback();
     }
@@ -12418,8 +16477,8 @@ function pattern$2(rule, value, callback, source, options) {
 }
 function date22(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12448,8 +16507,8 @@ function required$1(rule, value, callback, source, options) {
 function type$1(rule, value, callback, source, options) {
   const ruleType = rule.type;
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value, ruleType) && !rule.required) {
       return callback();
     }
@@ -12462,8 +16521,8 @@ function type$1(rule, value, callback, source, options) {
 }
 function any(rule, value, callback, source, options) {
   const errors = [];
-  const validate2 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate2) {
+  const validate22 = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate22) {
     if (isEmptyValue(value) && !rule.required) {
       return callback();
     }
@@ -12473,11 +16532,11 @@ function any(rule, value, callback, source, options) {
 }
 const validators = {
   string,
-  method: method2,
+  method: method22,
   number: number22,
   boolean: _boolean,
-  regexp: regexp2,
-  integer: integer2,
+  regexp: regexp22,
+  integer: integer22,
   float: floatFn,
   array: array22,
   object: object22,
@@ -12551,13 +16610,13 @@ function Schema(descriptor) {
   this.define(descriptor);
 }
 Schema.prototype = {
-  messages: function messages2(_messages) {
+  messages: function messages22(_messages) {
     if (_messages) {
       this._messages = deepMerge(newMessages(), _messages);
     }
     return this._messages;
   },
-  define: function define(rules2) {
+  define: function define2(rules2) {
     if (!rules2) {
       throw new Error("Cannot configure a schema with no rules");
     }
@@ -12574,7 +16633,7 @@ Schema.prototype = {
       }
     }
   },
-  validate: function validate(source_, o2, oc) {
+  validate: function validate2(source_, o2, oc) {
     const _this = this;
     if (o2 === void 0) {
       o2 = {};
@@ -12620,12 +16679,12 @@ Schema.prototype = {
       callback(errors, fields);
     }
     if (options.messages) {
-      let messages$1 = this.messages();
-      if (messages$1 === messages) {
-        messages$1 = newMessages();
+      let messages$12 = this.messages();
+      if (messages$12 === messages) {
+        messages$12 = newMessages();
       }
-      deepMerge(messages$1, options.messages);
-      options.messages = messages$1;
+      deepMerge(messages$12, options.messages);
+      options.messages = messages$12;
     } else {
       options.messages = this.messages();
     }
@@ -12763,7 +16822,7 @@ Schema.prototype = {
       complete(results);
     });
   },
-  getType: function getType2(rule) {
+  getType: function getType3(rule) {
     if (rule.type === void 0 && rule.pattern instanceof RegExp) {
       rule.type = "pattern";
     }
@@ -12772,7 +16831,7 @@ Schema.prototype = {
     }
     return rule.type || "string";
   },
-  getValidationMethod: function getValidationMethod(rule) {
+  getValidationMethod: function getValidationMethod2(rule) {
     if (typeof rule.validator === "function") {
       return rule.validator;
     }
@@ -12787,7 +16846,7 @@ Schema.prototype = {
     return validators[this.getType(rule)] || false;
   }
 };
-Schema.register = function register(type2, validator) {
+Schema.register = function register2(type2, validator) {
   if (typeof validator !== "function") {
     throw new Error("Cannot register a validator by type, validator is not a function");
   }
@@ -12795,60 +16854,398 @@ Schema.register = function register(type2, validator) {
 };
 Schema.warning = warning;
 Schema.messages = messages;
-const props$2 = defineMixin({
+const props$5 = defineMixin({
   props: {
     // 是否为加载中状态
     loading: {
       type: Boolean,
-      default: () => props$9.switch.loading
+      default: () => props$a.switch.loading
     },
     // 是否为禁用装填
     disabled: {
       type: Boolean,
-      default: () => props$9.switch.disabled
+      default: () => props$a.switch.disabled
     },
     // 开关尺寸，单位px
     size: {
       type: [String, Number],
-      default: () => props$9.switch.size
+      default: () => props$a.switch.size
     },
     // 打开时的背景颜色
     activeColor: {
       type: String,
-      default: () => props$9.switch.activeColor
+      default: () => props$a.switch.activeColor
     },
     // 关闭时的背景颜色
     inactiveColor: {
       type: String,
-      default: () => props$9.switch.inactiveColor
+      default: () => props$a.switch.inactiveColor
     },
     // 通过v-model双向绑定的值
     modelValue: {
       type: [Boolean, String, Number],
-      default: () => props$9.switch.value
+      default: () => props$a.switch.value
     },
     // switch打开时的值
     activeValue: {
       type: [String, Number, Boolean],
-      default: () => props$9.switch.activeValue
+      default: () => props$a.switch.activeValue
     },
     // switch关闭时的值
     inactiveValue: {
       type: [String, Number, Boolean],
-      default: () => props$9.switch.inactiveValue
+      default: () => props$a.switch.inactiveValue
     },
     // 是否开启异步变更，开启后需要手动控制输入值
     asyncChange: {
       type: Boolean,
-      default: () => props$9.switch.asyncChange
+      default: () => props$a.switch.asyncChange
     },
     // 圆点与外边框的距离
     space: {
       type: [String, Number],
-      default: () => props$9.switch.space
+      default: () => props$a.switch.space
     }
   }
 });
+const icons$1 = {
+  "uicon-level": "",
+  "uicon-column-line": "",
+  "uicon-checkbox-mark": "",
+  "uicon-folder": "",
+  "uicon-movie": "",
+  "uicon-star-fill": "",
+  "uicon-star": "",
+  "uicon-phone-fill": "",
+  "uicon-phone": "",
+  "uicon-apple-fill": "",
+  "uicon-chrome-circle-fill": "",
+  "uicon-backspace": "",
+  "uicon-attach": "",
+  "uicon-cut": "",
+  "uicon-empty-car": "",
+  "uicon-empty-coupon": "",
+  "uicon-empty-address": "",
+  "uicon-empty-favor": "",
+  "uicon-empty-permission": "",
+  "uicon-empty-news": "",
+  "uicon-empty-search": "",
+  "uicon-github-circle-fill": "",
+  "uicon-rmb": "",
+  "uicon-person-delete-fill": "",
+  "uicon-reload": "",
+  "uicon-order": "",
+  "uicon-server-man": "",
+  "uicon-search": "",
+  "uicon-fingerprint": "",
+  "uicon-more-dot-fill": "",
+  "uicon-scan": "",
+  "uicon-share-square": "",
+  "uicon-map": "",
+  "uicon-map-fill": "",
+  "uicon-tags": "",
+  "uicon-tags-fill": "",
+  "uicon-bookmark-fill": "",
+  "uicon-bookmark": "",
+  "uicon-eye": "",
+  "uicon-eye-fill": "",
+  "uicon-mic": "",
+  "uicon-mic-off": "",
+  "uicon-calendar": "",
+  "uicon-calendar-fill": "",
+  "uicon-trash": "",
+  "uicon-trash-fill": "",
+  "uicon-play-left": "",
+  "uicon-play-right": "",
+  "uicon-minus": "",
+  "uicon-plus": "",
+  "uicon-info": "",
+  "uicon-info-circle": "",
+  "uicon-info-circle-fill": "",
+  "uicon-question": "",
+  "uicon-error": "",
+  "uicon-close": "",
+  "uicon-checkmark": "",
+  "uicon-android-circle-fill": "",
+  "uicon-android-fill": "",
+  "uicon-ie": "",
+  "uicon-IE-circle-fill": "",
+  "uicon-google": "",
+  "uicon-google-circle-fill": "",
+  "uicon-setting-fill": "",
+  "uicon-setting": "",
+  "uicon-minus-square-fill": "",
+  "uicon-plus-square-fill": "",
+  "uicon-heart": "",
+  "uicon-heart-fill": "",
+  "uicon-camera": "",
+  "uicon-camera-fill": "",
+  "uicon-more-circle": "",
+  "uicon-more-circle-fill": "",
+  "uicon-chat": "",
+  "uicon-chat-fill": "",
+  "uicon-bag-fill": "",
+  "uicon-bag": "",
+  "uicon-error-circle-fill": "",
+  "uicon-error-circle": "",
+  "uicon-close-circle": "",
+  "uicon-close-circle-fill": "",
+  "uicon-checkmark-circle": "",
+  "uicon-checkmark-circle-fill": "",
+  "uicon-question-circle-fill": "",
+  "uicon-question-circle": "",
+  "uicon-share": "",
+  "uicon-share-fill": "",
+  "uicon-shopping-cart": "",
+  "uicon-shopping-cart-fill": "",
+  "uicon-bell": "",
+  "uicon-bell-fill": "",
+  "uicon-list": "",
+  "uicon-list-dot": "",
+  "uicon-zhihu": "",
+  "uicon-zhihu-circle-fill": "",
+  "uicon-zhifubao": "",
+  "uicon-zhifubao-circle-fill": "",
+  "uicon-weixin-circle-fill": "",
+  "uicon-weixin-fill": "",
+  "uicon-twitter-circle-fill": "",
+  "uicon-twitter": "",
+  "uicon-taobao-circle-fill": "",
+  "uicon-taobao": "",
+  "uicon-weibo-circle-fill": "",
+  "uicon-weibo": "",
+  "uicon-qq-fill": "",
+  "uicon-qq-circle-fill": "",
+  "uicon-moments-circel-fill": "",
+  "uicon-moments": "",
+  "uicon-qzone": "",
+  "uicon-qzone-circle-fill": "",
+  "uicon-baidu-circle-fill": "",
+  "uicon-baidu": "",
+  "uicon-facebook-circle-fill": "",
+  "uicon-facebook": "",
+  "uicon-car": "",
+  "uicon-car-fill": "",
+  "uicon-warning-fill": "",
+  "uicon-warning": "",
+  "uicon-clock-fill": "",
+  "uicon-clock": "",
+  "uicon-edit-pen": "",
+  "uicon-edit-pen-fill": "",
+  "uicon-email": "",
+  "uicon-email-fill": "",
+  "uicon-minus-circle": "",
+  "uicon-minus-circle-fill": "",
+  "uicon-plus-circle": "",
+  "uicon-plus-circle-fill": "",
+  "uicon-file-text": "",
+  "uicon-file-text-fill": "",
+  "uicon-pushpin": "",
+  "uicon-pushpin-fill": "",
+  "uicon-grid": "",
+  "uicon-grid-fill": "",
+  "uicon-play-circle": "",
+  "uicon-play-circle-fill": "",
+  "uicon-pause-circle-fill": "",
+  "uicon-pause": "",
+  "uicon-pause-circle": "",
+  "uicon-eye-off": "",
+  "uicon-eye-off-outline": "",
+  "uicon-gift-fill": "",
+  "uicon-gift": "",
+  "uicon-rmb-circle-fill": "",
+  "uicon-rmb-circle": "",
+  "uicon-kefu-ermai": "",
+  "uicon-server-fill": "",
+  "uicon-coupon-fill": "",
+  "uicon-coupon": "",
+  "uicon-integral": "",
+  "uicon-integral-fill": "",
+  "uicon-home-fill": "",
+  "uicon-home": "",
+  "uicon-hourglass-half-fill": "",
+  "uicon-hourglass": "",
+  "uicon-account": "",
+  "uicon-plus-people-fill": "",
+  "uicon-minus-people-fill": "",
+  "uicon-account-fill": "",
+  "uicon-thumb-down-fill": "",
+  "uicon-thumb-down": "",
+  "uicon-thumb-up": "",
+  "uicon-thumb-up-fill": "",
+  "uicon-lock-fill": "",
+  "uicon-lock-open": "",
+  "uicon-lock-opened-fill": "",
+  "uicon-lock": "",
+  "uicon-red-packet-fill": "",
+  "uicon-photo-fill": "",
+  "uicon-photo": "",
+  "uicon-volume-off-fill": "",
+  "uicon-volume-off": "",
+  "uicon-volume-fill": "",
+  "uicon-volume": "",
+  "uicon-red-packet": "",
+  "uicon-download": "",
+  "uicon-arrow-up-fill": "",
+  "uicon-arrow-down-fill": "",
+  "uicon-play-left-fill": "",
+  "uicon-play-right-fill": "",
+  "uicon-rewind-left-fill": "",
+  "uicon-rewind-right-fill": "",
+  "uicon-arrow-downward": "",
+  "uicon-arrow-leftward": "",
+  "uicon-arrow-rightward": "",
+  "uicon-arrow-upward": "",
+  "uicon-arrow-down": "",
+  "uicon-arrow-right": "",
+  "uicon-arrow-left": "",
+  "uicon-arrow-up": "",
+  "uicon-skip-back-left": "",
+  "uicon-skip-forward-right": "",
+  "uicon-rewind-right": "",
+  "uicon-rewind-left": "",
+  "uicon-arrow-right-double": "",
+  "uicon-arrow-left-double": "",
+  "uicon-wifi-off": "",
+  "uicon-wifi": "",
+  "uicon-empty-data": "",
+  "uicon-empty-history": "",
+  "uicon-empty-list": "",
+  "uicon-empty-page": "",
+  "uicon-empty-order": "",
+  "uicon-man": "",
+  "uicon-woman": "",
+  "uicon-man-add": "",
+  "uicon-man-add-fill": "",
+  "uicon-man-delete": "",
+  "uicon-man-delete-fill": "",
+  "uicon-zh": "",
+  "uicon-en": ""
+};
+const props$4 = defineMixin({
+  props: {
+    // 图标类名
+    name: {
+      type: String,
+      default: () => props$a.icon.name
+    },
+    // 图标颜色，可接受主题色
+    color: {
+      type: String,
+      default: () => props$a.icon.color
+    },
+    // 字体大小，单位px
+    size: {
+      type: [String, Number],
+      default: () => props$a.icon.size
+    },
+    // 是否显示粗体
+    bold: {
+      type: Boolean,
+      default: () => props$a.icon.bold
+    },
+    // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
+    index: {
+      type: [String, Number],
+      default: () => props$a.icon.index
+    },
+    // 触摸图标时的类名
+    hoverClass: {
+      type: String,
+      default: () => props$a.icon.hoverClass
+    },
+    // 自定义扩展前缀，方便用户扩展自己的图标库
+    customPrefix: {
+      type: String,
+      default: () => props$a.icon.customPrefix
+    },
+    // 图标右边或者下面的文字
+    label: {
+      type: [String, Number],
+      default: () => props$a.icon.label
+    },
+    // label的位置，只能右边或者下边
+    labelPos: {
+      type: String,
+      default: () => props$a.icon.labelPos
+    },
+    // label的大小
+    labelSize: {
+      type: [String, Number],
+      default: () => props$a.icon.labelSize
+    },
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: () => props$a.icon.labelColor
+    },
+    // label与图标的距离
+    space: {
+      type: [String, Number],
+      default: () => props$a.icon.space
+    },
+    // 图片的mode
+    imgMode: {
+      type: String,
+      default: () => props$a.icon.imgMode
+    },
+    // 用于显示图片小图标时，图片的宽度
+    width: {
+      type: [String, Number],
+      default: () => props$a.icon.width
+    },
+    // 用于显示图片小图标时，图片的高度
+    height: {
+      type: [String, Number],
+      default: () => props$a.icon.height
+    },
+    // 用于解决某些情况下，让图标垂直居中的用途
+    top: {
+      type: [String, Number],
+      default: () => props$a.icon.top
+    },
+    // 是否阻止事件传播
+    stop: {
+      type: Boolean,
+      default: () => props$a.icon.stop
+    }
+  }
+});
+let params = {
+  loaded: false
+};
+const loadFont = () => {
+  if (config.loadFontOnce) {
+    params.loaded = true;
+  }
+  index$1.loadFontFace({
+    global: true,
+    // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
+    family: "uicon-iconfont",
+    source: 'url("' + config.iconUrl + '")',
+    success() {
+    },
+    fail() {
+    }
+  });
+  if (config.customIcon.family) {
+    index$1.loadFontFace({
+      global: true,
+      // 是否全局生效。微信小程序 '2.10.0'起支持全局生效，需在 app.vue 中调用。
+      family: config.customIcon.family,
+      source: 'url("' + config.customIcon.url + '")',
+      success() {
+      },
+      fail() {
+      }
+    });
+  }
+  return true;
+};
+const fontUtil = {
+  params,
+  loadFont
+};
 const icons = {
   "uicon-level": "",
   "uicon-column-line": "",
@@ -13063,92 +17460,184 @@ const icons = {
   "uicon-zh": "",
   "uicon-en": ""
 };
-const props$1 = defineMixin({
+const props$3 = defineMixin$1({
   props: {
     // 图标类名
     name: {
       type: String,
-      default: () => props$9.icon.name
+      default: () => props$g.icon.name
     },
     // 图标颜色，可接受主题色
     color: {
       type: String,
-      default: () => props$9.icon.color
+      default: () => props$g.icon.color
     },
     // 字体大小，单位px
     size: {
       type: [String, Number],
-      default: () => props$9.icon.size
+      default: () => props$g.icon.size
     },
     // 是否显示粗体
     bold: {
       type: Boolean,
-      default: () => props$9.icon.bold
+      default: () => props$g.icon.bold
     },
     // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
     index: {
       type: [String, Number],
-      default: () => props$9.icon.index
+      default: () => props$g.icon.index
     },
     // 触摸图标时的类名
     hoverClass: {
       type: String,
-      default: () => props$9.icon.hoverClass
+      default: () => props$g.icon.hoverClass
     },
     // 自定义扩展前缀，方便用户扩展自己的图标库
     customPrefix: {
       type: String,
-      default: () => props$9.icon.customPrefix
+      default: () => props$g.icon.customPrefix
     },
     // 图标右边或者下面的文字
     label: {
       type: [String, Number],
-      default: () => props$9.icon.label
+      default: () => props$g.icon.label
     },
     // label的位置，只能右边或者下边
     labelPos: {
       type: String,
-      default: () => props$9.icon.labelPos
+      default: () => props$g.icon.labelPos
     },
     // label的大小
     labelSize: {
       type: [String, Number],
-      default: () => props$9.icon.labelSize
+      default: () => props$g.icon.labelSize
     },
     // label的颜色
     labelColor: {
       type: String,
-      default: () => props$9.icon.labelColor
+      default: () => props$g.icon.labelColor
     },
     // label与图标的距离
     space: {
       type: [String, Number],
-      default: () => props$9.icon.space
+      default: () => props$g.icon.space
     },
     // 图片的mode
     imgMode: {
       type: String,
-      default: () => props$9.icon.imgMode
+      default: () => props$g.icon.imgMode
     },
     // 用于显示图片小图标时，图片的宽度
     width: {
       type: [String, Number],
-      default: () => props$9.icon.width
+      default: () => props$g.icon.width
     },
     // 用于显示图片小图标时，图片的高度
     height: {
       type: [String, Number],
-      default: () => props$9.icon.height
+      default: () => props$g.icon.height
     },
     // 用于解决某些情况下，让图标垂直居中的用途
     top: {
       type: [String, Number],
-      default: () => props$9.icon.top
+      default: () => props$g.icon.top
     },
     // 是否阻止事件传播
     stop: {
       type: Boolean,
-      default: () => props$9.icon.stop
+      default: () => props$g.icon.stop
+    }
+  }
+});
+const props$2 = defineMixin$1({
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: () => props$g.loadingIcon.show
+    },
+    // 颜色
+    color: {
+      type: String,
+      default: () => props$g.loadingIcon.color
+    },
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: () => props$g.loadingIcon.textColor
+    },
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: () => props$g.loadingIcon.vertical
+    },
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: () => props$g.loadingIcon.mode
+    },
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: () => props$g.loadingIcon.size
+    },
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: () => props$g.loadingIcon.textSize
+    },
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: () => props$g.loadingIcon.text
+    },
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: () => props$g.loadingIcon.timingFunction
+    },
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: () => props$g.loadingIcon.duration
+    },
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: () => props$g.loadingIcon.inactiveColor
+    }
+  }
+});
+const props$1 = defineMixin({
+  props: {
+    color: {
+      type: String,
+      default: () => props$a.line.color
+    },
+    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
+    length: {
+      type: [String, Number],
+      default: () => props$a.line.length
+    },
+    // 线条方向，col-竖向，row-横向
+    direction: {
+      type: String,
+      default: () => props$a.line.direction
+    },
+    // 是否显示细边框
+    hairline: {
+      type: Boolean,
+      default: () => props$a.line.hairline
+    },
+    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+    margin: {
+      type: [String, Number],
+      default: () => props$a.line.margin
+    },
+    // 是否虚线，true-虚线，false-实线
+    dashed: {
+      type: Boolean,
+      default: () => props$a.line.dashed
     }
   }
 });
@@ -13157,115 +17646,224 @@ const props = defineMixin({
     // 是否显示组件
     show: {
       type: Boolean,
-      default: () => props$9.loadingIcon.show
+      default: () => props$a.loadingIcon.show
     },
     // 颜色
     color: {
       type: String,
-      default: () => props$9.loadingIcon.color
+      default: () => props$a.loadingIcon.color
     },
     // 提示文字颜色
     textColor: {
       type: String,
-      default: () => props$9.loadingIcon.textColor
+      default: () => props$a.loadingIcon.textColor
     },
     // 文字和图标是否垂直排列
     vertical: {
       type: Boolean,
-      default: () => props$9.loadingIcon.vertical
+      default: () => props$a.loadingIcon.vertical
     },
     // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
     mode: {
       type: String,
-      default: () => props$9.loadingIcon.mode
+      default: () => props$a.loadingIcon.mode
     },
     // 图标大小，单位默认px
     size: {
       type: [String, Number],
-      default: () => props$9.loadingIcon.size
+      default: () => props$a.loadingIcon.size
     },
     // 文字大小
     textSize: {
       type: [String, Number],
-      default: () => props$9.loadingIcon.textSize
+      default: () => props$a.loadingIcon.textSize
     },
     // 文字内容
     text: {
       type: [String, Number],
-      default: () => props$9.loadingIcon.text
+      default: () => props$a.loadingIcon.text
     },
     // 动画模式
     timingFunction: {
       type: String,
-      default: () => props$9.loadingIcon.timingFunction
+      default: () => props$a.loadingIcon.timingFunction
     },
     // 动画执行周期时间
     duration: {
       type: [String, Number],
-      default: () => props$9.loadingIcon.duration
+      default: () => props$a.loadingIcon.duration
     },
     // mode=circle时的暗边颜色
     inactiveColor: {
       type: String,
-      default: () => props$9.loadingIcon.inactiveColor
+      default: () => props$a.loadingIcon.inactiveColor
     }
   }
 });
-exports.Schema = Schema;
+function colorGradient(startColor = "rgb(0, 0, 0)", endColor = "rgb(255, 255, 255)", step = 10) {
+  const startRGB = hexToRgb(startColor, false);
+  const startR = startRGB[0];
+  const startG = startRGB[1];
+  const startB = startRGB[2];
+  const endRGB = hexToRgb(endColor, false);
+  const endR = endRGB[0];
+  const endG = endRGB[1];
+  const endB = endRGB[2];
+  const sR = (endR - startR) / step;
+  const sG = (endG - startG) / step;
+  const sB = (endB - startB) / step;
+  const colorArr = [];
+  for (let i = 0; i < step; i++) {
+    let hex3 = rgbToHex(`rgb(${Math.round(sR * i + startR)},${Math.round(sG * i + startG)},${Math.round(sB * i + startB)})`);
+    if (i === 0)
+      hex3 = rgbToHex(startColor);
+    if (i === step - 1)
+      hex3 = rgbToHex(endColor);
+    colorArr.push(hex3);
+  }
+  return colorArr;
+}
+function hexToRgb(sColor, str = true) {
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  sColor = String(sColor).toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      let sColorNew = "#";
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    const sColorChange = [];
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+    }
+    if (!str) {
+      return sColorChange;
+    }
+    return `rgb(${sColorChange[0]},${sColorChange[1]},${sColorChange[2]})`;
+  }
+  if (/^(rgb|RGB)/.test(sColor)) {
+    const arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    return arr.map((val) => Number(val));
+  }
+  return sColor;
+}
+function rgbToHex(rgb) {
+  const _this = rgb;
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  if (/^(rgb|RGB)/.test(_this)) {
+    const aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    let strHex = "#";
+    for (let i = 0; i < aColor.length; i++) {
+      let hex3 = Number(aColor[i]).toString(16);
+      hex3 = String(hex3).length == 1 ? `${0}${hex3}` : hex3;
+      if (hex3 === "0") {
+        hex3 += hex3;
+      }
+      strHex += hex3;
+    }
+    if (strHex.length !== 7) {
+      strHex = _this;
+    }
+    return strHex;
+  }
+  if (reg.test(_this)) {
+    const aNum = _this.replace(/#/, "").split("");
+    if (aNum.length === 6) {
+      return _this;
+    }
+    if (aNum.length === 3) {
+      let numHex = "#";
+      for (let i = 0; i < aNum.length; i += 1) {
+        numHex += aNum[i] + aNum[i];
+      }
+      return numHex;
+    }
+  } else {
+    return _this;
+  }
+}
+exports.Schema = Schema$1;
+exports.Schema$1 = Schema;
 exports._ButtonTypeMap = _ButtonTypeMap;
 exports._export_sfc = _export_sfc;
-exports.addStyle = addStyle;
-exports.addUnit = addUnit;
+exports.addStyle = addStyle$1;
+exports.addStyle$1 = addStyle;
+exports.addUnit = addUnit$1;
+exports.addUnit$1 = addUnit;
 exports.baseEmits = baseEmits;
-exports.color = color$4;
-exports.colorGradient = colorGradient;
+exports.color = color$8;
+exports.color$1 = color$3;
+exports.colorGradient = colorGradient$1;
+exports.colorGradient$1 = colorGradient;
 exports.computed = computed;
 exports.config = config;
+exports.config$1 = config$1;
 exports.createPinia = createPinia;
 exports.createSSRApp = createSSRApp;
-exports.deepClone = deepClone;
-exports.deepMerge = deepMerge$2;
+exports.deepClone = deepClone$1;
+exports.deepClone$1 = deepClone;
+exports.deepMerge = deepMerge$5;
+exports.deepMerge$1 = deepMerge$1;
 exports.defineComponent = defineComponent;
 exports.e = e;
 exports.emitBlur = emitBlur;
 exports.emitChange = emitChange;
 exports.emitClick = emitClick;
 exports.emitVModel = emitVModel;
-exports.error = error;
+exports.error = error$1;
+exports.error$1 = error;
 exports.f = f;
 exports.fontUtil = fontUtil;
+exports.fontUtil$1 = fontUtil$1;
 exports.formValidate = formValidate;
 exports.getContrastTextColor = getContrastTextColor;
 exports.getDarkerActiveColor = getDarkerActiveColor;
-exports.getProperty = getProperty;
-exports.icons = icons;
+exports.getProperty = getProperty$1;
+exports.getProperty$1 = getProperty;
+exports.icons = icons$1;
+exports.icons$1 = icons;
 exports.index = index$1;
-exports.mixin = mixin;
-exports.mpMixin = mpMixin;
+exports.m = m;
+exports.mixin = mixin$1;
+exports.mixin$1 = mixin;
+exports.mpMixin = mpMixin$1;
+exports.mpMixin$1 = mpMixin;
 exports.n = n;
 exports.o = o;
 exports.onMounted = onMounted;
 exports.p = p;
-exports.props = props$8;
-exports.props$1 = props$7;
-exports.props$2 = props$9;
-exports.props$3 = props$6;
-exports.props$4 = props$5;
-exports.props$5 = props$4;
-exports.props$6 = props$3;
-exports.props$7 = props$2;
-exports.props$8 = props$1;
-exports.props$9 = props;
+exports.props = props$f;
+exports.props$1 = props$e;
+exports.props$10 = props$6;
+exports.props$11 = props$5;
+exports.props$12 = props$4;
+exports.props$13 = props$3;
+exports.props$14 = props$2;
+exports.props$15 = props$1;
+exports.props$16 = props;
+exports.props$2 = props$g;
+exports.props$3 = props$d;
+exports.props$4 = props$c;
+exports.props$5 = props$b;
+exports.props$6 = props$9;
+exports.props$7 = props$8;
+exports.props$8 = props$7;
+exports.props$9 = props$a;
 exports.reactive = reactive;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.s = s;
-exports.setProperty = setProperty;
+exports.setProperty = setProperty$1;
+exports.setProperty$1 = setProperty;
 exports.sleep = sleep;
 exports.t = t;
-exports.test = test;
+exports.test = test$1;
+exports.test$1 = test;
 exports.textColor = textColor;
-exports.toast = toast;
+exports.toast = toast$1;
+exports.toast$1 = toast;
 exports.unref = unref;
 exports.uviewPlus = uviewPlus;
 exports.watch = watch;

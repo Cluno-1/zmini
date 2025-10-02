@@ -37,6 +37,13 @@
 			{
 				"navigationBarTitleText" : "ZListCard演示"
 			}
+		},
+		{
+			"path" : "pages/switch/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "ZSwitch演示"
+			}
 		}
 	],
 	"globalStyle": {

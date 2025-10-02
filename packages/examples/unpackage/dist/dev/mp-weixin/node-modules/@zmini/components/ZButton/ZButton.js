@@ -38,6 +38,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       //是否圆角  默认是
       default: true
     },
+    borderRadious: {
+      type: String,
+      //自定义圆角半径 默认15rpx
+      default: "15px"
+    },
     loading: {
       type: Boolean,
       //是否加载中  默认否
@@ -101,7 +106,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         g: __props.width,
         h: background.value,
         i: textColor.value,
-        j: __props.round ? "30rpx" : "5rpx",
+        j: __props.round ? __props.borderRadious : "0px",
         k: __props.width
       });
     };

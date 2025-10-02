@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2025-08-21 23:29:34
+ * @LastEditors: zld 17875477802@163.com
+ * @LastEditTime: 2025-10-02 21:26:42
+ * @FilePath: \zmini\packages\components\ZInput\ZInput.vue
+-->
 <template>
 	<up-form :rules="rules" labelPosition="left" labelAlign="left" :labelWidth="70" model="input">
 		<up-form-item prop="_" :label="(required ? '*' : '') + label" :labelWidth="labelWidth" :required='required'
