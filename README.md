@@ -21,6 +21,24 @@ npm i zmini -S
 
 # pnpm
 pnpm add zmini
+
+
+# pages.json
+配置 自动导入
+"easycom": {
+		"autoscan": true,
+		"custom": {
+			// uni-ui 规则如下配置
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+
+            // 下面一行是zmini自动导入规则
+			 "^Z([^-].*)": "zmini/packages/components/Z$1/Z$1.vue"
+		}
+	}
+
 ```
 
 ## 📦 查看演示
