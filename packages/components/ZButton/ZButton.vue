@@ -20,6 +20,31 @@
 import { ref, watch, onMounted, type PropType } from "vue";
 import { _ButtonTypeMap, type ButtonSize, type ButtonType, textColor as tColor } from "@zmini/theme";
 import { baseEmits, emitClick, getContrastTextColor, getDarkerActiveColor } from "@zmini/utils";
+
+
+/**
+ * ZButton 按钮组件
+ * @module ZButton
+ * @description
+ *  基础按钮封装，支持类型/尺寸/圆角/自定义颜色/加载中等状态。
+ *  通过 click 事件响应点击，默认插槽优先级高于 name 属性。
+ *
+ * @property {string}                    name          按钮文本（name 字段 > 默认插槽）
+ * @property {string}                    width         按钮宽度，默认 '100%'
+ * @property {'default'|'warning'|'info'|'plain'|'purple'|'blue'|'green'|'orange'|'pink'|'red'|'light-green'|'white'|'black'} type 预设背景色，默认 'default'
+ * @property {string}                    bgColor       自定义背景色（bgColor 字段 > type 字段）
+ * @property {string}                    color         自定义文本颜色
+ * @property {'default'|'mini'}          size          按钮尺寸（高度），默认 'default'
+ * @property {boolean}                   round         是否圆角，默认 true
+ * @property {string}                    borderRadious 自定义圆角半径，默认 '15px'
+ * @property {boolean}                   loading       是否加载中，默认 false
+ *
+ * @event {Function} click 点击按钮时触发，回调参数为事件对象 $event
+ *
+ * @example
+ * <ZButton type="primary" name="提交" @click="handleSubmit" />
+ */
+
 defineExpose({
 	name: "ZButton",
 });
