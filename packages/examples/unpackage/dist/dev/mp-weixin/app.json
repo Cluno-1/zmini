@@ -4,7 +4,8 @@
     "pages/button/index",
     "pages/input/index",
     "pages/list-card/index",
-    "pages/switch/index"
+    "pages/switch/index",
+    "pages/drop/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

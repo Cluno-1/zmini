@@ -13,3 +13,7 @@ export * from './button/button.d'
 export * from './input/input.d'
 export * from './color'
 
+
+// 导出 svg 的路径字符串
+export { default as ZDropSvg } from './drop/zdrop.svg'
+

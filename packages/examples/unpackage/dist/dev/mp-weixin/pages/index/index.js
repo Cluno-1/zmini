@@ -38,6 +38,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         title: "三元开关",
         name: "ZSwitch",
         router: "/pages/switch/index"
+      },
+      {
+        title: "下拉框",
+        name: "ZDrop",
+        router: "/pages/drop/index"
       }
     ];
     return (_ctx, _cache) => {

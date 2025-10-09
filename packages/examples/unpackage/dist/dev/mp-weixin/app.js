@@ -7,6 +7,7 @@ if (!Math) {
   "./pages/input/index.js";
   "./pages/list-card/index.js";
   "./pages/switch/index.js";
+  "./pages/drop/index.js";
 }
 const _sfc_main = {
   onLaunch: function() {

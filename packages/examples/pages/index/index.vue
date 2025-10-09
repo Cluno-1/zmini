@@ -49,6 +49,11 @@ const data = [
 		name: 'ZSwitch',
 		router: '/pages/switch/index'
 	},
+	{
+		title: '下拉框',
+		name: 'ZDrop',
+		router: '/pages/drop/index'
+	},
 ];
 </script>
 

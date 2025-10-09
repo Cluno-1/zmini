@@ -11,5 +11,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["./**/*.ts", "./**/*.tsx", "./**/*.vue", "types/**/*"]
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx",
+    "./**/*.vue",
+    "types/**/*",
+    "./svg-module.d.ts"
+  ]
 }
