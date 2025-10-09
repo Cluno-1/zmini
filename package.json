@@ -1,6 +1,6 @@
 {
   "name": "zmini",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "/packages/components/index.ts",
   "files": [
